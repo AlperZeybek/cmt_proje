@@ -1,0 +1,71 @@
+﻿@model cmt_proje.Models.ReviewEditViewModel
+
+@{
+    ViewData["Title"] = "Write Review";
+}
+
+<h2>Write Review</h2>
+
+<div class="mb-3">
+    <h4>@Model.SubmissionTitle</h4>
+    <p>
+        <strong>Conference:</strong> @Model.ConferenceName <br />
+        <strong>Track:</strong> @Model.TrackName
+    </p>
+</div>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="AssignmentId" />
+    <input type="hidden" asp-for="SubmissionId" />
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="ScoreOverall" class="form-label"></label>
+                <input asp-for="ScoreOverall" class="form-control" />
+                <span asp-validation-for="ScoreOverall" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label asp-for="Confidence" class="form-label"></label>
+                <input asp-for="Confidence" class="form-control" />
+                <span asp-validation-for="Confidence" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Strengths" class="form-label"></label>
+        <textarea asp-for="Strengths" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Strengths" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Weaknesses" class="form-label"></label>
+        <textarea asp-for="Weaknesses" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Weaknesses" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CommentsToAuthor" class="form-label"></label>
+        <textarea asp-for="CommentsToAuthor" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="CommentsToAuthor" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CommentsToChair" class="form-label"></label>
+        <textarea asp-for="CommentsToChair" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="CommentsToChair" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        @(Model.IsSubmitted ? "Update Review" : "Submit Review")
+    </button>
+
+    <a asp-action="MyAssignments" class="btn btn-secondary ms-2">Back to My Assignments</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

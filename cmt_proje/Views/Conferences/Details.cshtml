@@ -1,0 +1,62 @@
+﻿@model cmt_proje.Core.Entities.Conference
+
+@{
+    ViewData["Title"] = "Conference Details";
+}
+
+<h2>@Model.Name (@Model.Acronym)</h2>
+
+<div class="mb-3">
+    <strong>Description:</strong>
+    <p>@Model.Description</p>
+
+    <strong>Dates:</strong>
+    <p>@Model.StartDate.ToShortDateString() - @Model.EndDate.ToShortDateString()</p>
+
+    <strong>Submission Deadline:</strong>
+    <p>@Model.SubmissionDeadline.ToShortDateString()</p>
+
+    <strong>Created By:</strong>
+    <p>@Model.CreatedByUser?.Email</p>
+
+    <strong>Status:</strong>
+    <p>@(Model.IsActive ? "Active" : "Inactive")</p>
+</div>
+
+<hr />
+
+<h4>Actions</h4>
+
+<div class="btn-group" role="group">
+
+    <!-- Tracks Yönetimi -->
+    <a asp-controller="Tracks"
+       asp-action="Index"
+       asp-route-conferenceId="@Model.Id"
+       class="btn btn-outline-info">
+        Manage Tracks
+    </a>
+
+    <!-- Submissions -->
+    <a asp-controller="Submissions"
+       asp-action="Index"
+       asp-route-conferenceId="@Model.Id"
+       class="btn btn-outline-primary ms-2">
+        View Submissions
+    </a>
+
+    <!-- Review Assignments -->
+    <a asp-controller="ReviewAssignments"
+       asp-action="Index"
+       asp-route-conferenceId="@Model.Id"
+       class="btn btn-outline-secondary ms-2">
+        Manage Review Assignments
+    </a>
+
+</div>
+
+<hr />
+
+<p>
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+</p>

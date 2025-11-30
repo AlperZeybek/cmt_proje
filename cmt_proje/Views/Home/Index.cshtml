@@ -1,0 +1,196 @@
+﻿@{
+    ViewData["Title"] = "Conference Management Panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4 dashboard-wrapper">
+
+    <!-- Sayfa başlığı -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Conference Management Panel
+            </h1>
+            <p class="text-muted mb-0">
+                Create conferences, collect submissions, assign reviewers and track decisions – all from a single clean interface.
+            </p>
+        </div>
+    </div>
+
+    <!-- Kart grid’i -->
+    <div class="row g-3">
+
+        <!-- Conferences -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-primary-subtle text-primary">
+                                <i class="bi bi-globe2"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">Conferences</h5>
+                            <p class="card-text small text-muted mb-2">
+                                Create &amp; manage academic conferences and their settings.
+                            </p>
+                            <span class="small fw-semibold text-primary">
+                                Go to Conferences →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- My Submissions -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Submissions" asp-action="My" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-info-subtle text-info">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">My Submissions</h5>
+                            <p class="card-text small text-muted mb-2">
+                                View and manage papers you have submitted.
+                            </p>
+                            <span class="small fw-semibold text-info">
+                                View my papers →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Review Assignments -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="ReviewAssignments" asp-action="MyAssignments" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-success-subtle text-success">
+                                <i class="bi bi-check2-square"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">Review Assignments</h5>
+                            <p class="card-text small text-muted mb-2">
+                                See which papers are assigned to you and submit your reviews.
+                            </p>
+                            <span class="small fw-semibold text-success">
+                                Review papers →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tracks (konferans seçerek yönet) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-warning-subtle text-warning">
+                                <i class="bi bi-list-task"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">Tracks</h5>
+                            <p class="card-text small text-muted mb-2">
+                                Organize conference tracks. First select a conference, then manage its tracks.
+                            </p>
+                            <span class="small fw-semibold text-warning">
+                                Manage tracks →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Decisions (konferans seçerek yönet) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-danger-subtle text-danger">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">Decisions</h5>
+                            <p class="card-text small text-muted mb-2">
+                                Finalize accept / reject decisions based on reviews. Pick a conference first.
+                            </p>
+                            <span class="small fw-semibold text-danger">
+                                Manage decisions →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Profile -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="text-decoration-none dashboard-card-link">
+                <div class="card shadow-sm border-0 h-100 dashboard-card">
+                    <div class="card-body d-flex">
+                        <div class="me-3">
+                            <div class="dash-icon bg-secondary-subtle text-secondary">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-1 text-dark">Profile</h5>
+                            <p class="card-text small text-muted mb-2">
+                                Update your personal information and account security.
+                            </p>
+                            <span class="small fw-semibold text-secondary">
+                                Edit profile →
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .dashboard-wrapper {
+            max-width: 1200px;
+        }
+
+        .dashboard-card {
+            border-radius: 18px;
+            transition: all .18s ease-in-out;
+        }
+
+        .dashboard-card-link:hover .dashboard-card {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .dash-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+    </style>
+}

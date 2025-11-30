@@ -1,0 +1,37 @@
+﻿@model cmt_proje.Core.Entities.Submission
+
+@{
+    ViewData["Title"] = "Submission Details";
+}
+
+<h2 class="mt-3">Submission Details</h2>
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-2">Conference</dt>
+    <dd class="col-sm-10">@Model.Conference?.Name (@Model.Conference?.Acronym)</dd>
+
+    <dt class="col-sm-2">Track</dt>
+    <dd class="col-sm-10">@Model.Track?.Name</dd>
+
+    <dt class="col-sm-2">Title</dt>
+    <dd class="col-sm-10">@Model.Title</dd>
+
+    <dt class="col-sm-2">Abstract</dt>
+    <dd class="col-sm-10">@Model.Abstract</dd>
+
+    <dt class="col-sm-2">Author</dt>
+    <dd class="col-sm-10">@Model.SubmittedByUser?.Email</dd>
+
+    <dt class="col-sm-2">Status</dt>
+    <dd class="col-sm-10">@Model.Status.ToString()</dd>
+
+    <dt class="col-sm-2">Submitted At</dt>
+    <dd class="col-sm-10">@Model.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+</dl>
+
+<p>
+    <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Download PDF</a>
+    <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-secondary">Back to List</a>
+</p>

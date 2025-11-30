@@ -1,0 +1,84 @@
+﻿@model IEnumerable<cmt_proje.Core.Entities.Submission>
+
+@{
+    var conf = (cmt_proje.Core.Entities.Conference)ViewBag.Conference;
+    ViewData["Title"] = "Submissions for " + conf.Name;
+}
+
+<h2>Submissions for @conf.Name ("@conf.Acronym")</h2>
+
+<div class="mb-3">
+    <a asp-controller="Submissions"
+       asp-action="Create"
+       asp-route-conferenceId="@conf.Id"
+       class="btn btn-success">
+        Submit New Paper
+    </a>
+
+    <a asp-controller="Conferences"
+       asp-action="Details"
+       asp-route-id="@conf.Id"
+       class="btn btn-secondary ms-2">
+        Back to Conference
+    </a>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Track</th>
+            <th>Author</th>
+            <th>Status</th>
+            <th>Submitted At</th>
+            <th>Decision</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Track?.Name</td>
+                <td>@item.SubmittedByUser?.Email</td>
+                <td>@item.Status</td>
+                <td>@item.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</td>
+
+                <!-- Decision metni -->
+                <td>
+                    @if (item.Decision == null)
+                    {
+                        @:No decision
+                    }
+                    else
+                    {
+                        @item.Decision.DecisionStatus
+                    }
+                </td>
+
+                <!-- Decision butonu -->
+                <td>
+                    @if (item.Decision == null)
+                    {
+                        <a asp-controller="Decisions"
+                           asp-action="Create"
+                           asp-route-submissionId="@item.Id"
+                           class="btn btn-sm btn-primary">
+                            Make Decision
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Decisions"
+                           asp-action="Details"
+                           asp-route-submissionId="@item.Id"
+                           class="btn btn-sm btn-outline-secondary">
+                            View / Edit Decision
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,60 @@
+﻿@using cmt_proje.Core.Entities
+@model IEnumerable<ReviewAssignment>
+
+@{
+    ViewData["Title"] = "My Review Assignments";
+}
+
+<h2>My Review Assignments</h2>
+
+@if (!Model.Any())
+{
+    <p>You currently have no review assignments.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Track</th>
+                <th>Conference</th>
+                <th>Status</th>
+                <th>Assigned At</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var hasReview = item.Review != null;
+                <tr>
+                    <td>@item.Submission.Title</td>
+                    <td>@item.Submission.Track?.Name</td>
+                    <td>@item.Submission.Conference.Name</td>
+                    <td>
+                        @if (hasReview)
+                        {
+                            <span class="badge bg-success">
+                                Reviewed (Score: @item.Review.ScoreOverall)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Not Reviewed</span>
+                        }
+                    </td>
+                    <td>@item.AssignedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <a asp-controller="Reviews"
+                           asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-sm btn-primary">
+                            Write / Edit Review
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

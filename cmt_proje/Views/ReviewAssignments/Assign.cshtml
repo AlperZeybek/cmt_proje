@@ -1,0 +1,114 @@
+﻿@model cmt_proje.Core.Entities.Submission
+@using cmt_proje.Core.Entities
+
+@{
+    ViewData["Title"] = "Assign Reviewer";
+
+    var users = ViewBag.Users as IEnumerable<ApplicationUser> ?? Enumerable.Empty<ApplicationUser>();
+}
+
+<h2 class="mb-3">Assign Reviewer</h2>
+
+<p class="text-muted">
+    <strong>@Model.Title</strong><br />
+    @Model.Conference?.Name
+    @if (!string.IsNullOrWhiteSpace(Model.Track?.Name))
+    {
+        <span> • @Model.Track.Name</span>
+    }
+</p>
+
+<div class="row">
+    <!-- SOL TARAF: Paper bilgileri -->
+    <div class="col-md-7">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                Paper details
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Author</dt>
+                    <dd class="col-sm-9">@Model.SubmittedByUser?.Email</dd>
+
+                    <dt class="col-sm-3">Submitted</dt>
+                    <dd class="col-sm-9">
+                        @@if (Model.SubmittedAt.HasValue)
+                        {
+                        @@Model.SubmittedAt.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Track</dt>
+                    <dd class="col-sm-9">@Model.Track?.Name</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Existing reviewers
+            </div>
+            <div class="card-body">
+                @if (Model.ReviewAssignments != null && Model.ReviewAssignments.Any())
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var ra in Model.ReviewAssignments.Where(r => r.Reviewer != null))
+                        {
+                            <li>
+                                @ra.Reviewer.Email
+                                <small class="text-muted">
+                                    – assigned @ra.AssignedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                </small>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No reviewers assigned yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- SAĞ TARAF: Yeni reviewer atama formu -->
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Assign a new reviewer
+            </div>
+            <div class="card-body">
+                <form asp-action="Assign" method="post">
+                    <input type="hidden" name="submissionId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="reviewerId">Reviewer</label>
+                        <select class="form-select" id="reviewerId" name="reviewerId">
+                            <option value="">-- Select reviewer --</option>
+                            @foreach (var u in users)
+                            {
+                                <option value="@u.Id">@u.Email</option>
+                            }
+                        </select>
+
+                        @* property'e bağlı olmayan hatalar için *@
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger small mt-2" })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Assign reviewer
+                    </button>
+                    <a asp-action="Index"
+                       asp-route-conferenceId="@Model.ConferenceId"
+                       class="btn btn-outline-secondary ms-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

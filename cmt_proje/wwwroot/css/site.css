@@ -1,0 +1,203 @@
+/* Genel */
+html, body {
+    height: 100%;
+}
+
+    body.app-body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #f5f7fb;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1f2933;
+    }
+
+/* NAVBAR */
+.app-navbar {
+    background: linear-gradient(90deg, #20294f 0%, #3546b0 40%, #4f46e5 100%);
+}
+
+    .app-navbar .navbar-brand {
+        color: #ffffff;
+    }
+
+.brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.brand-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.1;
+}
+
+.brand-subtitle {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.app-nav-links .nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.86);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding-inline: 0.9rem;
+    border-radius: 999px;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+    .app-nav-links .nav-link i {
+        font-size: 1rem;
+    }
+
+    .app-nav-links .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .app-nav-links .nav-link.active {
+        background-color: #ffffff;
+        color: #1f2933;
+    }
+
+.navbar-auth {
+    color: #ffffff;
+}
+
+    .navbar-auth a {
+        color: #ffffff;
+    }
+
+/* Ana içerik */
+.app-main {
+    flex: 1 0 auto;
+}
+
+/* FOOTER */
+.app-footer {
+    background-color: #ffffff;
+}
+
+/* DASHBOARD */
+.dashboard-hero {
+    background: radial-gradient(circle at top left, #e0e7ff 0, #eef2ff 34%, #ffffff 100%);
+    border-radius: 24px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+    .dashboard-hero h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+    }
+
+    .dashboard-hero p {
+        margin-bottom: 0;
+        color: #4b5563;
+    }
+
+    .dashboard-hero .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #4f46e5;
+        background: rgba(79, 70, 229, 0.08);
+    }
+
+        .dashboard-hero .hero-pill i {
+            font-size: 0.9rem;
+        }
+
+/* Dashboard kartlarý */
+.dashboard-card {
+    text-decoration: none;
+    color: inherit;
+    border-radius: 18px;
+    background: #ffffff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    border: 1px solid rgba(148, 163, 184, 0.25) !important;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+        border-color: #4f46e5 !important;
+    }
+
+    .dashboard-card .card-body {
+        padding: 1.15rem 1.25rem;
+    }
+
+.dashboard-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+    .dashboard-card-icon.primary {
+        background: rgba(79, 70, 229, 0.12);
+        color: #4f46e5;
+    }
+
+    .dashboard-card-icon.success {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+    }
+
+    .dashboard-card-icon.warning {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+    }
+
+    .dashboard-card-icon.info {
+        background: rgba(59, 130, 246, 0.12);
+        color: #3b82f6;
+    }
+
+.dashboard-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.dashboard-card-text {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+}
+
+.dashboard-card-footer {
+    font-size: 0.8rem;
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+    .dashboard-card-footer i {
+        font-size: 0.9rem;
+    }
+
+/* Küçük ekran uyumu */
+@media (max-width: 767.98px) {
+    .dashboard-hero {
+        border-radius: 20px;
+    }
+
+    .app-navbar .navbar-brand {
+        max-width: 70%;
+    }
+}
