@@ -272,7 +272,7 @@ namespace cmt_proje.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Conferences");
+                    b.ToTable("Conferences", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.Decision", b =>
@@ -310,7 +310,7 @@ namespace cmt_proje.Migrations
                     b.HasIndex("SubmissionId")
                         .IsUnique();
 
-                    b.ToTable("Decisions");
+                    b.ToTable("Decisions", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.Review", b =>
@@ -357,7 +357,7 @@ namespace cmt_proje.Migrations
                     b.HasIndex("ReviewAssignmentId")
                         .IsUnique();
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.ReviewAssignment", b =>
@@ -387,7 +387,7 @@ namespace cmt_proje.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("ReviewAssignments");
+                    b.ToTable("ReviewAssignments", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.Submission", b =>
@@ -437,7 +437,7 @@ namespace cmt_proje.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("Submissions");
+                    b.ToTable("Submissions", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.SubmissionAuthor", b =>
@@ -473,7 +473,7 @@ namespace cmt_proje.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("SubmissionAuthors");
+                    b.ToTable("SubmissionAuthors", (string)null);
                 });
 
             modelBuilder.Entity("cmt_proje.Core.Entities.Track", b =>
@@ -503,7 +503,7 @@ namespace cmt_proje.Migrations
 
                     b.HasIndex("ConferenceId");
 
-                    b.ToTable("Tracks");
+                    b.ToTable("Tracks", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

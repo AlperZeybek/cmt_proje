@@ -1,13 +1,10 @@
 /* Genel */
 html, body {
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
 }
 
-html {
-    height: 100%;
-}
 
 body {
         min-height: 100vh;
@@ -151,7 +148,7 @@ body {
 /* Ana içerik - Tüm sayfalar için %100 height */
 .app-main-content {
     flex: 1 0 auto;
-    min-height: 0;
+    min-height: calc(100vh - 320px); /* 100vh - (header ~80px + footer ~240px) - daha güvenli değer */
     display: flex;
     flex-direction: column;
 }
@@ -160,7 +157,8 @@ body {
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: calc(100vh - 380px); /* İçerik için minimum yükseklik */
+    padding-bottom: 80px; /* Footer ile içerik arası daha fazla boşluk */
 }
 
 /* Container override - sadece içerik için */
@@ -349,6 +347,15 @@ body:has(.dashboard-page) main .container {
 
 /* Footer Responsive */
 @media (max-width: 991.98px) {
+    .app-main-content {
+        min-height: calc(100vh - 300px); /* Tablet için */
+    }
+
+    .app-main-inner {
+        min-height: calc(100vh - 360px); /* Tablet için içerik minimum yükseklik */
+        padding-bottom: 70px; /* Tablet için boşluk */
+    }
+
     .app-footer {
         padding: 0;
         background: #f4f5f8;
@@ -383,6 +390,15 @@ body:has(.dashboard-page) main .container {
 }
 
 @media (max-width: 767.98px) {
+    .app-main-content {
+        min-height: calc(100vh - 280px); /* Mobil için */
+    }
+
+    .app-main-inner {
+        min-height: calc(100vh - 340px); /* Mobil için içerik minimum yükseklik */
+        padding-bottom: 60px; /* Mobil için boşluk */
+    }
+
     .app-footer .container {
         padding: 2rem 1.25rem 1rem;
     }
