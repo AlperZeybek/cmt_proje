@@ -5,44 +5,74 @@
     ViewData["Title"] = "Submit Paper";
 }
 
-<h2 class="mt-3">Submit Paper to @conference.Name (@conference.Acronym)</h2>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-upload"></i>
+        Submit Paper
+    </h1>
+    <p class="page-subtitle">
+        Submit your paper to <strong>@conference.Name</strong> 
+        <span class="badge-modern badge-modern-info">@conference.Acronym</span>
+    </p>
+</div>
 
-<hr />
+<div class="modern-form">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="ConferenceId" />
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="ConferenceId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group-modern">
+                <label asp-for="TrackId" class="form-label-modern">
+                    <i class="bi bi-list-task"></i>
+                    Track
+                </label>
+                <select asp-for="TrackId" class="form-select form-select-modern" asp-items="ViewBag.TrackList">
+                    <option value="">-- Select Track --</option>
+                </select>
+                <span asp-validation-for="TrackId" class="text-danger"></span>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="TrackId" class="form-label"></label>
-        <select asp-for="TrackId" class="form-select" asp-items="ViewBag.TrackList">
-            <option value="">-- Select Track --</option>
-        </select>
-        <span asp-validation-for="TrackId" class="text-danger"></span>
+            <div class="form-group-modern">
+                <label asp-for="Title" class="form-label-modern">
+                    <i class="bi bi-type-h1"></i>
+                    Paper Title
+                </label>
+                <input asp-for="Title" class="form-control form-control-modern" placeholder="Enter your paper title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="Abstract" class="form-label-modern">
+                    <i class="bi bi-file-text"></i>
+                    Abstract
+                </label>
+                <textarea asp-for="Abstract" class="form-control form-control-modern" rows="5" placeholder="Enter paper abstract"></textarea>
+                <span asp-validation-for="Abstract" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="PdfFile" class="form-label-modern">
+                    <i class="bi bi-file-pdf"></i>
+                    PDF File
+                </label>
+                <input asp-for="PdfFile" type="file" class="form-control form-control-modern" accept=".pdf" />
+                <small class="text-muted">Please upload your paper as a PDF file</small>
+                <span asp-validation-for="PdfFile" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-modern btn-modern-primary">
+                    <i class="bi bi-send"></i>
+                    Submit Paper
+                </button>
+                <a asp-controller="Conferences" asp-action="Details" asp-route-id="@conference.Id" class="btn btn-modern btn-modern-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Conference
+                </a>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Abstract" class="form-label"></label>
-        <textarea asp-for="Abstract" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Abstract" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="PdfFile" class="form-label"></label>
-        <input asp-for="PdfFile" type="file" class="form-control" />
-        <span asp-validation-for="PdfFile" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a asp-controller="Conferences" asp-action="Details" asp-route-id="@conference.Id" class="btn btn-secondary">Back to Conference</a>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

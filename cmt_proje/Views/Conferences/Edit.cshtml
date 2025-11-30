@@ -1,60 +1,107 @@
 ﻿@model cmt_proje.Core.Entities.Conference
 
 @{
-    ViewData["Title"] = "Create Conference";
+    ViewData["Title"] = "Edit Conference";
 }
 
-<h2 class="mt-3">Create New Conference</h2>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-pencil"></i>
+        Edit Conference
+    </h1>
+    <p class="page-subtitle">Update conference information</p>
+</div>
 
-<hr />
+<div class="modern-form">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedByUserId" />
+            <input type="hidden" asp-for="CreatedAt" />
 
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="form-group-modern">
+                <label asp-for="Name" class="form-label-modern">
+                    <i class="bi bi-tag"></i>
+                    Conference Name
+                </label>
+                <input asp-for="Name" class="form-control form-control-modern" placeholder="Enter conference name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="Acronym" class="form-label-modern">
+                    <i class="bi bi-type"></i>
+                    Acronym
+                </label>
+                <input asp-for="Acronym" class="form-control form-control-modern" placeholder="e.g., ICML, CVPR" />
+                <span asp-validation-for="Acronym" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="Description" class="form-label-modern">
+                    <i class="bi bi-file-text"></i>
+                    Description
+                </label>
+                <textarea asp-for="Description" class="form-control form-control-modern" rows="4" placeholder="Enter conference description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group-modern">
+                        <label asp-for="StartDate" class="form-label-modern">
+                            <i class="bi bi-calendar-event"></i>
+                            Start Date
+                        </label>
+                        <input asp-for="StartDate" type="date" class="form-control form-control-modern" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group-modern">
+                        <label asp-for="EndDate" class="form-label-modern">
+                            <i class="bi bi-calendar-check"></i>
+                            End Date
+                        </label>
+                        <input asp-for="EndDate" type="date" class="form-control form-control-modern" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group-modern">
+                        <label asp-for="SubmissionDeadline" class="form-label-modern">
+                            <i class="bi bi-clock"></i>
+                            Submission Deadline
+                        </label>
+                        <input asp-for="SubmissionDeadline" type="date" class="form-control form-control-modern" />
+                        <span asp-validation-for="SubmissionDeadline" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-modern">
+                <div class="form-check">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveCheck" />
+                    <label class="form-check-label" for="isActiveCheck">
+                        <i class="bi bi-toggle-on"></i>
+                        Active Conference
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-modern btn-modern-primary">
+                    <i class="bi bi-check-circle"></i>
+                    Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-modern btn-modern-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to List
+                </a>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Acronym" class="form-label"></label>
-        <input asp-for="Acronym" class="form-control" />
-        <span asp-validation-for="Acronym" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label asp-for="StartDate" class="form-label">Start Date</label>
-            <input asp-for="StartDate" type="date" class="form-control" />
-            <span asp-validation-for="StartDate" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="EndDate" class="form-label">End Date</label>
-            <input asp-for="EndDate" type="date" class="form-control" />
-            <span asp-validation-for="EndDate" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="SubmissionDeadline" class="form-label">Submission Deadline</label>
-            <input asp-for="SubmissionDeadline" type="date" class="form-control" />
-            <span asp-validation-for="SubmissionDeadline" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="mb-3 form-check">
-        <input asp-for="IsActive" class="form-check-input" />
-        <label asp-for="IsActive" class="form-check-label">Active</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

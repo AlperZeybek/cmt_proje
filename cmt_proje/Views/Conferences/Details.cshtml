@@ -4,59 +4,126 @@
     ViewData["Title"] = "Conference Details";
 }
 
-<h2>@Model.Name (@Model.Acronym)</h2>
-
-<div class="mb-3">
-    <strong>Description:</strong>
-    <p>@Model.Description</p>
-
-    <strong>Dates:</strong>
-    <p>@Model.StartDate.ToShortDateString() - @Model.EndDate.ToShortDateString()</p>
-
-    <strong>Submission Deadline:</strong>
-    <p>@Model.SubmissionDeadline.ToShortDateString()</p>
-
-    <strong>Created By:</strong>
-    <p>@Model.CreatedByUser?.Email</p>
-
-    <strong>Status:</strong>
-    <p>@(Model.IsActive ? "Active" : "Inactive")</p>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-globe2"></i>
+        @Model.Name
+    </h1>
+    <p class="page-subtitle">
+        <span class="badge-modern badge-modern-info">@Model.Acronym</span>
+        @if (Model.IsActive)
+        {
+            <span class="badge-modern badge-modern-success ms-2">
+                <i class="bi bi-check-circle"></i>
+                Active
+            </span>
+        }
+        else
+        {
+            <span class="badge-modern badge-modern-secondary ms-2">
+                <i class="bi bi-x-circle"></i>
+                Inactive
+            </span>
+        }
+    </p>
 </div>
 
-<hr />
+    <div class="card-modern">
+        <div class="card-modern-body">
+            <div class="details-section">
+                <h3 class="details-section-title">
+                    <i class="bi bi-info-circle"></i>
+                    Conference Information
+                </h3>
 
-<h4>Actions</h4>
+                <div class="details-item">
+                    <span class="details-label">Description</span>
+                    <div class="details-value">@Model.Description</div>
+                </div>
 
-<div class="btn-group" role="group">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-calendar-event"></i>
+                                Start Date
+                            </span>
+                            <div class="details-value">@Model.StartDate.ToString("dd.MM.yyyy")</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-calendar-check"></i>
+                                End Date
+                            </span>
+                            <div class="details-value">@Model.EndDate.ToString("dd.MM.yyyy")</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-clock"></i>
+                                Submission Deadline
+                            </span>
+                            <div class="details-value">@Model.SubmissionDeadline.ToString("dd.MM.yyyy")</div>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Tracks Yönetimi -->
-    <a asp-controller="Tracks"
-       asp-action="Index"
-       asp-route-conferenceId="@Model.Id"
-       class="btn btn-outline-info">
-        Manage Tracks
+                <div class="details-item">
+                    <span class="details-label">
+                        <i class="bi bi-person"></i>
+                        Created By
+                    </span>
+                    <div class="details-value">@Model.CreatedByUser?.Email</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-modern mt-4">
+        <div class="card-modern-header">
+            <i class="bi bi-gear"></i>
+            Actions
+        </div>
+        <div class="card-modern-body">
+            <div class="action-buttons">
+                <a asp-controller="Tracks"
+                   asp-action="Index"
+                   asp-route-conferenceId="@Model.Id"
+                   class="btn btn-modern btn-modern-outline">
+                    <i class="bi bi-list-task"></i>
+                    Manage Tracks
+                </a>
+
+                <a asp-controller="Submissions"
+                   asp-action="Index"
+                   asp-route-conferenceId="@Model.Id"
+                   class="btn btn-modern btn-modern-outline">
+                    <i class="bi bi-file-earmark-text"></i>
+                    View Submissions
+                </a>
+
+                <a asp-controller="ReviewAssignments"
+                   asp-action="Index"
+                   asp-route-conferenceId="@Model.Id"
+                   class="btn btn-modern btn-modern-outline">
+                    <i class="bi bi-check2-square"></i>
+                    Manage Review Assignments
+                </a>
+
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
+                    <i class="bi bi-pencil"></i>
+                    Edit Conference
+                </a>
+            </div>
+        </div>
+    </div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-modern btn-modern-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Back to List
     </a>
-
-    <!-- Submissions -->
-    <a asp-controller="Submissions"
-       asp-action="Index"
-       asp-route-conferenceId="@Model.Id"
-       class="btn btn-outline-primary ms-2">
-        View Submissions
-    </a>
-
-    <!-- Review Assignments -->
-    <a asp-controller="ReviewAssignments"
-       asp-action="Index"
-       asp-route-conferenceId="@Model.Id"
-       class="btn btn-outline-secondary ms-2">
-        Manage Review Assignments
-    </a>
-
 </div>
-
-<hr />
-
-<p>
-    <a asp-action="Index" class="btn btn-dark">Back to List</a>
-</p>

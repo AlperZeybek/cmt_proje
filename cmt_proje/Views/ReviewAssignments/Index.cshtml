@@ -63,9 +63,9 @@
 
                         <!-- SUBMITTED AT -->
                         <td>
-                            @@if (submission.SubmittedAt.HasValue)
+                            @if (submission.SubmittedAt != default(DateTime))
                             {
-                            @@submission.SubmittedAt.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                @submission.SubmittedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
 
                                 @* İstersen burada taslak badge'i gösterebilirsin
                                 if (submission.IsDraft)

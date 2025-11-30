@@ -4,34 +4,117 @@
     ViewData["Title"] = "Submission Details";
 }
 
-<h2 class="mt-3">Submission Details</h2>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-file-earmark-text"></i>
+        Submission Details
+    </h1>
+    <p class="page-subtitle">View submission information and download the paper</p>
+</div>
 
-<hr />
+    <div class="card-modern">
+        <div class="card-modern-body">
+            <div class="details-section">
+                <h3 class="details-section-title">
+                    <i class="bi bi-info-circle"></i>
+                    Paper Information
+                </h3>
 
-<dl class="row">
-    <dt class="col-sm-2">Conference</dt>
-    <dd class="col-sm-10">@Model.Conference?.Name (@Model.Conference?.Acronym)</dd>
+                <div class="details-item">
+                    <span class="details-label">Title</span>
+                    <div class="details-value"><strong>@Model.Title</strong></div>
+                </div>
 
-    <dt class="col-sm-2">Track</dt>
-    <dd class="col-sm-10">@Model.Track?.Name</dd>
+                <div class="details-item">
+                    <span class="details-label">Abstract</span>
+                    <div class="details-value">@Model.Abstract</div>
+                </div>
 
-    <dt class="col-sm-2">Title</dt>
-    <dd class="col-sm-10">@Model.Title</dd>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-globe2"></i>
+                                Conference
+                            </span>
+                            <div class="details-value">
+                                @Model.Conference?.Name
+                                <span class="badge-modern badge-modern-info ms-2">@Model.Conference?.Acronym</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-list-task"></i>
+                                Track
+                            </span>
+                            <div class="details-value">@Model.Track?.Name</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-person"></i>
+                                Author
+                            </span>
+                            <div class="details-value">@Model.SubmittedByUser?.Email</div>
+                        </div>
+                    </div>
+                </div>
 
-    <dt class="col-sm-2">Abstract</dt>
-    <dd class="col-sm-10">@Model.Abstract</dd>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-flag"></i>
+                                Status
+                            </span>
+                            <div class="details-value">
+                                @switch (Model.Status.ToString())
+                                {
+                                    case "Submitted":
+                                        <span class="badge-modern badge-modern-info">Submitted</span>
+                                        break;
+                                    case "UnderReview":
+                                        <span class="badge-modern badge-modern-warning">Under Review</span>
+                                        break;
+                                    case "Accepted":
+                                        <span class="badge-modern badge-modern-success">Accepted</span>
+                                        break;
+                                    case "Rejected":
+                                        <span class="badge-modern badge-modern-danger">Rejected</span>
+                                        break;
+                                    default:
+                                        <span class="badge-modern badge-modern-secondary">@Model.Status.ToString()</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-calendar"></i>
+                                Submitted At
+                            </span>
+                            <div class="details-value">@Model.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <dt class="col-sm-2">Author</dt>
-    <dd class="col-sm-10">@Model.SubmittedByUser?.Email</dd>
-
-    <dt class="col-sm-2">Status</dt>
-    <dd class="col-sm-10">@Model.Status.ToString()</dd>
-
-    <dt class="col-sm-2">Submitted At</dt>
-    <dd class="col-sm-10">@Model.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</dd>
-</dl>
-
-<p>
-    <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Download PDF</a>
-    <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-secondary">Back to List</a>
-</p>
+    <div class="mt-4">
+        <div class="action-buttons">
+            <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
+                <i class="bi bi-download"></i>
+                Download PDF
+            </a>
+            <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-modern btn-modern-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>

@@ -4,67 +4,110 @@
     ViewData["Title"] = "Write Review";
 }
 
-<h2>Write Review</h2>
-
-<div class="mb-3">
-    <h4>@Model.SubmissionTitle</h4>
-    <p>
-        <strong>Conference:</strong> @Model.ConferenceName <br />
-        <strong>Track:</strong> @Model.TrackName
-    </p>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-pencil-square"></i>
+        @(Model.IsSubmitted ? "Edit Review" : "Write Review")
+    </h1>
+    <p class="page-subtitle">Evaluate the submission and provide your feedback</p>
 </div>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="AssignmentId" />
-    <input type="hidden" asp-for="SubmissionId" />
-
-    <div class="row">
-        <div class="col-md-3">
-            <div class="form-group mb-3">
-                <label asp-for="ScoreOverall" class="form-label"></label>
-                <input asp-for="ScoreOverall" class="form-control" />
-                <span asp-validation-for="ScoreOverall" class="text-danger"></span>
+    <div class="card-modern mb-4">
+        <div class="card-modern-header">
+            <i class="bi bi-file-earmark-text"></i>
+            Paper Information
+        </div>
+        <div class="card-modern-body">
+            <h4 class="mb-2">@Model.SubmissionTitle</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="details-label">Conference</span>
+                    <div class="details-value">@Model.ConferenceName</div>
+                </div>
+                <div class="col-md-6">
+                    <span class="details-label">Track</span>
+                    <div class="details-value">@Model.TrackName</div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="form-group mb-3">
-                <label asp-for="Confidence" class="form-label"></label>
-                <input asp-for="Confidence" class="form-control" />
-                <span asp-validation-for="Confidence" class="text-danger"></span>
+    </div>
+
+    <div class="modern-form">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="AssignmentId" />
+            <input type="hidden" asp-for="SubmissionId" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label asp-for="ScoreOverall" class="form-label-modern">
+                            <i class="bi bi-star"></i>
+                            Overall Score
+                        </label>
+                        <input asp-for="ScoreOverall" class="form-control form-control-modern" type="number" min="0" max="10" step="0.1" placeholder="0-10" />
+                        <span asp-validation-for="ScoreOverall" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label asp-for="Confidence" class="form-label-modern">
+                            <i class="bi bi-check-circle"></i>
+                            Confidence Level
+                        </label>
+                        <input asp-for="Confidence" class="form-control form-control-modern" type="number" min="0" max="10" step="0.1" placeholder="0-10" />
+                        <span asp-validation-for="Confidence" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <div class="form-group-modern">
+                <label asp-for="Strengths" class="form-label-modern">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    Strengths
+                </label>
+                <textarea asp-for="Strengths" class="form-control form-control-modern" rows="4" placeholder="List the strengths of this submission"></textarea>
+                <span asp-validation-for="Strengths" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="Weaknesses" class="form-label-modern">
+                    <i class="bi bi-x-circle-fill text-danger"></i>
+                    Weaknesses
+                </label>
+                <textarea asp-for="Weaknesses" class="form-control form-control-modern" rows="4" placeholder="List the weaknesses of this submission"></textarea>
+                <span asp-validation-for="Weaknesses" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="CommentsToAuthor" class="form-label-modern">
+                    <i class="bi bi-chat-left-text"></i>
+                    Comments to Author
+                </label>
+                <textarea asp-for="CommentsToAuthor" class="form-control form-control-modern" rows="4" placeholder="Provide feedback for the authors"></textarea>
+                <span asp-validation-for="CommentsToAuthor" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label asp-for="CommentsToChair" class="form-label-modern">
+                    <i class="bi bi-shield-check"></i>
+                    Comments to Chair (Confidential)
+                </label>
+                <textarea asp-for="CommentsToChair" class="form-control form-control-modern" rows="4" placeholder="Private comments for the conference chair"></textarea>
+                <span asp-validation-for="CommentsToChair" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-modern btn-modern-primary">
+                    <i class="bi bi-check-circle"></i>
+                    @(Model.IsSubmitted ? "Update Review" : "Submit Review")
+                </button>
+                <a asp-action="MyAssignments" class="btn btn-modern btn-modern-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to My Assignments
+                </a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Strengths" class="form-label"></label>
-        <textarea asp-for="Strengths" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Strengths" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Weaknesses" class="form-label"></label>
-        <textarea asp-for="Weaknesses" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Weaknesses" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="CommentsToAuthor" class="form-label"></label>
-        <textarea asp-for="CommentsToAuthor" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="CommentsToAuthor" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="CommentsToChair" class="form-label"></label>
-        <textarea asp-for="CommentsToChair" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="CommentsToChair" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        @(Model.IsSubmitted ? "Update Review" : "Submit Review")
-    </button>
-
-    <a asp-action="MyAssignments" class="btn btn-secondary ms-2">Back to My Assignments</a>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
