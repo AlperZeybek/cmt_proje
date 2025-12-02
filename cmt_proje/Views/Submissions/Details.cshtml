@@ -108,13 +108,39 @@
 
     <div class="mt-4">
         <div class="action-buttons">
-            <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
-                <i class="bi bi-download"></i>
-                Download PDF
-            </a>
-            <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-modern btn-modern-secondary">
-                <i class="bi bi-arrow-left"></i>
-                Back to List
-            </a>
+            @{
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var isChair = User.IsInRole(AppRoles.Chair);
+                var canDownload = isChair || Model.SubmittedByUserId == userId;
+                var canDelete = isChair || Model.SubmittedByUserId == userId;
+            }
+            @if (canDownload)
+            {
+                <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
+                    <i class="bi bi-download"></i>
+                    Download PDF
+                </a>
+            }
+            @if (canDelete)
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline btn-modern-danger">
+                    <i class="bi bi-trash"></i>
+                    Delete Submission
+                </a>
+            }
+            @if (isChair)
+            {
+                <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-modern btn-modern-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to List
+                </a>
+            }
+            else
+            {
+                <a asp-action="My" class="btn btn-modern btn-modern-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to My Submissions
+                </a>
+            }
         </div>
     </div>

@@ -32,14 +32,7 @@
 
                     <dt class="col-sm-3">Submitted</dt>
                     <dd class="col-sm-9">
-                        @@if (Model.SubmittedAt.HasValue)
-                        {
-                        @@Model.SubmittedAt.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                        }
-                        else
-                        {
-                            <span class="text-muted">-</span>
-                        }
+                        @Model.SubmittedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                     </dd>
 
                     <dt class="col-sm-3">Track</dt>

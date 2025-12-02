@@ -59,23 +59,26 @@
 
                 <!-- Decision butonu -->
                 <td>
-                    @if (item.Decision == null)
+                    @if (User.IsInRole(AppRoles.Chair))
                     {
-                        <a asp-controller="Decisions"
-                           asp-action="Create"
-                           asp-route-submissionId="@item.Id"
-                           class="btn btn-sm btn-primary">
-                            Make Decision
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Decisions"
-                           asp-action="Details"
-                           asp-route-submissionId="@item.Id"
-                           class="btn btn-sm btn-outline-secondary">
-                            View / Edit Decision
-                        </a>
+                        @if (item.Decision == null)
+                        {
+                            <a asp-controller="Decisions"
+                               asp-action="Details"
+                               asp-route-submissionId="@item.Id"
+                               class="btn btn-sm btn-primary">
+                                Make Decision
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Decisions"
+                               asp-action="Details"
+                               asp-route-submissionId="@item.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                View / Edit Decision
+                            </a>
+                        }
                     }
                 </td>
             </tr>

@@ -20,7 +20,7 @@
     <!-- SAYFAYA ÖZEL CSS BURADAN GELECEK -->
     @RenderSection("Styles", required: false)
 </head>
-<body class="bg-light d-flex flex-column" style="min-height: 100vh; height: 100%;">
+<body class="bg-light d-flex flex-column min-vh-100">
 
     <!-- Top Nav -->
     <header class="main-header">
@@ -63,13 +63,16 @@
                                 My Submissions
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reviews" ? "active" : "")"
-                               asp-controller="Reviews" asp-action="MyAssignments">
-                                <i class="bi bi-check2-square me-1"></i>
-                                My Reviews
-                            </a>
-                        </li>
+                        @if (User.IsInRole(AppRoles.Chair))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reviews" ? "active" : "")"
+                                   asp-controller="Reviews" asp-action="MyAssignments">
+                                    <i class="bi bi-check2-square me-1"></i>
+                                    My Reviews
+                                </a>
+                            </li>
+                        }
                     </ul>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 navbar-auth">
@@ -109,11 +112,13 @@
     </header>
 
     <!-- Main content -->
-    <div class="container py-4 flex-grow-1 app-main-content" style="height: 90%;">
-        <main role="main" class="app-main-inner">
-            @RenderBody()
-        </main>
-    </div>
+    <main class="app-main">
+        <div class="container py-4 app-main-content">
+            <div class="app-main-inner">
+                @RenderBody()
+            </div>
+        </div>
+    </main>
 
     <footer class="app-footer mt-auto">
         <div class="container">
@@ -152,12 +157,15 @@
                                 My Submissions
                             </a>
                         </li>
-                        <li>
-                            <a asp-controller="Reviews" asp-action="MyAssignments">
-                                <i class="bi bi-check2-square"></i>
-                                My Reviews
-                            </a>
-                        </li>
+                        @if (User.IsInRole(AppRoles.Chair))
+                        {
+                            <li>
+                                <a asp-controller="Reviews" asp-action="MyAssignments">
+                                    <i class="bi bi-check2-square"></i>
+                                    My Reviews
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
 

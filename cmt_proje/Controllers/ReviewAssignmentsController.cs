@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using cmt_proje.Core.Constants;
 
 namespace cmt_proje.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = AppRoles.Chair)]
     public class ReviewAssignmentsController : Controller
     {
         private readonly ConferenceDbContext _context;
@@ -76,10 +77,9 @@ namespace cmt_proje.Controllers
             if (submission == null)
                 return NotFound();
 
-            // Sistemdeki tüm kullanıcıları potansiyel reviewer listesi olarak gösteriyoruz
-            var users = await _context.Users
-                .OrderBy(u => u.Email)
-                .ToListAsync();
+            // Sadece Chair rolündeki kullanıcıları göster
+            var chairUsers = await _userManager.GetUsersInRoleAsync(AppRoles.Chair);
+            var users = chairUsers.OrderBy(u => u.Email).ToList();
 
             ViewBag.Users = users;
             return View(submission);
@@ -104,12 +104,21 @@ namespace cmt_proje.Controllers
                 ModelState.AddModelError(string.Empty, "Please select a reviewer.");
             }
 
+            // Atanan kullanıcının Chair rolünde olduğunu kontrol et
+            var assignedUser = await _userManager.FindByIdAsync(reviewerId);
+            if (assignedUser != null)
+            {
+                var isChair = await _userManager.IsInRoleAsync(assignedUser, AppRoles.Chair);
+                if (!isChair)
+                {
+                    ModelState.AddModelError(string.Empty, "Only users with Chair role can be assigned as reviewers.");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
-                var users = await _context.Users
-                    .OrderBy(u => u.Email)
-                    .ToListAsync();
-
+                var chairUsers = await _userManager.GetUsersInRoleAsync(AppRoles.Chair);
+                var users = chairUsers.OrderBy(u => u.Email).ToList();
                 ViewBag.Users = users;
                 return View(submission);
             }

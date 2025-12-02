@@ -8,10 +8,11 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using cmt_proje.Core.Constants;
 
 namespace cmt_proje.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = AppRoles.Chair)]
     public class ReviewsController : Controller
     {
         private readonly ConferenceDbContext _context;

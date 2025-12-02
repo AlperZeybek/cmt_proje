@@ -5,11 +5,21 @@
 }
 
 <div class="page-header">
-    <h1 class="page-title">
-        <i class="bi bi-file-earmark-text"></i>
-        My Submissions
-    </h1>
-    <p class="page-subtitle">View and manage your submitted papers</p>
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-file-earmark-text"></i>
+                My Submissions
+            </h1>
+            <p class="page-subtitle">View and manage your submitted papers</p>
+        </div>
+        <div>
+            <a asp-action="SelectConference" class="btn btn-modern btn-modern-primary">
+                <i class="bi bi-plus-circle"></i>
+                Create New Submission
+            </a>
+        </div>
+    </div>
 </div>
 
 <div class="modern-table">
@@ -77,6 +87,17 @@
                                     <a asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Download PDF">
                                         <i class="bi bi-download"></i>
                                     </a>
+                                    @{
+                                        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                                        var isChair = User.IsInRole(AppRoles.Chair);
+                                        var canDelete = isChair || item.SubmittedByUserId == userId;
+                                    }
+                                    @if (canDelete)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    }
                                 </div>
                             </td>
                         </tr>

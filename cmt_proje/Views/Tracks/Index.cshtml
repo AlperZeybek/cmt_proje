@@ -1,92 +1,152 @@
 ﻿@model IEnumerable<cmt_proje.Core.Entities.Track>
 
+@using cmt_proje.Core.Constants
+
 @{
     var conference = (cmt_proje.Core.Entities.Conference)ViewBag.Conference;
-    ViewData["Title"] = "Tracks - " + conference.Name;
+    ViewData["Title"] = conference.Name + " – Track Listesi";
 }
 
 <div class="page-header">
-    <h1 class="page-title">
-        <i class="bi bi-list-task"></i>
-        Tracks
-    </h1>
-    <p class="page-subtitle">
-        Manage tracks for <strong>@conference.Name</strong>
-        <span class="badge-modern badge-modern-info">@conference.Acronym</span>
-    </p>
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-list-task"></i>
+                @conference.Name – Track Listesi
+            </h1>
+            <p class="page-subtitle">
+                @if (!string.IsNullOrEmpty(conference.Acronym))
+                {
+                    <span class="badge-modern badge-modern-info me-2">@conference.Acronym</span>
+                }
+                <span>Track'leri yönetin ve submission'ları görüntüleyin</span>
+            </p>
+        </div>
+        <div>
+            @if (User.IsInRole(AppRoles.Chair) || User.IsInRole(AppRoles.Author))
+            {
+                <a asp-action="Create"
+                   asp-route-conferenceId="@conference.Id"
+                   class="btn btn-modern btn-modern-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Yeni Track Ekle
+                </a>
+            }
+        </div>
+    </div>
 </div>
 
-    <div class="mb-4">
-        <a asp-action="Create"
-           asp-route-conferenceId="@conference.Id"
-           class="btn btn-modern btn-modern-primary">
-            <i class="bi bi-plus-circle"></i>
-            Create New Track
-        </a>
-        <a asp-controller="Conferences"
-           asp-action="Details"
-           asp-route-id="@conference.Id"
-           class="btn btn-modern btn-modern-secondary ms-2">
-            <i class="bi bi-arrow-left"></i>
-            Back to Conference
-        </a>
-    </div>
+<div class="mb-4">
+    <a asp-action="SelectConference" class="btn btn-modern btn-modern-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Konferans Seçimine Dön
+    </a>
+    <a asp-controller="Conferences"
+       asp-action="Details"
+       asp-route-id="@conference.Id"
+       class="btn btn-modern btn-modern-outline ms-2">
+        <i class="bi bi-globe2"></i>
+        Konferans Detayları
+    </a>
+</div>
 
+@if (Model != null && Model.Any())
+{
     <div class="modern-table">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Track Adı</th>
+                    <th>Açıklama</th>
+                    <th>Track Chair</th>
+                    <th>Submission Sayısı</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null && Model.Any())
+                @foreach (var item in Model)
                 {
-                    foreach (var item in Model)
-                    {
-                        <tr>
-                            <td><strong>@item.Name</strong></td>
-                            <td>@item.Description</td>
-                            <td>
-                                @if (item.IsActive)
+                    var submissionCount = item.Submissions?.Count ?? 0;
+                    <tr>
+                        <td>
+                            <strong>@item.Name</strong>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <span>@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="text-muted">
+                                <i class="bi bi-person"></i>
+                                Belirtilmemiş
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge-modern badge-modern-info">
+                                <i class="bi bi-file-earmark-text"></i>
+                                @submissionCount
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge-modern badge-modern-success">
+                                    <i class="bi bi-check-circle"></i>
+                                    Aktif
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge-modern badge-modern-secondary">
+                                    <i class="bi bi-x-circle"></i>
+                                    Pasif
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                @if (User.IsInRole(AppRoles.Chair) || User.IsInRole(AppRoles.Author))
                                 {
-                                    <span class="badge-modern badge-modern-success">
-                                        <i class="bi bi-check-circle"></i>
-                                        Active
-                                    </span>
+                                    <a asp-action="Edit" 
+                                       asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-outline-warning" 
+                                       title="Düzenle">
+                                        <i class="bi bi-pencil"></i>
+                                        Düzenle
+                                    </a>
+                                    <a asp-action="Delete" 
+                                       asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-outline-danger" 
+                                       title="Sil">
+                                        <i class="bi bi-trash"></i>
+                                        Sil
+                                    </a>
+                                }
+                                @if (submissionCount > 0)
+                                {
+                                    <a asp-controller="Submissions" 
+                                       asp-action="Index" 
+                                       asp-route-conferenceId="@conference.Id"
+                                       class="btn btn-sm btn-outline-info" 
+                                       title="Submissions">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        Submissions
+                                    </a>
                                 }
                                 else
                                 {
-                                    <span class="badge-modern badge-modern-secondary">
-                                        <i class="bi bi-x-circle"></i>
-                                        Inactive
+                                    <span class="btn btn-sm btn-outline-secondary disabled" title="Henüz submission yok">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        Submissions
                                     </span>
                                 }
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="4">
-                            <div class="empty-state">
-                                <i class="bi bi-inbox"></i>
-                                <h3>No Tracks</h3>
-                                <p>No tracks defined for this conference. Create your first track to get started.</p>
                             </div>
                         </td>
                     </tr>
@@ -94,3 +154,21 @@
             </tbody>
         </table>
     </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h3>Track Bulunamadı</h3>
+        <p>Bu konferans için henüz track tanımlanmamış. İlk track'inizi oluşturmak için yukarıdaki butonu kullanın.</p>
+        @if (User.IsInRole(AppRoles.Chair) || User.IsInRole(AppRoles.Author))
+        {
+            <a asp-action="Create"
+               asp-route-conferenceId="@conference.Id"
+               class="btn btn-modern btn-modern-primary mt-3">
+                <i class="bi bi-plus-circle"></i>
+                İlk Track'i Oluştur
+            </a>
+        }
+    </div>
+}

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cmt_proje.Core.Entities;
 using cmt_proje.Infrastructure.Data;
+using cmt_proje.Core.Constants;
+using cmt_proje.Models;
 
 namespace cmt_proje.Controllers
 {
@@ -19,10 +21,40 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
-        // /Tracks?conferenceId=1
+        /// <summary>
+        /// Track Yönetimi için Konferans Seçimi Sayfası
+        /// </summary>
+        public async Task<IActionResult> SelectConference()
+        {
+            var conferences = await _context.Conferences
+                .Include(c => c.CreatedByUser)
+                .Include(c => c.Tracks)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            var viewModel = conferences.Select(c => new ConferenceSelectionViewModel
+            {
+                Id = c.Id,
+                Name = c.Name ?? string.Empty,
+                Acronym = c.Acronym,
+                Description = c.Description,
+                StartDate = c.StartDate,
+                EndDate = c.EndDate,
+                IsActive = c.IsActive,
+                TrackCount = c.Tracks?.Count ?? 0,
+                CreatedByUserEmail = c.CreatedByUser?.Email
+            }).ToList();
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Konferans Track Listesi Sayfası
+        /// </summary>
         public async Task<IActionResult> Index(int conferenceId)
         {
             var conference = await _context.Conferences
+                .Include(c => c.CreatedByUser)
                 .FirstOrDefaultAsync(c => c.Id == conferenceId);
 
             if (conference == null)
@@ -32,12 +64,15 @@ namespace cmt_proje.Controllers
 
             var tracks = await _context.Tracks
                 .Where(t => t.ConferenceId == conferenceId)
+                .Include(t => t.Submissions)
                 .ToListAsync();
 
             return View(tracks);
         }
 
         // GET: /Tracks/Create?conferenceId=1
+        // Yetki: Chair + Author
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> Create(int conferenceId)
         {
             var conference = await _context.Conferences.FindAsync(conferenceId);
@@ -56,8 +91,10 @@ namespace cmt_proje.Controllers
         }
 
         // POST: /Tracks/Create
+        // Yetki: Chair + Author
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> Create(Track track)
         {
             var conference = await _context.Conferences.FindAsync(track.ConferenceId);
@@ -79,6 +116,8 @@ namespace cmt_proje.Controllers
         }
 
         // GET: /Tracks/Edit/5
+        // Yetki: Chair + Author
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> Edit(int id)
         {
             var track = await _context.Tracks
@@ -94,8 +133,10 @@ namespace cmt_proje.Controllers
         }
 
         // POST: /Tracks/Edit/5
+        // Yetki: Chair + Author
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> Edit(int id, Track track)
         {
             if (id != track.Id)
@@ -118,6 +159,8 @@ namespace cmt_proje.Controllers
         }
 
         // GET: /Tracks/Delete/5
+        // Yetki: Chair + Author
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> Delete(int id)
         {
             var track = await _context.Tracks
@@ -133,8 +176,10 @@ namespace cmt_proje.Controllers
         }
 
         // POST: /Tracks/Delete/5
+        // Yetki: Chair + Author
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var track = await _context.Tracks.FindAsync(id);

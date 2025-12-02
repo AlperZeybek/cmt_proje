@@ -21,8 +21,32 @@
     <dd class="col-sm-10">@Model.Track?.Name</dd>
 </dl>
 
-<form asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-secondary">Cancel</a>
-</form>
+@{
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var isChair = User.IsInRole(AppRoles.Chair);
+    var canDelete = isChair || Model.SubmittedByUserId == userId;
+}
+
+@if (!canDelete)
+{
+    <div class="alert alert-danger">
+        <h4>Access Denied</h4>
+        <p>You don't have permission to delete this submission.</p>
+    </div>
+    <a asp-action="My" class="btn btn-secondary">Back to My Submissions</a>
+}
+else
+{
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        @if (isChair)
+        {
+            <a asp-action="Index" asp-route-conferenceId="@Model.ConferenceId" class="btn btn-secondary">Cancel</a>
+        }
+        else
+        {
+            <a asp-action="My" class="btn btn-secondary">Cancel</a>
+        }
+    </form>
+}

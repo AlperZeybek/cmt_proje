@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using cmt_proje.Core.Constants;
 
 namespace cmt_proje.Controllers
 {
@@ -28,7 +29,9 @@ namespace cmt_proje.Controllers
 
         // =====================================================================
         //  TÜM SUBMISSION'LAR (CHAIR İÇİN)  /Submissions?conferenceId=1
+        // Yetki: Chair
         // =====================================================================
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Index(int conferenceId)
         {
             var conference = await _context.Conferences.FindAsync(conferenceId);
@@ -66,6 +69,21 @@ namespace cmt_proje.Controllers
                 .ToListAsync();
 
             return View(submissions);
+        }
+
+        // =====================================================================
+        //  SUBMISSION İÇİN KONFERANS SEÇİMİ  /Submissions/SelectConference
+        // =====================================================================
+        public async Task<IActionResult> SelectConference()
+        {
+            var conferences = await _context.Conferences
+                .Include(c => c.CreatedByUser)
+                .Include(c => c.Tracks)
+                .Where(c => c.IsActive && c.Tracks != null && c.Tracks.Any(t => t.IsActive))
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            return View(conferences);
         }
 
         // =====================================================================
@@ -153,11 +171,21 @@ namespace cmt_proje.Controllers
             _context.Submissions.Add(submission);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new { conferenceId = model.ConferenceId });
+            // Chair ise Index'e, Author ise My'ye yönlendir
+            var isChair = User.IsInRole(AppRoles.Chair);
+            if (isChair)
+            {
+                return RedirectToAction(nameof(Index), new { conferenceId = model.ConferenceId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(My));
+            }
         }
 
         // =====================================================================
         //  DETAY
+        // Yetki: Chair (tümü) + Author (sadece kendi)
         // =====================================================================
         public async Task<IActionResult> Details(int id)
         {
@@ -172,17 +200,36 @@ namespace cmt_proje.Controllers
             if (submission == null)
                 return NotFound();
 
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+
+            // Author sadece kendi submission'ını görebilir
+            if (!isChair && submission.SubmittedByUserId != userId)
+            {
+                return Forbid();
+            }
+
             return View(submission);
         }
 
         // =====================================================================
         //  PDF DOWNLOAD
+        // Yetki: Chair (tümü) + Author (sadece kendi)
         // =====================================================================
         public async Task<IActionResult> Download(int id)
         {
             var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.Id == id);
             if (submission == null || string.IsNullOrEmpty(submission.PdfFilePath))
                 return NotFound();
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+
+            // Author sadece kendi PDF'ini indirebilir
+            if (!isChair && submission.SubmittedByUserId != userId)
+            {
+                return Forbid();
+            }
 
             var fullPath = Path.Combine(_env.WebRootPath, submission.PdfFilePath.TrimStart('/', '\\'));
             if (!System.IO.File.Exists(fullPath))
@@ -194,6 +241,7 @@ namespace cmt_proje.Controllers
 
         // =====================================================================
         //  DELETE GET
+        // Yetki: Chair (tümü) + Author (sadece kendi)
         // =====================================================================
         public async Task<IActionResult> Delete(int id)
         {
@@ -205,11 +253,21 @@ namespace cmt_proje.Controllers
             if (submission == null)
                 return NotFound();
 
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+
+            // Author sadece kendi submission'ını silebilir
+            if (!isChair && submission.SubmittedByUserId != userId)
+            {
+                return Forbid();
+            }
+
             return View(submission);
         }
 
         // =====================================================================
         //  DELETE POST
+        // Yetki: Chair (tümü) + Author (sadece kendi)
         // =====================================================================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -218,6 +276,15 @@ namespace cmt_proje.Controllers
             var submission = await _context.Submissions.FindAsync(id);
             if (submission == null)
                 return NotFound();
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+
+            // Author sadece kendi submission'ını silebilir
+            if (!isChair && submission.SubmittedByUserId != userId)
+            {
+                return Forbid();
+            }
 
             var conferenceId = submission.ConferenceId;
 
@@ -233,7 +300,15 @@ namespace cmt_proje.Controllers
             _context.Submissions.Remove(submission);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new { conferenceId });
+            // Chair ise Index'e, Author ise My'ye yönlendir
+            if (isChair)
+            {
+                return RedirectToAction(nameof(Index), new { conferenceId });
+            }
+            else
+            {
+                return RedirectToAction(nameof(My));
+            }
         }
     }
 }

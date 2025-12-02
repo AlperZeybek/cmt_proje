@@ -1,0 +1,196 @@
+@model IEnumerable<cmt_proje.Core.Entities.Conference>
+
+@{
+    ViewData["Title"] = "Select Conference for Submission";
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-file-earmark-plus"></i>
+        Select Conference for Submission
+    </h1>
+    <p class="page-subtitle">
+        Choose a conference to submit your paper
+    </p>
+</div>
+
+<div class="mb-4">
+    <a asp-action="My" class="btn btn-modern btn-modern-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Back to My Submissions
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var conference in Model)
+        {
+            var trackCount = conference.Tracks?.Count(t => t.IsActive) ?? 0;
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="card border-0 h-100 conference-selection-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="conference-icon-wrapper">
+                                <i class="bi bi-globe2"></i>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <h5 class="conference-card-title mb-1">
+                                    @conference.Name
+                                </h5>
+                                @if (!string.IsNullOrEmpty(conference.Acronym))
+                                {
+                                    <span class="badge-modern badge-modern-info">@conference.Acronym</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="conference-card-info mb-3">
+                            <div class="info-item">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                <span>@conference.StartDate.ToString("dd.MM.yyyy") - @conference.EndDate.ToString("dd.MM.yyyy")</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-clock me-2"></i>
+                                <span>Deadline: @conference.SubmissionDeadline.ToString("dd.MM.yyyy")</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-list-task me-2"></i>
+                                <span><strong>@trackCount</strong> Active Track</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(conference.Description))
+                        {
+                            <p class="conference-card-description">
+                                @(conference.Description.Length > 150 ? conference.Description.Substring(0, 150) + "..." : conference.Description)
+                            </p>
+                        }
+
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            <div>
+                                @if (conference.IsActive)
+                                {
+                                    <span class="badge-modern badge-modern-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-modern badge-modern-secondary">
+                                        <i class="bi bi-x-circle"></i>
+                                        Inactive
+                                    </span>
+                                }
+                            </div>
+                            <a asp-action="Create" 
+                               asp-route-conferenceId="@conference.Id" 
+                               class="btn btn-modern btn-modern-primary">
+                                Submit Paper
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h3>No Active Conferences</h3>
+        <p>No active conferences with tracks available for submission. Please check back later.</p>
+        <a asp-controller="Conferences" asp-action="Index" class="btn btn-modern btn-modern-primary mt-3">
+            <i class="bi bi-globe2"></i>
+            View All Conferences
+        </a>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .conference-selection-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+
+        .conference-selection-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .conference-selection-card .card-body {
+            padding: 1.75rem;
+        }
+
+        .conference-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .conference-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .conference-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9375rem;
+            color: #6B7280;
+        }
+
+        .info-item i {
+            color: #9CA3AF;
+            width: 20px;
+        }
+
+        .conference-card-description {
+            font-size: 0.875rem;
+            color: #6B7280;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        @@media (max-width: 767.98px) {
+            .conference-selection-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .conference-icon-wrapper {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .conference-card-title {
+                font-size: 1.125rem;
+            }
+        }
+    </style>
+}
+

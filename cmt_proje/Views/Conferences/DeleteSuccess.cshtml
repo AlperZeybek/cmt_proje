@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Konferans Silindi";
+    var conferenceName = ViewBag.ConferenceName?.ToString() ?? "Konferans";
+}
+
+<div class="page-header">
+    <h1 class="page-title text-success">
+        <i class="bi bi-check-circle-fill"></i>
+        Konferans Başarıyla Silindi
+    </h1>
+</div>
+
+<div class="card-modern mt-4">
+    <div class="card-modern-body text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        </div>
+        
+        <h3 class="mb-3">Konferans Silindi</h3>
+        
+        <p class="text-muted mb-4">
+            <strong>@conferenceName</strong> konferansı başarıyla silindi.
+        </p>
+        
+        <div class="mb-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yönlendiriliyor...</span>
+            </div>
+        </div>
+        
+        <p class="text-muted">
+            Dashboard sayfasına yönlendiriliyorsunuz...
+        </p>
+        
+        <div class="mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-modern btn-modern-primary">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard'a Git
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 5 saniye sonra Dashboard'a yönlendir
+        setTimeout(function() {
+            window.location.href = '@Url.Action("Index", "Home")';
+        }, 5000);
+        
+        // Geri sayım gösterimi (opsiyonel)
+        let countdown = 5;
+        const countdownElement = document.createElement('p');
+        countdownElement.className = 'text-muted mt-2';
+        countdownElement.id = 'countdown';
+        document.querySelector('.card-modern-body').appendChild(countdownElement);
+        
+        const countdownInterval = setInterval(function() {
+            countdown--;
+            if (countdown > 0) {
+                countdownElement.textContent = countdown + ' saniye sonra yönlendirileceksiniz...';
+            } else {
+                clearInterval(countdownInterval);
+                countdownElement.textContent = 'Yönlendiriliyor...';
+            }
+        }, 1000);
+    </script>
+}
+

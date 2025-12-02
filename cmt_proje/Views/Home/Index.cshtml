@@ -67,32 +67,35 @@
             </a>
         </div>
 
-        <!-- Review Assignments -->
-        <div class="col-xl-4 col-lg-6 col-md-6">
-            <a asp-controller="ReviewAssignments" asp-action="MyAssignments" class="text-decoration-none dashboard-card-link">
-                <div class="card border-0 h-100 dashboard-card-modern">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="dashboard-icon-wrapper dashboard-icon-success">
-                                <i class="bi bi-check2-square"></i>
+        @if (User.IsInRole(AppRoles.Chair))
+        {
+            <!-- Review Assignments -->
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <a asp-controller="Reviews" asp-action="MyAssignments" class="text-decoration-none dashboard-card-link">
+                    <div class="card border-0 h-100 dashboard-card-modern">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="dashboard-icon-wrapper dashboard-icon-success">
+                                    <i class="bi bi-check2-square"></i>
+                                </div>
+                            </div>
+                            <h5 class="dashboard-card-title-modern mb-2">My Reviews</h5>
+                            <p class="dashboard-card-description">
+                                See which papers are assigned to you and submit your reviews.
+                            </p>
+                            <div class="dashboard-card-action">
+                                <span class="dashboard-card-link-text">Review papers</span>
+                                <i class="bi bi-arrow-right ms-1"></i>
                             </div>
                         </div>
-                        <h5 class="dashboard-card-title-modern mb-2">Review Assignments</h5>
-                        <p class="dashboard-card-description">
-                            See which papers are assigned to you and submit your reviews.
-                        </p>
-                        <div class="dashboard-card-action">
-                            <span class="dashboard-card-link-text">Review papers</span>
-                            <i class="bi bi-arrow-right ms-1"></i>
-                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
         <!-- Tracks (konferans seçerek yönet) -->
         <div class="col-xl-4 col-lg-6 col-md-6">
-            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
+            <a asp-controller="Home" asp-action="GoToTracks" class="text-decoration-none dashboard-card-link">
                 <div class="card border-0 h-100 dashboard-card-modern">
                     <div class="card-body">
                         <div class="d-flex align-items-start mb-3">
@@ -113,28 +116,31 @@
             </a>
         </div>
 
-        <!-- Decisions (konferans seçerek yönet) -->
-        <div class="col-xl-4 col-lg-6 col-md-6">
-            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
-                <div class="card border-0 h-100 dashboard-card-modern">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="dashboard-icon-wrapper dashboard-icon-danger">
-                                <i class="bi bi-clipboard-check"></i>
+        @if (User.IsInRole(AppRoles.Chair))
+        {
+            <!-- Decisions (sadece Chair için) -->
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <a asp-controller="Home" asp-action="GoToDecisions" class="text-decoration-none dashboard-card-link">
+                    <div class="card border-0 h-100 dashboard-card-modern">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="dashboard-icon-wrapper dashboard-icon-danger">
+                                    <i class="bi bi-clipboard-check"></i>
+                                </div>
+                            </div>
+                            <h5 class="dashboard-card-title-modern mb-2">Decisions</h5>
+                            <p class="dashboard-card-description">
+                                Finalize accept / reject decisions based on reviews. Pick a conference first.
+                            </p>
+                            <div class="dashboard-card-action">
+                                <span class="dashboard-card-link-text">Manage decisions</span>
+                                <i class="bi bi-arrow-right ms-1"></i>
                             </div>
                         </div>
-                        <h5 class="dashboard-card-title-modern mb-2">Decisions</h5>
-                        <p class="dashboard-card-description">
-                            Finalize accept / reject decisions based on reviews. Pick a conference first.
-                        </p>
-                        <div class="dashboard-card-action">
-                            <span class="dashboard-card-link-text">Manage decisions</span>
-                            <i class="bi bi-arrow-right ms-1"></i>
-                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
         <!-- Profile -->
         <div class="col-xl-4 col-lg-6 col-md-6">

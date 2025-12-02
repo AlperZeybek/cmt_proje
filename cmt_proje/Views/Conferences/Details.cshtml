@@ -97,26 +97,29 @@
                     Manage Tracks
                 </a>
 
-                <a asp-controller="Submissions"
-                   asp-action="Index"
-                   asp-route-conferenceId="@Model.Id"
-                   class="btn btn-modern btn-modern-outline">
-                    <i class="bi bi-file-earmark-text"></i>
-                    View Submissions
-                </a>
+                @if (User.IsInRole(AppRoles.Chair))
+                {
+                    <a asp-controller="Submissions"
+                       asp-action="Index"
+                       asp-route-conferenceId="@Model.Id"
+                       class="btn btn-modern btn-modern-outline">
+                        <i class="bi bi-file-earmark-text"></i>
+                        View Submissions
+                    </a>
 
-                <a asp-controller="ReviewAssignments"
-                   asp-action="Index"
-                   asp-route-conferenceId="@Model.Id"
-                   class="btn btn-modern btn-modern-outline">
-                    <i class="bi bi-check2-square"></i>
-                    Manage Review Assignments
-                </a>
+                    <a asp-controller="ReviewAssignments"
+                       asp-action="Index"
+                       asp-route-conferenceId="@Model.Id"
+                       class="btn btn-modern btn-modern-outline">
+                        <i class="bi bi-check2-square"></i>
+                        Manage Review Assignments
+                    </a>
 
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
-                    <i class="bi bi-pencil"></i>
-                    Edit Conference
-                </a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
+                        <i class="bi bi-pencil"></i>
+                        Edit Conference
+                    </a>
+                }
             </div>
         </div>
     </div>
