@@ -1,0 +1,80 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-circle"></i>
+                    Profile
+                </h4>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                {
+                    var statusMessageClass = Model.StatusMessage.StartsWith("Error") ? "danger" : "success";
+                    <div class="alert alert-@(statusMessageClass) alert-dismissible fade show" role="alert">
+                        @Model.StatusMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <form id="profile-form" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input value="@Model.Email" class="form-control" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.FullName" class="form-label">Full Name</label>
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" placeholder="John Doe" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Affiliation" class="form-label">Affiliation</label>
+                        <input asp-for="Input.Affiliation" class="form-control" autocomplete="organization" placeholder="University Name" />
+                        <span asp-validation-for="Input.Affiliation" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Faculty" class="form-label">Faculty</label>
+                        <input asp-for="Input.Faculty" class="form-control" autocomplete="organization" placeholder="Faculty Name" />
+                        <span asp-validation-for="Input.Faculty" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Department" class="form-label">Department</label>
+                        <input asp-for="Input.Department" class="form-control" autocomplete="organization" placeholder="Department Name" />
+                        <span asp-validation-for="Input.Department" class="text-danger"></span>
+                    </div>
+
+                    <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">
+                        <i class="bi bi-check-circle"></i>
+                        Save
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

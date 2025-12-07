@@ -18,31 +18,43 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
                     
                     <div class="mb-3">
-                        <label asp-for="Input.Email" class="form-label">Email</label>
+                        <label asp-for="Input.Email" class="form-label">Email <span class="text-danger">*</span></label>
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.FullName" class="form-label">Full Name</label>
-                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" placeholder="John Doe" />
+                        <label asp-for="Input.FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" aria-required="true" placeholder="John Doe" />
                         <span asp-validation-for="Input.FullName" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.Affiliation" class="form-label">Affiliation</label>
-                        <input asp-for="Input.Affiliation" class="form-control" autocomplete="organization" placeholder="University Name" />
+                        <label asp-for="Input.Affiliation" class="form-label">Affiliation <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Affiliation" class="form-control" autocomplete="organization" aria-required="true" placeholder="University Name" />
                         <span asp-validation-for="Input.Affiliation" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <label asp-for="Input.Faculty" class="form-label">Faculty <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Faculty" class="form-control" autocomplete="organization" aria-required="true" placeholder="Faculty Name" />
+                        <span asp-validation-for="Input.Faculty" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Department" class="form-label">Department <span class="text-danger">*</span></label>
+                        <input asp-for="Input.Department" class="form-control" autocomplete="organization" aria-required="true" placeholder="Department Name" />
+                        <span asp-validation-for="Input.Department" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label">Password <span class="text-danger">*</span></label>
                         <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
                         <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm password" />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>

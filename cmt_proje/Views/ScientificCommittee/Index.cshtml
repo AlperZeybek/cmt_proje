@@ -1,0 +1,127 @@
+@model IEnumerable<cmt_proje.Core.Entities.ScientificCommitteeMember>
+@using System
+
+@{
+    ViewData["Title"] = "Scientific Committee";
+    var conferenceName = ViewBag.ConferenceName as string ?? "Conference";
+    var conferenceYear = ViewBag.ConferenceYear as int? ?? DateTime.Now.Year;
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-people-fill"></i>
+        Scientific Committee
+    </h1>
+    <p class="page-subtitle">@conferenceName – @conferenceYear</p>
+</div>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Scientific Committee</li>
+    </ol>
+</nav>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var member in Model)
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card h-100 shadow-sm committee-member-card">
+                    <div class="card-body text-center">
+                        <!-- Photo -->
+                        <div class="member-photo-wrapper mb-3">
+                            @if (!string.IsNullOrEmpty(member.PhotoUrl))
+                            {
+                                <img src="@member.PhotoUrl" alt="@member.FullName" class="member-photo" />
+                            }
+                            else
+                            {
+                                <div class="member-photo-placeholder">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Name (Bold) -->
+                        <h5 class="card-title fw-bold mb-2">@member.FullName</h5>
+
+                        <!-- Affiliation + Country (Small font) -->
+                        <p class="text-muted small mb-3">
+                            @member.Affiliation<br />
+                            <span class="text-muted">@member.Country</span>
+                        </p>
+
+                        <!-- View Profile Button -->
+                        <a asp-action="Details" asp-route-id="@member.Id" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-person-badge me-1"></i>
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h3>No Committee Members</h3>
+        <p>Bilim Kurulu üyeleri henüz eklenmemiştir.</p>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .committee-member-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .committee-member-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .member-photo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .member-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e9ecef;
+        }
+
+        .member-photo-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .committee-member-card .card-title {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .committee-member-card .btn {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+    </style>
+}
+

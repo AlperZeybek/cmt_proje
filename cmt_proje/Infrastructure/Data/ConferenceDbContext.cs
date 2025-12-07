@@ -18,6 +18,8 @@ namespace cmt_proje.Infrastructure.Data
         public DbSet<ReviewAssignment> ReviewAssignments { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Decision> Decisions { get; set; }
+        public DbSet<ScientificCommitteeMember> ScientificCommitteeMembers { get; set; }
+        public DbSet<AboutContent> AboutContents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

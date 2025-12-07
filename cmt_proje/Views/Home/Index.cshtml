@@ -140,6 +140,52 @@
                     </div>
                 </a>
             </div>
+
+            <!-- User Management (sadece Chair için) -->
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <a asp-controller="Admin" asp-action="Users" class="text-decoration-none dashboard-card-link">
+                    <div class="card border-0 h-100 dashboard-card-modern">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="dashboard-icon-wrapper" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #ffffff;">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                            </div>
+                            <h5 class="dashboard-card-title-modern mb-2">User Management</h5>
+                            <p class="dashboard-card-description">
+                                View all registered users and export their information to Excel.
+                            </p>
+                            <div class="dashboard-card-action">
+                                <span class="dashboard-card-link-text">Manage users</span>
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Scientific Committee Management (sadece Chair için) -->
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <a asp-controller="ScientificCommittee" asp-action="Admin" class="text-decoration-none dashboard-card-link">
+                    <div class="card border-0 h-100 dashboard-card-modern">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="dashboard-icon-wrapper" style="background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); color: #ffffff;">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+                            </div>
+                            <h5 class="dashboard-card-title-modern mb-2">Scientific Committee</h5>
+                            <p class="dashboard-card-description">
+                                Manage scientific committee members and their profiles.
+                            </p>
+                            <div class="dashboard-card-action">
+                                <span class="dashboard-card-link-text">Manage committee</span>
+                                <i class="bi bi-arrow-right ms-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         }
 
         <!-- Profile -->

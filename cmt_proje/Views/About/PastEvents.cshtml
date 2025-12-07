@@ -1,0 +1,76 @@
+@model cmt_proje.Core.Entities.AboutContent
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-calendar-event"></i>
+        @Model.Title
+    </h1>
+</div>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a href="#" onclick="return false;">About</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="text-center mb-4">
+                        <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" style="max-height: 400px;" onerror="this.style.display='none'" />
+                    </div>
+                }
+                <div class="content-area">
+                    @Html.Raw(Model.Content)
+                </div>
+                @if (!string.IsNullOrEmpty(Model.LinkUrl) && !string.IsNullOrEmpty(Model.LinkText))
+                {
+                    <div class="mt-4 text-center">
+                        <a href="@Model.LinkUrl" target="_blank" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>
+                            @Model.LinkText
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .content-area {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .content-area h1,
+        .content-area h2,
+        .content-area h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .content-area p {
+            margin-bottom: 1rem;
+        }
+
+        .content-area ul,
+        .content-area ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+    </style>
+}
+

@@ -60,16 +60,27 @@ namespace cmt_proje.Areas.Identity.Pages.Account
             [Display(Name = "Password")]
             public string Password { get; set; } = string.Empty;
 
+            [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; } = string.Empty;
 
+            [Required]
             [Display(Name = "Full Name")]
-            public string? FullName { get; set; }
+            public string FullName { get; set; } = string.Empty;
 
+            [Required]
             [Display(Name = "Affiliation")]
-            public string? Affiliation { get; set; }
+            public string Affiliation { get; set; } = string.Empty;
+
+            [Required]
+            [Display(Name = "Department")]
+            public string Department { get; set; } = string.Empty;
+
+            [Required]
+            [Display(Name = "Faculty")]
+            public string Faculty { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync(string? returnUrl = null)
@@ -90,15 +101,10 @@ namespace cmt_proje.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 
-                if (!string.IsNullOrEmpty(Input.FullName))
-                {
-                    user.FullName = Input.FullName;
-                }
-                
-                if (!string.IsNullOrEmpty(Input.Affiliation))
-                {
-                    user.Affiliation = Input.Affiliation;
-                }
+                user.FullName = Input.FullName;
+                user.Affiliation = Input.Affiliation;
+                user.Department = Input.Department;
+                user.Faculty = Input.Faculty;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

@@ -1,0 +1,59 @@
+@model IEnumerable<cmt_proje.Models.UserListViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-people"></i>
+        User Management
+    </h1>
+    <p class="page-subtitle">View and manage all registered users</p>
+</div>
+
+<div class="mb-4">
+    <a asp-action="ExportUsersToExcel" class="btn btn-modern" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #ffffff; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);">
+        <i class="bi bi-file-earmark-excel-fill" style="font-size: 1.1rem;"></i>
+        <span style="color: #ffffff; font-weight: 600;">Export to Excel</span>
+    </a>
+</div>
+
+<div class="modern-table">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Affiliation / University Name</th>
+                <th>Faculty</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var user in Model)
+                {
+                    <tr>
+                        <td><strong>@user.FullName</strong></td>
+                        <td>@user.Affiliation</td>
+                        <td>@user.Faculty</td>
+                        <td>@user.Department</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <h3>No Users Found</h3>
+                            <p>There are no registered users in the system.</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

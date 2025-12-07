@@ -1,0 +1,100 @@
+@model cmt_proje.Core.Entities.AboutContent
+
+@{
+    ViewData["Title"] = "Edit About Content - " + Model.Title;
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-pencil-square"></i>
+        Edit: @Model.Title
+    </h1>
+    <p class="page-subtitle">Update the content for this about page</p>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Edit" asp-controller="AboutAdmin" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="PageKey" />
+                    <input type="hidden" asp-for="CreatedAt" />
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="PageKey" class="form-label">Page Key</label>
+                        <input asp-for="PageKey" class="form-control" readonly />
+                        <small class="form-text text-muted">This field cannot be changed.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input asp-for="Title" class="form-control" placeholder="Page title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label">Content <span class="text-danger">*</span></label>
+                        <textarea asp-for="Content" class="form-control" rows="15" placeholder="Enter HTML or plain text content here..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                        <small class="form-text text-muted">You can use HTML tags for formatting. For example: &lt;p&gt;Paragraph&lt;/p&gt;, &lt;h2&gt;Heading&lt;/h2&gt;, &lt;ul&gt;&lt;li&gt;List item&lt;/li&gt;&lt;/ul&gt;</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                        <input asp-for="ImageUrl" class="form-control" type="url" placeholder="https://example.com/image.jpg" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <small class="form-text text-muted">Enter a URL to an image that will be displayed on this page.</small>
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mt-2">
+                                <img src="@Model.ImageUrl" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onerror="this.style.display='none'" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="LinkUrl" class="form-label">Link URL</label>
+                        <input asp-for="LinkUrl" class="form-control" type="url" placeholder="https://example.com" />
+                        <span asp-validation-for="LinkUrl" class="text-danger"></span>
+                        <small class="form-text text-muted">Enter a URL for a link that will be displayed on this page.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="LinkText" class="form-label">Link Text</label>
+                        <input asp-for="LinkText" class="form-control" placeholder="Click here to learn more" />
+                        <span asp-validation-for="LinkText" class="text-danger"></span>
+                        <small class="form-text text-muted">Enter the text that will be displayed for the link (e.g., "Learn More", "Visit Website").</small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Save Changes
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

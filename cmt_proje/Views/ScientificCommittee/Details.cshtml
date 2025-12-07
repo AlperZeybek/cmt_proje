@@ -1,0 +1,98 @@
+@model cmt_proje.Core.Entities.ScientificCommitteeMember
+
+@{
+    ViewData["Title"] = Model.FullName + " - Profile";
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-person-badge"></i>
+        @Model.FullName
+    </h1>
+    <p class="page-subtitle">Scientific Committee Member Profile</p>
+</div>
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Scientific Committee</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.FullName</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                        {
+                            <img src="@Model.PhotoUrl" alt="@Model.FullName" class="img-fluid rounded-circle" style="max-width: 200px; border: 3px solid #e9ecef;" />
+                        }
+                        else
+                        {
+                            <div class="member-photo-placeholder-large mx-auto">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <h2 class="mb-3">@Model.FullName</h2>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-building me-1"></i>
+                            <strong>@Model.Affiliation</strong>
+                        </p>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            @Model.Country
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(Model.WebSiteUrl))
+                        {
+                            <p class="mb-3">
+                                <a href="@Model.WebSiteUrl" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-globe me-1"></i>
+                                    Visit Website
+                                </a>
+                            </p>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ShortBio))
+                        {
+                            <div class="mt-4">
+                                <h5>Biography</h5>
+                                <p class="text-muted">@Model.ShortBio</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Committee
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .member-photo-placeholder-large {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 6rem;
+        }
+    </style>
+}
+
