@@ -55,6 +55,11 @@ namespace cmt_proje.Areas.Identity.Pages.Account
             public string Email { get; set; } = string.Empty;
 
             [Required]
+            [Phone]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; } = string.Empty;
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -68,6 +73,7 @@ namespace cmt_proje.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Full Name")]
+            [RegularExpression(@"^\\s*\\S+(\\s+\\S+)+\\s*$", ErrorMessage = "Full name must contain at least two words.")]
             public string FullName { get; set; } = string.Empty;
 
             [Required]
@@ -81,6 +87,14 @@ namespace cmt_proje.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Faculty")]
             public string Faculty { get; set; } = string.Empty;
+
+            [Phone]
+            [Display(Name = "WhatsApp Number")]
+            public string? WhatsAppNumber { get; set; }
+
+            [EmailAddress]
+            [Display(Name = "Secondary Email")]
+            public string? SecondaryEmail { get; set; }
         }
 
         public async Task OnGetAsync(string? returnUrl = null)
@@ -105,6 +119,9 @@ namespace cmt_proje.Areas.Identity.Pages.Account
                 user.Affiliation = Input.Affiliation;
                 user.Department = Input.Department;
                 user.Faculty = Input.Faculty;
+                user.PhoneNumber = Input.PhoneNumber;
+                user.WhatsAppNumber = Input.WhatsAppNumber;
+                user.SecondaryEmail = Input.SecondaryEmail;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

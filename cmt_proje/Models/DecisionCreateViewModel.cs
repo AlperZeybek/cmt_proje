@@ -27,6 +27,7 @@ namespace cmt_proje.Models
         public string ConferenceName { get; set; } = string.Empty;
         public string AuthorEmail { get; set; } = string.Empty;
         public SubmissionStatus SubmissionStatus { get; set; }
+        public PresentationType PresentationType { get; set; }
 
         // Decision bilgileri
         public int? ExistingDecisionId { get; set; }   // null ise yeni karar, dolu ise edit

@@ -35,6 +35,10 @@ namespace cmt_proje.Controllers
                 .Select(u => new UserListViewModel
                 {
                     Id = u.Id,
+                    Email = u.Email ?? string.Empty,
+                    PhoneNumber = u.PhoneNumber ?? string.Empty,
+                    WhatsAppNumber = u.WhatsAppNumber ?? string.Empty,
+                    SecondaryEmail = u.SecondaryEmail ?? string.Empty,
                     FullName = u.FullName ?? string.Empty,
                     Affiliation = u.Affiliation ?? string.Empty,
                     Faculty = u.Faculty ?? string.Empty,
@@ -54,6 +58,10 @@ namespace cmt_proje.Controllers
                 .Select(u => new UserListViewModel
                 {
                     Id = u.Id,
+                    Email = u.Email ?? string.Empty,
+                    PhoneNumber = u.PhoneNumber ?? string.Empty,
+                    WhatsAppNumber = u.WhatsAppNumber ?? string.Empty,
+                    SecondaryEmail = u.SecondaryEmail ?? string.Empty,
                     FullName = u.FullName ?? string.Empty,
                     Affiliation = u.Affiliation ?? string.Empty,
                     Faculty = u.Faculty ?? string.Empty,
@@ -70,12 +78,17 @@ namespace cmt_proje.Controllers
 
                 // Başlık satırı (Satır 1)
                 worksheet.Cells[1, 1].Value = "Full Name";
-                worksheet.Cells[1, 2].Value = "Affiliation / University Name";
-                worksheet.Cells[1, 3].Value = "Faculty";
-                worksheet.Cells[1, 4].Value = "Department";
+                worksheet.Cells[1, 2].Value = "Email";
+                worksheet.Cells[1, 3].Value = "Phone Number";
+                worksheet.Cells[1, 4].Value = "WhatsApp Number";
+                worksheet.Cells[1, 5].Value = "Secondary Email";
+                worksheet.Cells[1, 6].Value = "Affiliation / University Name";
+                worksheet.Cells[1, 7].Value = "Faculty";
+                worksheet.Cells[1, 8].Value = "Department";
+                worksheet.Cells[1, 9].Value = "Status";
 
                 // Başlık stilini ayarla (yeşil arka plan)
-                using (var range = worksheet.Cells[1, 1, 1, 4])
+                using (var range = worksheet.Cells[1, 1, 1, 9])
                 {
                     range.Style.Font.Bold = true;
                     range.Style.Font.Color.SetColor(System.Drawing.Color.White);
@@ -92,19 +105,29 @@ namespace cmt_proje.Controllers
                     int row = i + 2; // İlk veri satırı 2
 
                     worksheet.Cells[row, 1].Value = user.FullName;
-                    worksheet.Cells[row, 2].Value = user.Affiliation;
-                    worksheet.Cells[row, 3].Value = user.Faculty;
-                    worksheet.Cells[row, 4].Value = user.Department;
+                    worksheet.Cells[row, 2].Value = user.Email;
+                    worksheet.Cells[row, 3].Value = user.PhoneNumber;
+                    worksheet.Cells[row, 4].Value = user.WhatsAppNumber;
+                    worksheet.Cells[row, 5].Value = user.SecondaryEmail;
+                    worksheet.Cells[row, 6].Value = user.Affiliation;
+                    worksheet.Cells[row, 7].Value = user.Faculty;
+                    worksheet.Cells[row, 8].Value = user.Department;
+                    worksheet.Cells[row, 9].Value = string.Empty; // Status to be filled by admin
 
                     // Hücre kenarlıkları
-                    worksheet.Cells[row, 1, row, 4].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[row, 1, row, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
                 }
 
                 // Sütun genişliklerini ayarla
                 worksheet.Column(1).Width = 25; // Full Name
-                worksheet.Column(2).Width = 35; // Affiliation
-                worksheet.Column(3).Width = 30; // Faculty
-                worksheet.Column(4).Width = 30; // Department
+                worksheet.Column(2).Width = 35; // Email
+                worksheet.Column(3).Width = 20; // Phone
+                worksheet.Column(4).Width = 20; // WhatsApp
+                worksheet.Column(5).Width = 35; // Secondary Email
+                worksheet.Column(6).Width = 35; // Affiliation
+                worksheet.Column(7).Width = 30; // Faculty
+                worksheet.Column(8).Width = 30; // Department
+                worksheet.Column(9).Width = 18; // Status
 
                 // Dosya adı
                 var fileName = $"Users_Export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";

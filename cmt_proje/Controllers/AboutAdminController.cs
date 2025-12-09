@@ -80,109 +80,78 @@ namespace cmt_proje.Controllers
         // POST: /AboutAdmin/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("Id,PageKey,Title,Content,ImageUrl,LinkUrl,LinkText,CreatedAt")] AboutContent content)
+        public async Task<IActionResult> Edit(int Id, string PageKey, string Title, string Content, string ImageUrl, string LinkUrl, string LinkText)
         {
-            if (string.IsNullOrEmpty(content?.PageKey))
+            if (string.IsNullOrEmpty(PageKey))
             {
+                TempData["ErrorMessage"] = "PageKey is required.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Remove readonly fields from ModelState validation
-            ModelState.Remove("PageKey");
-            ModelState.Remove("CreatedAt");
-            
-            // Remove URL validation errors for empty optional fields
-            if (string.IsNullOrWhiteSpace(content.ImageUrl))
+            try
             {
-                ModelState.Remove("ImageUrl");
-            }
-            if (string.IsNullOrWhiteSpace(content.LinkUrl))
-            {
-                ModelState.Remove("LinkUrl");
-            }
-            
-            if (ModelState.IsValid)
-            {
-                try
+                // Form'dan gelen TÜM değerleri direkt Request.Form'dan al
+                var titleValue = Request.Form["Title"].ToString().Trim();
+                var contentValue = Request.Form["Content"].ToString();
+                var imageUrlValue = Request.Form["ImageUrl"].ToString().Trim();
+                var linkUrlValue = Request.Form["LinkUrl"].ToString().Trim();
+                var linkTextValue = Request.Form["LinkText"].ToString().Trim();
+                
+                // Entity'yi TRACKED olarak bul - Bu çok önemli!
+                var existingContent = await _context.AboutContents
+                    .FirstOrDefaultAsync(a => a.PageKey == PageKey);
+
+                if (existingContent == null)
                 {
-                    AboutContent existingContent = null;
-                    
-                    // First try to find by Id if it's provided and valid
-                    if (content.Id > 0)
-                    {
-                        existingContent = await _context.AboutContents
-                            .FirstOrDefaultAsync(a => a.Id == content.Id);
-                    }
-                    
-                    // If not found by Id, try to find by PageKey
-                    if (existingContent == null)
-                    {
-                        existingContent = await _context.AboutContents
-                            .FirstOrDefaultAsync(a => a.PageKey == content.PageKey);
-                    }
-                    
-                    if (existingContent == null)
-                    {
-                        TempData["ErrorMessage"] = "About content not found.";
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    // Update all properties that can be changed
-                    existingContent.Title = content.Title ?? string.Empty;
-                    existingContent.Content = content.Content ?? string.Empty;
-                    existingContent.ImageUrl = string.IsNullOrWhiteSpace(content.ImageUrl) ? null : content.ImageUrl;
-                    existingContent.LinkUrl = string.IsNullOrWhiteSpace(content.LinkUrl) ? null : content.LinkUrl;
-                    existingContent.LinkText = string.IsNullOrWhiteSpace(content.LinkText) ? null : content.LinkText;
-                    existingContent.LastUpdated = DateTime.UtcNow;
-
-                    // Save changes - Entity Framework automatically tracks changes to tracked entities
-                    var savedCount = await _context.SaveChangesAsync();
-                    
-                    // Verify the save was successful
-                    if (savedCount == 0)
-                    {
-                        TempData["ErrorMessage"] = "No changes were saved. Please try again.";
-                        return RedirectToAction(nameof(Edit), new { pageKey = content.PageKey });
-                    }
-                    
-                    TempData["SuccessMessage"] = "About content has been updated successfully.";
+                    TempData["ErrorMessage"] = "About content not found.";
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AboutContentExists(content.Id))
-                    {
-                        TempData["ErrorMessage"] = "About content not found. It may have been deleted.";
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "An error occurred while updating the content.";
-                    return RedirectToAction(nameof(Edit), new { pageKey = content.PageKey });
-                }
-            }
 
-            // ModelState geçersizse, veriyi yeniden yükle ve View'a dön
-            var existingContentForView = await _context.AboutContents
-                .FirstOrDefaultAsync(a => a.PageKey == content.PageKey);
-            
-            if (existingContentForView != null)
-            {
-                // Mevcut değerleri koru, sadece gönderilen değerleri güncelle
-                existingContentForView.Title = content.Title;
-                existingContentForView.Content = content.Content;
-                existingContentForView.ImageUrl = content.ImageUrl;
-                existingContentForView.LinkUrl = content.LinkUrl;
-                existingContentForView.LinkText = content.LinkText;
-                return View(existingContentForView);
+                // Tracked entity'nin property'lerini direkt güncelle - Bu kesinlikle çalışır!
+                existingContent.Title = !string.IsNullOrEmpty(titleValue) ? titleValue : (Title ?? string.Empty);
+                existingContent.Content = !string.IsNullOrEmpty(contentValue) ? contentValue : string.Empty;
+                existingContent.ImageUrl = string.IsNullOrWhiteSpace(imageUrlValue) ? null : imageUrlValue;
+                existingContent.LinkUrl = string.IsNullOrWhiteSpace(linkUrlValue) ? null : linkUrlValue;
+                existingContent.LinkText = string.IsNullOrWhiteSpace(linkTextValue) ? null : linkTextValue;
+                existingContent.LastUpdated = DateTime.UtcNow;
+                
+                // Değişiklikleri kaydet - Tracked entity olduğu için otomatik algılanır
+                var savedCount = await _context.SaveChangesAsync();
+                
+                if (savedCount > 0)
+                {
+                    TempData["SuccessMessage"] = "About content has been updated successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "No changes were saved. Please try again.";
+                }
+                
+                return RedirectToAction(nameof(Index));
             }
-            
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AboutContentExists(Id))
+                {
+                    TempData["ErrorMessage"] = "About content not found. It may have been deleted.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Detaylı hata mesajı (debug için)
+                var errorDetails = $"An error occurred while updating the content: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorDetails += $" Inner: {ex.InnerException.Message}";
+                }
+                TempData["ErrorMessage"] = errorDetails;
+                return RedirectToAction(nameof(Edit), new { pageKey = PageKey });
+            }
         }
 
         private bool AboutContentExists(int id)

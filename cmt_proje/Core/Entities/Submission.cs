@@ -14,8 +14,11 @@ namespace cmt_proje.Core.Entities
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string PdfFilePath { get; set; }
+        public string? OriginalFileName { get; set; }
+        public string? SubmissionNumber { get; set; }
 
         public SubmissionStatus Status { get; set; } = SubmissionStatus.Submitted;
+        public PresentationType PresentationType { get; set; }
 
         public string SubmittedByUserId { get; set; }
         public ApplicationUser SubmittedByUser { get; set; }

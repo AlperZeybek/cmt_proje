@@ -50,6 +50,7 @@ namespace cmt_proje.Controllers
                 ConferenceName = submission.Conference.Name,
                 AuthorEmail = submission.SubmittedByUser?.Email ?? string.Empty,
                 SubmissionStatus = submission.Status,
+                PresentationType = submission.PresentationType,
                 ExistingDecisionId = decision?.Id,
                 DecisionStatus = decision?.DecisionStatus ?? default,
 
@@ -91,6 +92,7 @@ namespace cmt_proje.Controllers
 
                 if (submissionReload != null)
                 {
+                    model.PresentationType = submissionReload.PresentationType;
                     model.Reviews = submissionReload.ReviewAssignments
                         .Where(ra => ra.Review != null)
                         .Select(ra => new ReviewSummaryItem
@@ -133,6 +135,9 @@ namespace cmt_proje.Controllers
             decision.Note = model.Note ?? string.Empty;
             decision.DecidedAt = DateTime.Now;
             decision.DecidedByUserId = userId!;
+
+            // Presentation Type'ı güncelle
+            submission.PresentationType = model.PresentationType;
 
             // İsteğe bağlı: submission durumunu da güncelle
             if (model.DecisionStatus == DecisionStatus.Accepted)

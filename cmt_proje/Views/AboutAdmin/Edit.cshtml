@@ -53,7 +53,7 @@
 
                     <div class="mb-3">
                         <label asp-for="ImageUrl" class="form-label">Image URL</label>
-                        <input asp-for="ImageUrl" class="form-control" type="url" placeholder="https://example.com/image.jpg" />
+                        <input asp-for="ImageUrl" class="form-control" type="text" placeholder="https://example.com/image.jpg" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                         <small class="form-text text-muted">Enter a URL to an image that will be displayed on this page.</small>
                         @if (!string.IsNullOrEmpty(Model.ImageUrl))
@@ -66,7 +66,7 @@
 
                     <div class="mb-3">
                         <label asp-for="LinkUrl" class="form-label">Link URL</label>
-                        <input asp-for="LinkUrl" class="form-control" type="url" placeholder="https://example.com" />
+                        <input asp-for="LinkUrl" class="form-control" type="text" placeholder="https://example.com" />
                         <span asp-validation-for="LinkUrl" class="text-danger"></span>
                         <small class="form-text text-muted">Enter a URL for a link that will be displayed on this page.</small>
                     </div>

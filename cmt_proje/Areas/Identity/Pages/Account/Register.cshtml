@@ -18,15 +18,33 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
                     
                     <div class="mb-3">
+                        <label asp-for="Input.FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" aria-required="true" placeholder="John Doe" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
                         <label asp-for="Input.Email" class="form-label">Email <span class="text-danger">*</span></label>
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Input.FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
-                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" aria-required="true" placeholder="John Doe" />
-                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        <label asp-for="Input.PhoneNumber" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="+90 5xx xxx xx xx" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.WhatsAppNumber" class="form-label">WhatsApp Number</label>
+                        <input asp-for="Input.WhatsAppNumber" class="form-control" autocomplete="tel" aria-required="false" placeholder="+90 5xx xxx xx xx (optional)" />
+                        <span asp-validation-for="Input.WhatsAppNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.SecondaryEmail" class="form-label">Secondary Email</label>
+                        <input asp-for="Input.SecondaryEmail" class="form-control" autocomplete="email" aria-required="false" placeholder="backup@example.com (optional)" />
+                        <span asp-validation-for="Input.SecondaryEmail" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">

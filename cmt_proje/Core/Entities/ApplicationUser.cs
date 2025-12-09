@@ -10,6 +10,8 @@ namespace cmt_proje.Core.Entities
         public string? Affiliation { get; set; }
         public string? Department { get; set; }
         public string? Faculty { get; set; }
+        public string? WhatsAppNumber { get; set; }
+        public string? SecondaryEmail { get; set; }
 
         public ICollection<Conference>? ConferencesCreated { get; set; }
         public ICollection<Submission>? Submissions { get; set; }

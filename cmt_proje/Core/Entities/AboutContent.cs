@@ -16,11 +16,9 @@ namespace cmt_proje.Core.Entities
         public string Content { get; set; } = string.Empty; // HTML/metin içerik
 
         [StringLength(500)]
-        [Url]
         public string? ImageUrl { get; set; } // Resim URL'i
 
         [StringLength(500)]
-        [Url]
         public string? LinkUrl { get; set; } // Link URL'i
 
         [StringLength(200)]

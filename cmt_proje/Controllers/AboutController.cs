@@ -44,9 +44,11 @@ namespace cmt_proje.Controllers
         // GET: /About/AboutOrganizer
         public async Task<IActionResult> AboutOrganizer()
         {
+            // Veritabanından en güncel veriyi oku
             var content = await _context.AboutContents
                 .AsNoTracking()
                 .Where(a => a.PageKey == "AboutOrganizer")
+                .OrderByDescending(a => a.LastUpdated)
                 .FirstOrDefaultAsync();
 
             if (content == null)

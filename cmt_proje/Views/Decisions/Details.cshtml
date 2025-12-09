@@ -11,6 +11,7 @@
     <p><strong>Conference:</strong> @Model.ConferenceName</p>
     <p><strong>Track:</strong> @Model.TrackName</p>
     <p><strong>Author:</strong> @Model.AuthorEmail</p>
+    <p><strong>Presentation Type:</strong> @(Model.PresentationType == PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")</p>
     <p><strong>Submission status:</strong> @Model.SubmissionStatus</p>
 </div>
 
@@ -57,6 +58,16 @@ else
                 asp-items="Html.GetEnumSelectList<DecisionStatus>()">
         </select>
         <span asp-validation-for="DecisionStatus" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="PresentationType" class="form-label">Presentation Type</label>
+        <select asp-for="PresentationType"
+                class="form-control"
+                asp-items="Html.GetEnumSelectList<PresentationType>()">
+        </select>
+        <span asp-validation-for="PresentationType" class="text-danger"></span>
+        <small class="form-text text-muted">You can change the presentation type selected during submission.</small>
     </div>
 
     <div class="form-group mb-3">

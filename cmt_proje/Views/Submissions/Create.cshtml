@@ -53,12 +53,34 @@
 
             <div class="form-group-modern">
                 <label asp-for="PdfFile" class="form-label-modern">
-                    <i class="bi bi-file-pdf"></i>
-                    PDF File
+                    <i class="bi bi-file-word"></i>
+                    Word File
                 </label>
-                <input asp-for="PdfFile" type="file" class="form-control form-control-modern" accept=".pdf" />
-                <small class="text-muted">Please upload your paper as a PDF file</small>
+                <input asp-for="PdfFile" type="file" class="form-control form-control-modern" accept=".doc,.docx" aria-required="true" />
+                <small class="text-muted">Only Word files are accepted (.doc or .docx)</small>
                 <span asp-validation-for="PdfFile" class="text-danger"></span>
+            </div>
+
+            <div class="form-group-modern">
+                <label class="form-label-modern">
+                    <i class="bi bi-presentation"></i>
+                    Presentation Type
+                </label>
+                <div class="mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="PresentationType" value="@((int)cmt_proje.Core.Enums.PresentationType.Oral)" id="presentationTypeOral" required />
+                        <label class="form-check-label" for="presentationTypeOral">
+                            Oral Presentation
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="PresentationType" value="@((int)cmt_proje.Core.Enums.PresentationType.Poster)" id="presentationTypePoster" required />
+                        <label class="form-check-label" for="presentationTypePoster">
+                            Poster Presentation
+                        </label>
+                    </div>
+                </div>
+                <span asp-validation-for="PresentationType" class="text-danger"></span>
             </div>
 
             <div class="d-flex gap-2 mt-4">

@@ -132,18 +132,60 @@ namespace cmt_proje.Controllers
 
             if (model.PdfFile == null || model.PdfFile.Length == 0)
             {
-                ModelState.AddModelError(nameof(model.PdfFile), "Please upload a PDF file.");
+                ModelState.AddModelError(nameof(model.PdfFile), "Please upload a Word file (.doc or .docx).");
                 ViewBag.Conference = conference;
                 ViewBag.TrackList = new SelectList(conference.Tracks.Where(t => t.IsActive), "Id", "Name");
                 return View(model);
             }
 
-            // PDF KAYDET
+            // Word dosyası kontrolü
+            var allowedExtensions = new[] { ".doc", ".docx" };
+            var extension = Path.GetExtension(model.PdfFile.FileName).ToLowerInvariant();
+            if (!allowedExtensions.Contains(extension))
+            {
+                ModelState.AddModelError(nameof(model.PdfFile), "Please upload a Word file (.doc or .docx).");
+                ViewBag.Conference = conference;
+                ViewBag.TrackList = new SelectList(conference.Tracks.Where(t => t.IsActive), "Id", "Name");
+                return View(model);
+            }
+
+            // Orijinal dosya adını al (uzantı olmadan)
+            var originalFileNameWithoutExtension = Path.GetFileNameWithoutExtension(model.PdfFile.FileName);
+            var originalFileName = model.PdfFile.FileName;
+
+            // Bu konferans için son submission numarasını bul (sayısal olarak en büyük)
+            var submissions = await _context.Submissions
+                .Where(s => s.ConferenceId == model.ConferenceId && !string.IsNullOrEmpty(s.SubmissionNumber))
+                .Select(s => s.SubmissionNumber)
+                .ToListAsync();
+
+            // Yeni submission numarasını oluştur
+            string submissionNumber;
+            if (submissions == null || !submissions.Any())
+            {
+                submissionNumber = "001P";
+            }
+            else
+            {
+                // Tüm numaraları sayısal olarak parse et ve en büyüğünü bul
+                int maxNumber = 0;
+                foreach (var numStr in submissions)
+                {
+                    var numberStr = numStr?.Replace("P", "");
+                    if (int.TryParse(numberStr, out int num) && num > maxNumber)
+                    {
+                        maxNumber = num;
+                    }
+                }
+                var nextNumber = maxNumber + 1;
+                submissionNumber = $"{nextNumber:D3}P";
+            }
+
+            // Word dosyası kaydet - orijinal_ad_001P.doc formatında
             var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "submissions");
             Directory.CreateDirectory(uploadsRoot);
 
-            var extension = Path.GetExtension(model.PdfFile.FileName);
-            var fileName = $"{Guid.NewGuid():N}{extension}";
+            var fileName = $"{originalFileNameWithoutExtension}_{submissionNumber}{extension}";
             var filePath = Path.Combine(uploadsRoot, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -162,7 +204,10 @@ namespace cmt_proje.Controllers
                 Title = model.Title,
                 Abstract = model.Abstract,
                 PdfFilePath = relativePath,
+                OriginalFileName = originalFileName,
+                SubmissionNumber = submissionNumber,
                 Status = SubmissionStatus.Submitted,
+                PresentationType = model.PresentationType!.Value,
                 SubmittedByUserId = userId!,
                 SubmittedAt = DateTime.Now,
                 CreatedAt = DateTime.Now
@@ -235,8 +280,29 @@ namespace cmt_proje.Controllers
             if (!System.IO.File.Exists(fullPath))
                 return NotFound();
 
-            var fileName = Path.GetFileName(fullPath);
-            return PhysicalFile(fullPath, "application/pdf", fileName);
+            // Orijinal dosya adına Submission Number ekle
+            string downloadFileName;
+            if (!string.IsNullOrEmpty(submission.OriginalFileName) && !string.IsNullOrEmpty(submission.SubmissionNumber))
+            {
+                // Orijinal dosya adını al (uzantı olmadan)
+                var originalNameWithoutExtension = Path.GetFileNameWithoutExtension(submission.OriginalFileName);
+                var extension = Path.GetExtension(submission.OriginalFileName);
+                // Orijinal ad + "_" + Submission Number + uzantı
+                downloadFileName = $"{originalNameWithoutExtension}_{submission.SubmissionNumber}{extension}";
+            }
+            else if (!string.IsNullOrEmpty(submission.OriginalFileName))
+            {
+                downloadFileName = submission.OriginalFileName;
+            }
+            else
+            {
+                downloadFileName = Path.GetFileName(fullPath);
+            }
+
+            var contentType = downloadFileName.EndsWith(".docx", StringComparison.OrdinalIgnoreCase) 
+                ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+                : "application/msword";
+            return PhysicalFile(fullPath, contentType, downloadFileName);
         }
 
         // =====================================================================

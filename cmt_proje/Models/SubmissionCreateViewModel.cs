@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using cmt_proje.Core.Enums;
 
 namespace cmt_proje.Models
 {
@@ -22,7 +23,11 @@ namespace cmt_proje.Models
         public string Abstract { get; set; } = string.Empty;
 
         [Required]
-        [Display(Name = "PDF File")]
+        [Display(Name = "Word File")]
         public IFormFile PdfFile { get; set; } = default!;
+
+        [Required(ErrorMessage = "Please select a presentation type.")]
+        [Display(Name = "Presentation Type")]
+        public PresentationType? PresentationType { get; set; }
     }
 }

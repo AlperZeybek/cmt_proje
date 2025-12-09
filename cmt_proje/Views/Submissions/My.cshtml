@@ -26,9 +26,11 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th>Submission No</th>
                     <th>Conference</th>
                     <th>Title</th>
                     <th>Track</th>
+                    <th>Presentation Type</th>
                     <th>Status</th>
                     <th>Submitted At</th>
                     <th>Actions</th>
@@ -40,12 +42,14 @@
                     foreach (var item in Model)
                     {
                         <tr>
+                            <td><strong>@(item.SubmissionNumber ?? "-")</strong></td>
                             <td>
                                 <strong>@item.Conference?.Name</strong><br />
                                 <small class="text-muted">@item.Conference?.Acronym</small>
                             </td>
                             <td><strong>@item.Title</strong></td>
                             <td>@item.Track?.Name</td>
+                            <td>@(item.PresentationType == cmt_proje.Core.Enums.PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")</td>
                             <td>
                                 @switch (item.Status.ToString())
                                 {
@@ -106,7 +110,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="6">
+                        <td colspan="8">
                             <div class="empty-state">
                                 <i class="bi bi-inbox"></i>
                                 <h3>No Submissions</h3>

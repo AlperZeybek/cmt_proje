@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cmt_proje.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using cmt_proje.Infrastructure.Data;
 namespace cmt_proje.Migrations
 {
     [DbContext(typeof(ConferenceDbContext))]
-    partial class ConferenceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251209144356_AddContactFieldsToUser")]
+    partial class AddContactFieldsToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -514,21 +517,12 @@ namespace cmt_proje.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OriginalFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PdfFilePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PresentationType")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<string>("SubmissionNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("datetime2");

@@ -21,6 +21,11 @@
                 </h3>
 
                 <div class="details-item">
+                    <span class="details-label">Submission No</span>
+                    <div class="details-value"><strong>@(Model.SubmissionNumber ?? "-")</strong></div>
+                </div>
+
+                <div class="details-item">
                     <span class="details-label">Title</span>
                     <div class="details-value"><strong>@Model.Title</strong></div>
                 </div>
@@ -59,6 +64,20 @@
                                 Author
                             </span>
                             <div class="details-value">@Model.SubmittedByUser?.Email</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="details-item">
+                            <span class="details-label">
+                                <i class="bi bi-presentation"></i>
+                                Presentation Type
+                            </span>
+                            <div class="details-value">
+                                @(Model.PresentationType == cmt_proje.Core.Enums.PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")
+                            </div>
                         </div>
                     </div>
                 </div>

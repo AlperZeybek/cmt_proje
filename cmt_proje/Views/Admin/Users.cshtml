@@ -24,6 +24,10 @@
         <thead>
             <tr>
                 <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>WhatsApp Number</th>
+                <th>Secondary Email</th>
                 <th>Affiliation / University Name</th>
                 <th>Faculty</th>
                 <th>Department</th>
@@ -36,6 +40,10 @@
                 {
                     <tr>
                         <td><strong>@user.FullName</strong></td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.WhatsAppNumber</td>
+                        <td>@user.SecondaryEmail</td>
                         <td>@user.Affiliation</td>
                         <td>@user.Faculty</td>
                         <td>@user.Department</td>
@@ -45,7 +53,7 @@
             else
             {
                 <tr>
-                    <td colspan="4">
+                    <td colspan="8">
                         <div class="empty-state">
                             <i class="bi bi-inbox"></i>
                             <h3>No Users Found</h3>
