@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using cmt_proje.Core.Entities;
 using cmt_proje.Infrastructure.Data;
 using cmt_proje.Infrastructure.Identity; // <<< EKLEND�
+using cmt_proje.Services.Interfaces;
+using cmt_proje.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 

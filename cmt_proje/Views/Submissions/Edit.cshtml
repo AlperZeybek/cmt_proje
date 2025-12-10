@@ -1,0 +1,97 @@
+@model cmt_proje.Models.SubmissionEditViewModel
+@{
+    var conference = (cmt_proje.Core.Entities.Conference)ViewBag.Conference;
+    ViewData["Title"] = "Edit Submission";
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-pencil-square"></i>
+        Edit Submission
+    </h1>
+    <p class="page-subtitle">
+        Conference: <strong>@conference.Name</strong>
+        <span class="badge-modern badge-modern-info">@conference.Acronym</span>
+    </p>
+</div>
+
+<div class="modern-form">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ConferenceId" />
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="form-group-modern">
+            <label asp-for="TrackId" class="form-label-modern">
+                <i class="bi bi-list-task"></i>
+                Track
+            </label>
+            <select asp-for="TrackId" class="form-select form-select-modern" asp-items="ViewBag.TrackList">
+                <option value="">-- Select Track --</option>
+            </select>
+            <span asp-validation-for="TrackId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group-modern">
+            <label asp-for="Title" class="form-label-modern">
+                <i class="bi bi-type-h1"></i>
+                Paper Title
+            </label>
+            <input asp-for="Title" class="form-control form-control-modern" placeholder="Enter your paper title" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group-modern">
+            <label asp-for="Abstract" class="form-label-modern">
+                <i class="bi bi-file-text"></i>
+                Abstract
+            </label>
+            <textarea asp-for="Abstract" class="form-control form-control-modern" rows="5" placeholder="Enter paper abstract"></textarea>
+            <span asp-validation-for="Abstract" class="text-danger"></span>
+        </div>
+
+        <div class="form-group-modern">
+            <label class="form-label-modern">
+                <i class="bi bi-presentation"></i>
+                Presentation Type
+            </label>
+            <div class="mt-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="PresentationType" value="@((int)cmt_proje.Core.Enums.PresentationType.Oral)" id="presentationTypeOral" required />
+                    <label class="form-check-label" for="presentationTypeOral">
+                        Oral Presentation
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="PresentationType" value="@((int)cmt_proje.Core.Enums.PresentationType.Poster)" id="presentationTypePoster" required />
+                    <label class="form-check-label" for="presentationTypePoster">
+                        Poster Presentation
+                    </label>
+                </div>
+            </div>
+            <span asp-validation-for="PresentationType" class="text-danger"></span>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            Word dosyası bu ekrandan değiştirilmez. Gerekirse yeni bir submission oluşturabilirsiniz.
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-modern btn-modern-primary">
+                <i class="bi bi-save"></i>
+                Save Changes
+            </button>
+            <a asp-action="My" class="btn btn-modern btn-modern-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to My Submissions
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

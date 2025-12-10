@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using cmt_proje.Core.Constants;
+using Microsoft.AspNetCore.Identity;
+using cmt_proje.Services.Interfaces;
 
 namespace cmt_proje.Controllers
 {
@@ -20,11 +22,103 @@ namespace cmt_proje.Controllers
     {
         private readonly ConferenceDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public SubmissionsController(ConferenceDbContext context, IWebHostEnvironment env)
+        public SubmissionsController(
+            ConferenceDbContext context,
+            IWebHostEnvironment env,
+            UserManager<ApplicationUser> userManager,
+            IEmailService emailService)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
+            _emailService = emailService;
+        }
+
+        // =====================================================================
+        //  EDIT: /Submissions/Edit/{id}
+        // =====================================================================
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var submission = await _context.Submissions
+                .Include(s => s.Conference)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (submission == null)
+                return NotFound();
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+            if (!isChair && submission.SubmittedByUserId != userId)
+                return Forbid();
+
+            var conference = await _context.Conferences
+                .Include(c => c.Tracks)
+                .FirstOrDefaultAsync(c => c.Id == submission.ConferenceId);
+
+            if (conference == null)
+                return NotFound();
+
+            ViewBag.Conference = conference;
+            ViewBag.TrackList = new SelectList(conference.Tracks.Where(t => t.IsActive), "Id", "Name", submission.TrackId);
+
+            var vm = new SubmissionEditViewModel
+            {
+                Id = submission.Id,
+                ConferenceId = submission.ConferenceId,
+                TrackId = submission.TrackId,
+                Title = submission.Title,
+                Abstract = submission.Abstract,
+                PresentationType = submission.PresentationType
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(SubmissionEditViewModel model)
+        {
+            var submission = await _context.Submissions
+                .Include(s => s.Conference)
+                .FirstOrDefaultAsync(s => s.Id == model.Id);
+
+            if (submission == null)
+                return NotFound();
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+            if (!isChair && submission.SubmittedByUserId != userId)
+                return Forbid();
+
+            var conference = await _context.Conferences
+                .Include(c => c.Tracks)
+                .FirstOrDefaultAsync(c => c.Id == submission.ConferenceId);
+
+            if (conference == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Conference = conference;
+                ViewBag.TrackList = new SelectList(conference.Tracks.Where(t => t.IsActive), "Id", "Name", model.TrackId);
+                return View(model);
+            }
+
+            submission.TrackId = model.TrackId;
+            submission.Title = model.Title;
+            submission.Abstract = model.Abstract;
+            submission.PresentationType = model.PresentationType!.Value;
+
+            await _context.SaveChangesAsync();
+
+            if (isChair)
+                return RedirectToAction(nameof(Index), new { conferenceId = submission.ConferenceId });
+
+            return RedirectToAction(nameof(My));
         }
 
         // =====================================================================
@@ -215,6 +309,25 @@ namespace cmt_proje.Controllers
 
             _context.Submissions.Add(submission);
             await _context.SaveChangesAsync();
+
+            // Bilgilendirme maili
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null && !string.IsNullOrEmpty(currentUser.Email))
+            {
+                var fullName = string.IsNullOrWhiteSpace(currentUser.FullName)
+                    ? currentUser.Email
+                    : currentUser.FullName;
+
+                var subject = "Başvurunuz Başarıyla İletilmiştir";
+                var body = $@"
+Merhaba Sayın {fullName},
+
+İletiniz tarafımıza başarı ile iletilmiştir.
+
+İyi günler dileriz.";
+
+                await _emailService.SendEmailAsync(currentUser.Email, subject, body, isHtml: false);
+            }
 
             // Chair ise Index'e, Author ise My'ye yönlendir
             var isChair = User.IsInRole(AppRoles.Chair);
