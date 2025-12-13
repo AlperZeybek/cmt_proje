@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using cmt_proje.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cmt_proje.Infrastructure.Data;
@@ -18,7 +19,26 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+            // Eğer kullanıcı giriş yapmışsa Dashboard'a yönlendir
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Dashboard");
+            }
+
+            // Public landing page için aktif konferansları getir
+            var activeConferences = await _context.Conferences
+                .Where(c => c.IsActive)
+                .OrderByDescending(c => c.CreatedAt)
+                .Take(3)
+                .ToListAsync();
+
+            return View(activeConferences);
+        }
+
+        [Authorize]
+        public IActionResult Dashboard()
         {
             return View();
         }

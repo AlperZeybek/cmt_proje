@@ -1,5 +1,6 @@
 /* Genel */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -27,14 +28,14 @@ body {
 }
 
 .main-navbar .navbar-brand {
-        color: #ffffff;
+    color: #ffffff;
     font-size: 1.1rem;
     transition: transform 0.2s ease;
 }
 
-    .main-navbar .navbar-brand:hover {
-        transform: translateY(-1px);
-    }
+.main-navbar .navbar-brand:hover {
+    transform: translateY(-1px);
+}
 
 .brand-logo {
     width: 42px;
@@ -79,34 +80,34 @@ body {
     margin: 0 0.15rem;
 }
 
-    .app-nav-links .nav-link i {
-        font-size: 1rem;
-        margin-right: 0.4rem;
-    }
+.app-nav-links .nav-link i {
+    font-size: 1rem;
+    margin-right: 0.4rem;
+}
 
-    .app-nav-links .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        transform: translateY(-1px);
-    }
+.app-nav-links .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
 
-    .app-nav-links .nav-link.active {
-        background-color: rgba(255, 255, 255, 0.25);
-        color: #ffffff;
-        font-weight: 600;
-    }
+.app-nav-links .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-weight: 600;
+}
 
-        .app-nav-links .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 2px;
-            background: #ffffff;
-            border-radius: 2px;
-    }
+.app-nav-links .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 2px;
+}
 
 .navbar-auth {
     color: #ffffff;
@@ -133,12 +134,12 @@ body {
     transition: all 0.2s ease;
 }
 
-    .logout-btn:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.5);
-        color: #ffffff;
-        transform: translateY(-1px);
-    }
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
 
 /* Ana içerik - Tüm sayfalar için */
 .app-main {
@@ -158,7 +159,7 @@ body {
 
 /* Container override - sadece içerik için */
 main .container,
-body > .container:not(.app-footer .container),
+body>.container:not(.app-footer .container),
 .container:not(.dashboard-wrapper):not(.manage-container):not(.app-footer .container) {
     background: #ffffff;
     border-radius: 12px;
@@ -173,7 +174,7 @@ body > .container:not(.app-footer .container),
 }
 
 /* Dashboard sayfasında layout container'ı şeffaf olmalı */
-body:has(.dashboard-page) > .container,
+body:has(.dashboard-page)>.container,
 body:has(.dashboard-page) main .container {
     background: transparent !important;
     box-shadow: none !important;
@@ -414,32 +415,32 @@ body:has(.dashboard-page) main .container {
     border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
-    .dashboard-hero h1 {
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 0.4rem;
-    }
+.dashboard-hero h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
 
-    .dashboard-hero p {
-        margin-bottom: 0;
-        color: #4b5563;
-    }
+.dashboard-hero p {
+    margin-bottom: 0;
+    color: #4b5563;
+}
 
-    .dashboard-hero .hero-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.25rem 0.7rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #4f46e5;
-        background: rgba(79, 70, 229, 0.08);
-    }
+.dashboard-hero .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4f46e5;
+    background: rgba(79, 70, 229, 0.08);
+}
 
-        .dashboard-hero .hero-pill i {
-            font-size: 0.9rem;
-        }
+.dashboard-hero .hero-pill i {
+    font-size: 0.9rem;
+}
 
 /* Dashboard kartları */
 .dashboard-card {
@@ -451,15 +452,15 @@ body:has(.dashboard-page) main .container {
     border: 1px solid rgba(148, 163, 184, 0.25) !important;
 }
 
-    .dashboard-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-        border-color: #4f46e5 !important;
-    }
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+    border-color: #4f46e5 !important;
+}
 
-    .dashboard-card .card-body {
-        padding: 1.15rem 1.25rem;
-    }
+.dashboard-card .card-body {
+    padding: 1.15rem 1.25rem;
+}
 
 .dashboard-card-icon {
     width: 44px;
@@ -471,25 +472,25 @@ body:has(.dashboard-page) main .container {
     font-size: 1.4rem;
 }
 
-    .dashboard-card-icon.primary {
-        background: rgba(79, 70, 229, 0.12);
-        color: #4f46e5;
-    }
+.dashboard-card-icon.primary {
+    background: rgba(79, 70, 229, 0.12);
+    color: #4f46e5;
+}
 
-    .dashboard-card-icon.success {
-        background: rgba(16, 185, 129, 0.12);
-        color: #10b981;
-    }
+.dashboard-card-icon.success {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
 
-    .dashboard-card-icon.warning {
-        background: rgba(245, 158, 11, 0.12);
-        color: #f59e0b;
-    }
+.dashboard-card-icon.warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
 
-    .dashboard-card-icon.info {
-        background: rgba(59, 130, 246, 0.12);
-        color: #3b82f6;
-    }
+.dashboard-card-icon.info {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+}
 
 .dashboard-card-title {
     font-size: 1rem;
@@ -509,9 +510,9 @@ body:has(.dashboard-page) main .container {
     font-weight: 600;
 }
 
-    .dashboard-card-footer i {
-        font-size: 0.9rem;
-    }
+.dashboard-card-footer i {
+    font-size: 0.9rem;
+}
 
 /* Responsive Design */
 @media (max-width: 991.98px) {
@@ -740,12 +741,12 @@ body:has([class*="Identity"]) {
 #account,
 [class*="identity-page"] {
     background: transparent;
-    min-height: calc(100vh - 200px);
+
     padding: 2rem 0;
 }
 
 /* Identity sayfalarında layout container'ı şeffaf yap */
-body:has(#account) > .container,
+body:has(#account)>.container,
 body:has(#account) main .container,
 #account .container {
     max-width: 1200px;
@@ -757,24 +758,23 @@ body:has(#account) main .container,
 
 /* Identity sayfaları için ana panel - gri panel içinde */
 #account .card,
-#account > div:first-child {
-    border-radius: 24px;
+#account>div:first-child {
+
     border: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    
     overflow: hidden;
     background: #ffffff;
-    margin: 0 auto;
-    max-width: 1200px;
+
 }
 
 /* Eğer card dışında bir wrapper varsa */
-#account > .container > .row,
-#account > .row {
+#account>.container>.row,
+#account>.row {
     margin: 0;
 }
 
-#account > .container > .row > div,
-#account > .row > div {
+#account>.container>.row>div,
+#account>.row>div {
     padding: 0;
 }
 
@@ -1278,6 +1278,7 @@ body:has(#account) main .container,
 
 /* Responsive */
 @media (max-width: 768px) {
+
     .page-container,
     .modern-form {
         padding: 1.5rem;

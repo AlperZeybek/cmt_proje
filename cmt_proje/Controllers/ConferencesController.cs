@@ -10,7 +10,7 @@ using cmt_proje.Core.Constants;
 
 namespace cmt_proje.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class ConferencesController : Controller
     {
         private readonly ConferenceDbContext _context;

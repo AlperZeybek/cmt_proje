@@ -1,0 +1,629 @@
+@page
+@model LoginModel
+@using Microsoft.AspNetCore.Identity
+@using cmt_proje.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<div class="landing-page">
+    <!-- Hero Section with Navbar -->
+    <div class="hero-section">
+        <!-- Premium Navbar - Docshield Style -->
+        <div class="hero-nav-wrapper">
+            <nav class="hero-nav navbar navbar-expand-lg">
+                <!-- Logo - Left -->
+                <div class="hero-nav-left">
+                    <a class="hero-brand" asp-controller="Home" asp-action="Index">
+                        <img src="~/images/sau-logo-v2.png" alt="SAU Logo" class="hero-logo-img" />
+                    </a>
+                </div>
+
+                <!-- Mobile Toggler -->
+                <button class="navbar-toggler hero-navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#heroNavbar" aria-controls="heroNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Center Menu & Right Actions -->
+                <div class="collapse navbar-collapse hero-nav-content" id="heroNavbar">
+                    <!-- Menu Links - Center -->
+                    <nav class="hero-nav-center">
+                        <ul class="hero-nav-links">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="About" asp-action="AboutOrganizer">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Conferences" asp-action="Index">Conferences</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="About" asp-action="PastEvents">Past Events</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- Login Button - Right -->
+                    <div class="hero-nav-right">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn hero-secondary-btn me-2">
+                                Profile
+                            </a>
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="d-inline">
+                                <button type="submit" class="btn hero-login-btn">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn hero-login-btn">
+                                Login →
+                            </a>
+                        }
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Logo Section -->
+            <div class="auth-logo-section">
+                <img src="~/images/sau-logo-v2.png" alt="SAU Conferences Logo" class="auth-logo" />
+                <p class="auth-tagline">The Meeting Point of Scientific Advancements</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-form-section">
+                <h2 class="auth-title">Log in</h2>
+                
+                <form id="account" method="post" class="auth-form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                    
+                    <!-- Email Input -->
+                    <div class="auth-input-group">
+                        <label asp-for="Input.Email" class="auth-label">
+                            <i class="bi bi-envelope"></i>
+                            Email
+                        </label>
+                        <input asp-for="Input.Email" class="auth-input" autocomplete="username" aria-required="true" placeholder="Email" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="auth-input-group">
+                        <label asp-for="Input.Password" class="auth-label">
+                            <i class="bi bi-lock"></i>
+                            Password
+                        </label>
+                        <input asp-for="Input.Password" class="auth-input" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="auth-options">
+                        <div class="auth-checkbox-group">
+                            <input asp-for="Input.RememberMe" class="auth-checkbox" />
+                            <label asp-for="Input.RememberMe" class="auth-checkbox-label">Remember me?</label>
+                        </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="auth-link">Forgot your password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button id="login-submit" type="submit" class="auth-button">
+                        Log in
+                    </button>
+                </form>
+
+                <!-- Additional Links -->
+                <div class="auth-links">
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="auth-link">Register as a new user</a>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="auth-link">Resend email confirmation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+@section Styles {
+    <style>
+        /* Landing Page Base - Same as Home */
+        .landing-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%);
+            position: relative;
+        }
+
+        /* Auth Page - Compact Card Styles (Scoped) */
+        .auth-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            min-height: auto;
+        }
+
+        .auth-page .auth-container {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-page .auth-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 20px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: auto;
+            height: auto;
+            width: 100%;
+        }
+
+        .auth-page .auth-logo-section {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .auth-page .auth-logo {
+            height: 45px;
+            width: auto;
+            margin-bottom: 2px;
+            object-fit: contain;
+        }
+
+        .auth-page .auth-tagline {
+            color: #6B7280;
+            font-size: 12px;
+            margin: 0 0 8px 0;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        .auth-page .auth-form-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: auto;
+            height: auto;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .auth-page .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 12px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .auth-page .auth-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .auth-page .auth-input-group {
+            margin-bottom: 10px;
+        }
+
+        .auth-page .auth-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .auth-page .auth-label i {
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        .auth-page .auth-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 0.875rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+            background: #FFFFFF;
+            color: #111827;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        .auth-page input[type="email"],
+        .auth-page input[type="password"] {
+            height: 44px !important;
+            min-height: 44px !important;
+            max-height: 44px !important;
+            padding: 0 0.875rem !important;
+            box-sizing: border-box !important;
+            line-height: 1.5 !important;
+        }
+
+        .auth-page .auth-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .auth-page .auth-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .auth-page .auth-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .auth-page .auth-checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-page .auth-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .auth-page .auth-checkbox-label {
+            font-size: 0.9375rem;
+            color: #374151;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .auth-page .auth-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .auth-page .auth-link:hover {
+            color: #5568d3;
+            text-decoration: underline;
+        }
+
+        .auth-page .auth-button {
+            width: 100%;
+            height: 46px;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0 !important;
+            margin-top: 0;
+            flex-shrink: 0;
+        }
+
+        .auth-page .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .auth-page .auth-button:active {
+            transform: translateY(0);
+        }
+
+        .auth-page .auth-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-page .auth-links {
+            margin-top: 8px !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .auth-page .auth-links .auth-link {
+            font-size: 13px;
+        }
+
+        .auth-page .text-danger {
+            font-size: 0.8125rem;
+            margin-top: 4px;
+            display: block;
+            line-height: 1.3;
+        }
+
+        .auth-page .mb-3 {
+            margin-bottom: 10px !important;
+        }
+
+        /* Hero Section - Same as Home */
+        .hero-section {
+            padding: 0 20px 40px;
+            text-align: center;
+            position: relative;
+            background: transparent;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Premium Navbar - Same as Home */
+        .hero-nav-wrapper {
+            max-width: 1400px;
+            margin: 40px auto 0;
+            width: calc(100% - 80px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-nav {
+            background: #B9C7DB !important;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 999px;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+
+        .hero-nav-left {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: 0;
+        }
+
+        .hero-brand {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+            padding: 0;
+            margin: 0;
+        }
+
+        .hero-logo-img {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .hero-navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+            margin-left: auto;
+        }
+
+        .hero-nav-content {
+            display: flex !important;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+            width: 100%;
+            flex-direction: row !important;
+        }
+
+        .hero-nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-nav-links {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .hero-nav-links .nav-link {
+            color: #4B5563;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.2s ease;
+            position: relative;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .hero-nav-links .nav-link:hover {
+            color: #1E40AF;
+        }
+
+        .hero-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .hero-login-btn {
+            background: #1E40AF;
+            border: none;
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9375rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .hero-login-btn:hover {
+            background: #1E3A8A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
+            color: #FFFFFF;
+        }
+
+
+        .auth-page .mb-3 {
+            margin-bottom: 12px !important;
+        }
+
+        /* Responsive */
+        @@media (max-width: 991.98px) {
+            .hero-nav-wrapper {
+                width: calc(100% - 40px);
+                margin: 30px auto 0;
+            }
+
+            .hero-nav {
+                padding: 0.625rem 1rem;
+            }
+
+            .hero-nav-content {
+                flex-direction: column;
+                align-items: stretch;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(220, 230, 240, 0.4);
+            }
+
+            .hero-nav-center {
+                margin-bottom: 1rem;
+            }
+
+            .hero-nav-links {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+            }
+
+            .hero-nav-links .nav-link {
+                padding: 0.75rem 1rem;
+                text-align: center;
+            }
+
+            .hero-nav-right {
+                justify-content: center;
+                margin-left: 0;
+            }
+
+            .hero-logo-img {
+                height: 60px;
+            }
+        }
+
+        @@media (max-width: 575.98px) {
+            .hero-nav-wrapper {
+                width: calc(100% - 20px);
+                margin: 20px auto 0;
+            }
+
+            .hero-nav {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .hero-nav-links {
+                gap: 0.5rem;
+            }
+
+            .hero-nav-links .nav-link {
+                font-size: 0.875rem;
+            }
+
+            .hero-login-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .auth-page .auth-card {
+                padding: 18px 20px;
+                border-radius: 16px;
+            }
+
+            .auth-page .auth-links {
+                margin-top: 10px !important;
+            }
+
+            .auth-page .auth-container {
+                max-width: 100%;
+            }
+
+            .auth-page .auth-title {
+                font-size: 1.25rem;
+                margin-bottom: 14px;
+            }
+
+            .auth-page .auth-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .auth-page .auth-input {
+                height: 44px;
+            }
+
+            .auth-page input[type="email"],
+            .auth-page input[type="password"] {
+                height: 42px !important;
+                min-height: 42px !important;
+                max-height: 42px !important;
+            }
+
+            .auth-page .auth-button {
+                height: 44px;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

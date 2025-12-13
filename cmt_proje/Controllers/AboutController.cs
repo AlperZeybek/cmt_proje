@@ -18,6 +18,12 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
+        // GET: /About
+        public IActionResult Index()
+        {
+            return RedirectToAction("PastEvents");
+        }
+
         // GET: /About/PastEvents
         public async Task<IActionResult> PastEvents()
         {

@@ -100,12 +100,12 @@ namespace cmt_proje.Controllers
                 // Entity'yi TRACKED olarak bul - Bu çok önemli!
                 var existingContent = await _context.AboutContents
                     .FirstOrDefaultAsync(a => a.PageKey == PageKey);
-
-                if (existingContent == null)
-                {
-                    TempData["ErrorMessage"] = "About content not found.";
-                    return RedirectToAction(nameof(Index));
-                }
+                    
+                    if (existingContent == null)
+                    {
+                        TempData["ErrorMessage"] = "About content not found.";
+                        return RedirectToAction(nameof(Index));
+                    }
 
                 // Tracked entity'nin property'lerini direkt güncelle - Bu kesinlikle çalışır!
                 existingContent.Title = !string.IsNullOrEmpty(titleValue) ? titleValue : (Title ?? string.Empty);
@@ -113,11 +113,11 @@ namespace cmt_proje.Controllers
                 existingContent.ImageUrl = string.IsNullOrWhiteSpace(imageUrlValue) ? null : imageUrlValue;
                 existingContent.LinkUrl = string.IsNullOrWhiteSpace(linkUrlValue) ? null : linkUrlValue;
                 existingContent.LinkText = string.IsNullOrWhiteSpace(linkTextValue) ? null : linkTextValue;
-                existingContent.LastUpdated = DateTime.UtcNow;
-                
+                    existingContent.LastUpdated = DateTime.UtcNow;
+
                 // Değişiklikleri kaydet - Tracked entity olduğu için otomatik algılanır
                 var savedCount = await _context.SaveChangesAsync();
-                
+                    
                 if (savedCount > 0)
                 {
                     TempData["SuccessMessage"] = "About content has been updated successfully.";
@@ -127,26 +127,26 @@ namespace cmt_proje.Controllers
                     TempData["ErrorMessage"] = "No changes were saved. Please try again.";
                 }
                 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AboutContentExists(Id))
-                {
-                    TempData["ErrorMessage"] = "About content not found. It may have been deleted.";
                     return RedirectToAction(nameof(Index));
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                if (!AboutContentExists(Id))
+                    {
+                        TempData["ErrorMessage"] = "About content not found. It may have been deleted.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
+                catch (Exception ex)
+                {
                 // Detaylı hata mesajı (debug için)
                 var errorDetails = $"An error occurred while updating the content: {ex.Message}";
                 if (ex.InnerException != null)
-                {
+            {
                     errorDetails += $" Inner: {ex.InnerException.Message}";
                 }
                 TempData["ErrorMessage"] = errorDetails;
