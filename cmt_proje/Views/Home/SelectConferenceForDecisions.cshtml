@@ -1,16 +1,16 @@
-@model IEnumerable<cmt_proje.Models.ConferenceSelectionViewModel>
+@model IEnumerable<cmt_proje.Core.Entities.Conference>
 
 @{
-    ViewData["Title"] = "Track Yönetimi için Konferans Seçimi";
+    ViewData["Title"] = "Decision Yönetimi için Konferans Seçimi";
 }
 
 <div class="page-header">
     <h1 class="page-title">
-        <i class="bi bi-list-task"></i>
-        Track Yönetimi için Konferans Seçimi
+        <i class="bi bi-clipboard-check"></i>
+        Decision Yönetimi için Konferans Seçimi
     </h1>
     <p class="page-subtitle">
-        Track'leri yönetmek için bir konferans seçin
+        Decision'ları yönetmek için bir konferans seçin
     </p>
 </div>
 
@@ -26,12 +26,48 @@
     <div class="row g-4">
         @foreach (var conference in Model)
         {
+            // Determine card color class and logo path based on acronym
+            string cardColorClass = "";
+            string logoPath = "";
+            string acronym = conference.Acronym?.ToUpper() ?? "";
+            
+            if (acronym.Contains("ICINSE"))
+            {
+                cardColorClass = "orange";
+                logoPath = "/images/ICENSE.png";
+            }
+            else if (acronym.Contains("ITCHS"))
+            {
+                cardColorClass = "green";
+                logoPath = "/images/ITCHS.png.jpg";
+            }
+            else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+            {
+                cardColorClass = "blue";
+                logoPath = "/images/ITWCCST.png";
+            }
+            else
+            {
+                var baseAcronym = acronym.Split('-')[0];
+                logoPath = $"/images/{baseAcronym}.png";
+            }
+            
+            // Use conference logo if available, otherwise use default
+            if (!string.IsNullOrEmpty(conference.LogoUrl))
+            {
+                logoPath = conference.LogoUrl;
+            }
+            else if (string.IsNullOrEmpty(logoPath))
+            {
+                logoPath = "/images/sau-logo-v2.png";
+            }
+            
             <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="card border-0 h-100 conference-selection-card">
+                <div class="card border-0 h-100 conference-selection-card @cardColorClass">
                     <div class="card-body">
                         <div class="d-flex align-items-start mb-3">
                             <div class="conference-icon-wrapper">
-                                <i class="bi bi-globe2"></i>
+                                <img src="@logoPath" alt="@conference.Acronym Logo" class="conference-logo-img" />
                             </div>
                             <div class="ms-3 flex-grow-1">
                                 <h5 class="conference-card-title mb-1">
@@ -49,15 +85,11 @@
                                 <i class="bi bi-calendar-event me-2"></i>
                                 <span>@conference.StartDate.ToString("dd.MM.yyyy") - @conference.EndDate.ToString("dd.MM.yyyy")</span>
                             </div>
-                            <div class="info-item">
-                                <i class="bi bi-list-task me-2"></i>
-                                <span><strong>@conference.TrackCount</strong> Track</span>
-                            </div>
-                            @if (!string.IsNullOrEmpty(conference.CreatedByUserEmail))
+                            @if (!string.IsNullOrEmpty(conference.CreatedByUser?.Email))
                             {
                                 <div class="info-item">
                                     <i class="bi bi-person me-2"></i>
-                                    <span>@conference.CreatedByUserEmail</span>
+                                    <span>@conference.CreatedByUser.Email</span>
                                 </div>
                             }
                         </div>
@@ -86,10 +118,11 @@
                                     </span>
                                 }
                             </div>
-                            <a asp-action="Index" 
+                            <a asp-controller="Submissions" 
+                               asp-action="Index" 
                                asp-route-conferenceId="@conference.Id" 
                                class="btn btn-modern btn-modern-primary">
-                                Track'leri Yönet
+                                Decision'ları Yönet
                                 <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>
@@ -123,9 +156,33 @@ else
             height: 100%;
         }
 
+        /* Conference card backgrounds - Light tones matching logos */
+        .conference-selection-card.orange {
+            background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 50%, #FFFFFF 100%) !important;
+        }
+        
+        .conference-selection-card.green {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #FFFFFF 100%) !important;
+        }
+        
+        .conference-selection-card.blue {
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
+        }
+
         .conference-selection-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .conference-selection-card.orange:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .conference-selection-card.green:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .conference-selection-card.blue:hover {
             border-color: rgba(59, 130, 246, 0.3);
         }
 
@@ -137,13 +194,19 @@ else
             width: 56px;
             height: 56px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-            color: #ffffff;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .conference-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 14px;
         }
 
         .conference-card-title {

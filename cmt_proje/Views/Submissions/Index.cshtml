@@ -3,6 +3,31 @@
 @{
     var conf = (cmt_proje.Core.Entities.Conference)ViewBag.Conference;
     ViewData["Title"] = "Submissions for " + conf.Name;
+    
+    // Conference-specific body class for gradient
+    string acronym = conf.Acronym?.ToUpper() ?? "";
+    string bodyClass = "";
+    
+    if (!string.IsNullOrEmpty(acronym))
+    {
+        if (acronym.Contains("ICINSE"))
+        {
+            bodyClass = "conf-icinse";
+        }
+        else if (acronym.Contains("ITCHS"))
+        {
+            bodyClass = "conf-itchs";
+        }
+        else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+        {
+            bodyClass = "conf-itwccst";
+        }
+    }
+    
+    if (!string.IsNullOrEmpty(bodyClass))
+    {
+        ViewData["BodyClass"] = bodyClass;
+    }
 }
 
 <h2>Submissions for @conf.Name ("@conf.Acronym")</h2>
@@ -45,7 +70,23 @@
                 <td>@item.Title</td>
                 <td>@item.Track?.Name</td>
                 <td>@item.SubmittedByUser?.Email</td>
-                <td>@(item.PresentationType == cmt_proje.Core.Enums.PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")</td>
+                <td>
+                    @switch (item.PresentationType)
+                    {
+                        case cmt_proje.Core.Enums.PresentationType.Oral:
+                            @:Oral Presentation
+                            break;
+                        case cmt_proje.Core.Enums.PresentationType.Poster:
+                            @:Poster Presentation
+                            break;
+                        case cmt_proje.Core.Enums.PresentationType.InvitedSpeaker:
+                            @:Invited Speaker
+                            break;
+                        default:
+                            @:Unknown
+                            break;
+                    }
+                </td>
                 <td>@item.Status</td>
                 <td>@item.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</td>
 

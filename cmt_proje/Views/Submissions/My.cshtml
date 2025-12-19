@@ -1,4 +1,4 @@
-﻿@model IEnumerable<cmt_proje.Core.Entities.Submission>
+@model IEnumerable<cmt_proje.Core.Entities.Submission>
 
 @{
     ViewData["Title"] = "My Submissions";
@@ -49,7 +49,23 @@
                             </td>
                             <td><strong>@item.Title</strong></td>
                             <td>@item.Track?.Name</td>
-                            <td>@(item.PresentationType == cmt_proje.Core.Enums.PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")</td>
+                            <td>
+                                @switch (item.PresentationType)
+                                {
+                                    case cmt_proje.Core.Enums.PresentationType.Oral:
+                                        @:Oral Presentation
+                                        break;
+                                    case cmt_proje.Core.Enums.PresentationType.Poster:
+                                        @:Poster Presentation
+                                        break;
+                                    case cmt_proje.Core.Enums.PresentationType.InvitedSpeaker:
+                                        @:Invited Speaker
+                                        break;
+                                    default:
+                                        @:Unknown
+                                        break;
+                                }
+                            </td>
                             <td>
                                 @switch (item.Status.ToString())
                                 {
@@ -129,3 +145,11 @@
             </tbody>
         </table>
     </div>
+
+@section Styles {
+    <style>
+        .modern-table {
+            background: #e3f2fd !important;
+        }
+    </style>
+}

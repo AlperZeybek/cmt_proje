@@ -35,9 +35,6 @@
                                 <a class="nav-link" asp-controller="About" asp-action="AboutOrganizer">About Us</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Conferences" asp-action="Index">Conferences</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" asp-controller="About" asp-action="PastEvents">Past Events</a>
                             </li>
                         </ul>
@@ -616,6 +613,21 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Conference card backgrounds - Light tones matching logos */
+        .conference-card.orange {
+            background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 50%, #FFFFFF 100%) !important;
+        }
+        
+        .conference-card.green {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #FFFFFF 100%) !important;
+        }
+        
+        .conference-card.blue {
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
         }
 
         .conference-card::before {
@@ -655,11 +667,14 @@
 
         .conference-card-inner {
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .conference-logo {
-            width: 130px;
-            height: 130px;
+            width: 180px;
+            height: 180px;
             margin: 0 auto 32px;
             display: flex;
             align-items: center;
@@ -722,7 +737,9 @@
         }
 
         .conference-info {
-            margin-bottom: 36px;
+            margin-bottom: 0;
+            flex-grow: 1;
+            min-height: 0;
         }
 
         .conference-date,
@@ -754,6 +771,9 @@
             border: none;
             cursor: pointer;
             letter-spacing: 0.01em;
+            margin-top: auto;
+            align-self: center;
+            flex-shrink: 0;
         }
 
         .conference-card.blue .conference-btn {

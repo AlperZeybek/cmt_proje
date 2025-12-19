@@ -61,6 +61,8 @@ namespace cmt_proje.Controllers
                 return NotFound();
 
             ViewBag.Conference = conference;
+            ViewBag.ActiveConferenceId = conferenceId;
+            ViewBag.ActiveConferenceAcronym = conference.Acronym;
 
             var tracks = await _context.Tracks
                 .Where(t => t.ConferenceId == conferenceId)
@@ -72,7 +74,7 @@ namespace cmt_proje.Controllers
 
         // GET: /Tracks/Create?conferenceId=1
         // Yetki: Chair + Author
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Create(int conferenceId)
         {
             var conference = await _context.Conferences.FindAsync(conferenceId);
@@ -94,7 +96,7 @@ namespace cmt_proje.Controllers
         // Yetki: Chair + Author
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Create(Track track)
         {
             var conference = await _context.Conferences.FindAsync(track.ConferenceId);
@@ -117,7 +119,7 @@ namespace cmt_proje.Controllers
 
         // GET: /Tracks/Edit/5
         // Yetki: Chair + Author
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Edit(int id)
         {
             var track = await _context.Tracks
@@ -136,7 +138,7 @@ namespace cmt_proje.Controllers
         // Yetki: Chair + Author
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Edit(int id, Track track)
         {
             if (id != track.Id)
@@ -160,7 +162,7 @@ namespace cmt_proje.Controllers
 
         // GET: /Tracks/Delete/5
         // Yetki: Chair + Author
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> Delete(int id)
         {
             var track = await _context.Tracks
@@ -179,7 +181,7 @@ namespace cmt_proje.Controllers
         // Yetki: Chair + Author
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = $"{AppRoles.Chair},{AppRoles.Author}")]
+        [Authorize(Roles = AppRoles.Chair)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var track = await _context.Tracks.FindAsync(id);

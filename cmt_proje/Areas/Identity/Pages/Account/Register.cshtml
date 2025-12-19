@@ -1,12 +1,71 @@
 @page
 @model RegisterModel
+@using Microsoft.AspNetCore.Identity
+@using cmt_proje.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
+<div class="landing-page">
+    <!-- Hero Section with Navbar -->
+    <div class="hero-section">
+        <!-- Premium Navbar - Docshield Style -->
+        <div class="hero-nav-wrapper">
+            <nav class="hero-nav navbar navbar-expand-lg">
+                <!-- Logo - Left -->
+                <div class="hero-nav-left">
+                    <a class="hero-brand" asp-controller="Home" asp-action="Index">
+                        <img src="~/images/sau-logo-v2.png" alt="SAU Logo" class="hero-logo-img" />
+                    </a>
+                </div>
+
+                <!-- Mobile Toggler -->
+                <button class="navbar-toggler hero-navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#heroNavbar" aria-controls="heroNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Center Menu & Right Actions -->
+                <div class="collapse navbar-collapse hero-nav-content" id="heroNavbar">
+                    <!-- Menu Links - Center -->
+                    <nav class="hero-nav-center">
+                        <ul class="hero-nav-links">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="About" asp-action="AboutOrganizer">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="About" asp-action="PastEvents">Past Events</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- Login Button - Right -->
+                    <div class="hero-nav-right">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn hero-secondary-btn me-2">
+                                Profile
+                            </a>
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="d-inline">
+                                <button type="submit" class="btn hero-login-btn">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn hero-login-btn">
+                                Login →
+                            </a>
+                        }
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+<div class="register-page">
+    <div class="register-container">
+        <div class="register-card">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">
                     <i class="bi bi-person-plus"></i>
@@ -97,6 +156,325 @@
         </div>
     </div>
 </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Landing Page Base - Same as Home */
+        .landing-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%);
+            position: relative;
+        }
+
+        /* Hero Section - Same as Home */
+        .hero-section {
+            padding: 0 20px 40px;
+            text-align: center;
+            position: relative;
+            background: transparent;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Premium Navbar - Same as Home */
+        .hero-nav-wrapper {
+            max-width: 1400px;
+            margin: 40px auto 0;
+            width: calc(100% - 80px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-nav {
+            background: #B9C7DB !important;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 999px;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+
+        .hero-nav-left {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: 0;
+        }
+
+        .hero-brand {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+            padding: 0;
+            margin: 0;
+        }
+
+        .hero-brand:hover {
+            transform: translateY(-1px);
+        }
+
+        .hero-logo-img {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .hero-navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+            margin-left: auto;
+        }
+
+        .hero-navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .hero-nav-content {
+            display: flex !important;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .hero-nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-nav-links {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .hero-nav-links .nav-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-nav-links .nav-link {
+            color: #4B5563;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.2s ease;
+            position: relative;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .hero-nav-links .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #1E40AF;
+            transition: width 0.3s ease;
+        }
+
+        .hero-nav-links .nav-link:hover {
+            color: #1E40AF;
+        }
+
+        .hero-nav-links .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .hero-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .hero-login-btn {
+            background: #1E40AF;
+            border: none;
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9375rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .hero-login-btn:hover {
+            background: #1E3A8A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
+            color: #FFFFFF;
+        }
+
+        .hero-secondary-btn {
+            background: #60A5FA;
+            border: none;
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9375rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .hero-secondary-btn:hover {
+            background: #3B82F6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.35);
+            color: #FFFFFF;
+        }
+
+        .hero-navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Register Page Styles */
+        .register-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            min-height: auto;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .register-card .card-header {
+            border-radius: 0;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .register-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .register-card .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 991.98px) {
+            .hero-nav-wrapper {
+                width: calc(100% - 40px);
+                margin: 30px auto 0;
+            }
+
+            .hero-nav {
+                padding: 0.625rem 1rem;
+            }
+
+            .hero-nav-content {
+                flex-direction: column;
+                align-items: stretch;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(220, 230, 240, 0.4);
+            }
+
+            .hero-nav-center {
+                margin-bottom: 1rem;
+            }
+
+            .hero-nav-links {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+            }
+
+            .hero-nav-links .nav-link {
+                padding: 0.75rem 1rem;
+                text-align: center;
+            }
+
+            .hero-nav-right {
+                justify-content: center;
+                margin-left: 0;
+            }
+
+            .hero-logo-img {
+                height: 28px;
+            }
+        }
+
+        @@media (max-width: 575.98px) {
+            .hero-nav-wrapper {
+                width: calc(100% - 20px);
+                margin: 20px auto 0;
+            }
+
+            .hero-nav {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .hero-nav-links {
+                gap: 0.5rem;
+            }
+
+            .hero-nav-links .nav-link {
+                font-size: 0.875rem;
+            }
+
+            .hero-login-btn,
+            .hero-secondary-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .register-page {
+                padding: 1rem 0.5rem;
+            }
+
+            .register-card .card-body {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

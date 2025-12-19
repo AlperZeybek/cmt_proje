@@ -1,0 +1,566 @@
+@using Microsoft.EntityFrameworkCore
+@using cmt_proje.Infrastructure.Data
+@using cmt_proje.Core.Constants
+@inject ConferenceDbContext _context
+
+@{
+    ViewData["Title"] = "Conference Management Panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["BodyClass"] = "dashboard-page";
+}
+
+@* MEVCUT DASHBOARD (ADMIN VE CHAIR İÇİN) - AdminPanel'e taşındı *@
+<div class="dashboard-page">
+    <div class="container py-5 dashboard-wrapper">
+
+    <!-- Sayfa başlığı -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-title-section">
+            <h1 class="dashboard-main-title">
+                Conference Management Panel
+            </h1>
+            <p class="dashboard-subtitle">
+                Create conferences, collect submissions, assign reviewers and track decisions – all from a single clean interface.
+            </p>
+        </div>
+    </div>
+
+    <!-- Kart grid'i -->
+    <div class="row g-4">
+
+        <!-- Conferences -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Conferences" asp-action="Index" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-primary">
+                                <i class="bi bi-globe2"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Conferences</h5>
+                        <p class="dashboard-card-description">
+                            Create &amp; manage academic conferences and their settings.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Go to Conferences</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- My Submissions -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Submissions" asp-action="My" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-info">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">My Submissions</h5>
+                        <p class="dashboard-card-description">
+                            View and manage papers you have submitted.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">View my papers</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Review Assignments -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Reviews" asp-action="MyAssignments" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-success">
+                                <i class="bi bi-check2-square"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">My Reviews</h5>
+                        <p class="dashboard-card-description">
+                            See which papers are assigned to you and submit your reviews.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Review papers</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tracks (konferans seçerek yönet) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Home" asp-action="GoToTracks" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-warning">
+                                <i class="bi bi-list-task"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Tracks</h5>
+                        <p class="dashboard-card-description">
+                            Organize conference tracks. First select a conference, then manage its tracks.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Manage tracks</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Decisions (sadece Chair için) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Home" asp-action="GoToDecisions" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-danger">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Decisions</h5>
+                        <p class="dashboard-card-description">
+                            Finalize accept / reject decisions based on reviews. Pick a conference first.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Manage decisions</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- User Management (sadece Chair için) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="Admin" asp-action="Users" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #ffffff;">
+                                <i class="bi bi-people"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">User Management</h5>
+                        <p class="dashboard-card-description">
+                            View all registered users and export their information to Excel.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Manage users</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Scientific Committee Management (sadece Chair için) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="ScientificCommittee" asp-action="Admin" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper" style="background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); color: #ffffff;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Scientific Committee</h5>
+                        <p class="dashboard-card-description">
+                            Manage scientific committee members and their profiles.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Manage committee</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Profile -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-secondary">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Profile</h5>
+                        <p class="dashboard-card-description">
+                            Update your personal information and account security.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Edit profile</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* ========================================
+           DASHBOARD PAGE - HOME THEME MATCHING
+           ======================================== */
+        
+        /* Body background - Match Home page gradient */
+        body.dashboard-page {
+            background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%) !important;
+            background-attachment: fixed !important;
+            background-size: 100% 100% !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Dashboard page wrapper */
+        .dashboard-page {
+            background: transparent !important;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Override layout containers to be transparent */
+        body:has(.dashboard-page) > .container,
+        body:has(.dashboard-page) main .container,
+        .dashboard-page ~ * .container,
+        .dashboard-page .container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+        }
+
+        /* Main navbar styling - Match Home page navbar */
+        body.dashboard-page .main-navbar {
+            background: #B9C7DB !important;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 999px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 1);
+            margin: 40px auto 0;
+            max-width: calc(100% - 80px);
+            padding: 0.75rem 1.5rem;
+        }
+
+        body.dashboard-page .main-header {
+            background: transparent;
+            box-shadow: none;
+            position: relative;
+        }
+
+        /* Navbar links styling - Match Home page */
+        body.dashboard-page .app-nav-links .nav-link {
+            color: #4B5563;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        body.dashboard-page .app-nav-links .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #1E40AF;
+            transition: width 0.3s ease;
+        }
+
+        body.dashboard-page .app-nav-links .nav-link:hover {
+            color: #1E40AF;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        body.dashboard-page .app-nav-links .nav-link:hover::after {
+            width: 80%;
+        }
+
+        body.dashboard-page .app-nav-links .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #1E40AF;
+            font-weight: 600;
+        }
+
+        /* Login/Logout buttons - Match Home page */
+        body.dashboard-page .logout-btn,
+        body.dashboard-page .hero-login-btn {
+            background: #1E40AF;
+            border: none;
+            color: #FFFFFF;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9375rem;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+        }
+
+        body.dashboard-page .logout-btn:hover,
+        body.dashboard-page .hero-login-btn:hover {
+            background: #1E3A8A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
+            color: #FFFFFF;
+        }
+
+        /* User greeting text - Dashboard'da siyah */
+        body.dashboard-page .user-greeting-text {
+            color: #1F2937 !important;
+            font-size: 0.875rem;
+        }
+
+        body.dashboard-page .user-name-text {
+            color: #111827 !important;
+            font-weight: 600;
+        }
+
+        /* Dashboard content wrapper */
+        .dashboard-wrapper {
+            background: transparent;
+            border-radius: 0;
+            padding: 40px 20px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: none;
+        }
+
+        .dashboard-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .dashboard-title-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .dashboard-main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+            color: #111827;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.125rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+            color: #4B5563;
+        }
+
+        /* Dashboard cards - Match Home page card style */
+        .dashboard-card-modern {
+            background: #caf0f8;
+            border-radius: 32px;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            box-shadow: 0 10px 45px rgba(0, 0, 0, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card-link {
+            display: block;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .dashboard-card-link:hover .dashboard-card-modern {
+            transform: translateY(-14px) scale(1.015);
+            box-shadow: 0 20px 65px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-card-modern .card-body {
+            padding: 2rem;
+        }
+
+        .dashboard-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .dashboard-card-link:hover .dashboard-icon-wrapper {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .dashboard-icon-primary {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-icon-info {
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-icon-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-icon-warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-icon-danger {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-icon-secondary {
+            background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+            color: #ffffff;
+        }
+
+        .dashboard-card-title-modern {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .dashboard-card-description {
+            font-size: 1rem;
+            color: #4B5563;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-card-action {
+            display: inline-flex;
+            align-items: center;
+            color: #3B82F6;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            padding: 12px 28px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .dashboard-card-link:hover .dashboard-card-action {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4);
+        }
+
+        .dashboard-card-link-text {
+            transition: all 0.2s ease;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 991.98px) {
+            body.dashboard-page .main-navbar {
+                max-width: calc(100% - 40px);
+                margin: 30px auto 0;
+                padding: 0.625rem 1rem;
+            }
+
+            .dashboard-wrapper {
+                padding: 24px 20px 80px;
+            }
+
+            .dashboard-main-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 1rem;
+            }
+
+            .dashboard-card-modern .card-body {
+                padding: 1.5rem;
+            }
+
+            .dashboard-icon-wrapper {
+                width: 64px;
+                height: 64px;
+                font-size: 1.75rem;
+            }
+        }
+
+        @@media (max-width: 767.98px) {
+            body.dashboard-page .main-navbar {
+                max-width: calc(100% - 20px);
+                margin: 20px auto 0;
+                padding: 0.5rem 0.75rem;
+                border-radius: 32px;
+            }
+
+            .dashboard-wrapper {
+                padding: 20px 16px 60px;
+            }
+
+            .dashboard-main-title {
+                font-size: 1.75rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 0.9375rem;
+            }
+
+            .dashboard-card-modern {
+                border-radius: 28px;
+            }
+
+            .dashboard-card-modern .card-body {
+                padding: 1.25rem;
+            }
+
+            .dashboard-icon-wrapper {
+                width: 56px;
+                height: 56px;
+                font-size: 1.5rem;
+            }
+
+            .dashboard-card-title-modern {
+                font-size: 1.25rem;
+            }
+
+            .dashboard-card-description {
+                font-size: 0.9375rem;
+            }
+        }
+    </style>
+}
+

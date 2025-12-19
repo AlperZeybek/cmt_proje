@@ -2,10 +2,19 @@
 @model LoginModel
 @using Microsoft.AspNetCore.Identity
 @using cmt_proje.Core.Entities
+@using Microsoft.EntityFrameworkCore
+@using cmt_proje.Infrastructure.Data
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ConferenceDbContext _dbContext
 @{
     ViewData["Title"] = "Log in";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    
+    // Fetch active conferences for dropdown
+    var allActiveConferences = _dbContext.Conferences
+        .Where(c => c.IsActive)
+        .Select(c => new { c.Id, c.Acronym })
+        .ToList();
 }
 
 <div class="landing-page">
@@ -31,11 +40,29 @@
                     <!-- Menu Links - Center -->
                     <nav class="hero-nav-center">
                         <ul class="hero-nav-links">
+                            <!-- Conference Dropdown -->
+                            @if (allActiveConferences.Any())
+                            {
+                                <li class="nav-item dropdown" id="confDropdownContainer">
+                                    <a class="nav-link dropdown-toggle" href="#" id="confDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Conferences
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="confDropdown">
+                                        @foreach (var conf in allActiveConferences)
+                                        {
+                                            string itemAcronym = conf.Acronym.Contains('-') ? conf.Acronym.Split('-')[0] : conf.Acronym;
+                                            <li>
+                                                <a class="dropdown-item" 
+                                                   asp-controller="Conferences" asp-action="Details" asp-route-id="@conf.Id">
+                                                    @itemAcronym
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="About" asp-action="AboutOrganizer">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Conferences" asp-action="Index">Conferences</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="About" asp-action="PastEvents">Past Events</a>
@@ -478,6 +505,65 @@
             color: #1E40AF;
         }
 
+        /* Dropdown Styling */
+        .hero-nav-links .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            margin-top: 0.5rem;
+        }
+
+        .hero-nav-links .dropdown-item {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.2s ease;
+        }
+
+        .hero-nav-links .dropdown-item:hover,
+        .hero-nav-links .dropdown-item:focus {
+            background-color: #f0f7ff;
+            color: #1E40AF;
+            transform: translateX(4px);
+        }
+
+        .hero-nav-links .dropdown-item.active,
+        .hero-nav-links .dropdown-item:active {
+            background-color: #1E40AF;
+            color: white;
+        }
+
+        .hero-nav-links .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        /* Hover Dropdown Logic for Desktop */
+        @@media (min-width: 992px) {
+            .hero-nav-links .nav-item.dropdown:hover .dropdown-menu {
+                display: block;
+                animation: fadeInUp 0.2s ease-out;
+            }
+            
+            .hero-nav-links .nav-item.dropdown .dropdown-menu {
+                margin-top: 0.5rem;
+            }
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 10px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
         .hero-nav-right {
             display: flex;
             align-items: center;
@@ -625,5 +711,64 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <!-- Conference Dropdown Hover Script -->
+    <script>
+        (function() {
+            // Mobil cihaz kontrolü (touch event varsa mobil)
+            const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            // Sadece desktop'ta hover çalışsın
+            if (!isMobile) {
+                const confDropdownContainer = document.getElementById('confDropdownContainer');
+                const confDropdown = document.getElementById('confDropdown');
+                const confDropdownMenu = confDropdownContainer?.querySelector('.dropdown-menu');
+                let dropdownInstance = null;
+
+                // Bootstrap dropdown instance oluştur
+                if (confDropdown && typeof bootstrap !== 'undefined') {
+                    dropdownInstance = new bootstrap.Dropdown(confDropdown, {
+                        trigger: 'manual'
+                    });
+                }
+
+                if (confDropdownContainer && confDropdownMenu && dropdownInstance) {
+                    let hoverTimeout = null;
+                    let hideTimeout = null;
+
+                    // Mouse enter - dropdown'ı aç
+                    confDropdownContainer.addEventListener('mouseenter', function() {
+                        clearTimeout(hideTimeout);
+                        if (hoverTimeout) clearTimeout(hoverTimeout);
+                        
+                        hoverTimeout = setTimeout(function() {
+                            dropdownInstance.show();
+                        }, 100); // 100ms gecikme ile daha smooth
+                    });
+
+                    // Mouse leave - dropdown'ı kapat
+                    confDropdownContainer.addEventListener('mouseleave', function() {
+                        clearTimeout(hoverTimeout);
+                        
+                        hideTimeout = setTimeout(function() {
+                            dropdownInstance.hide();
+                        }, 200); // 200ms gecikme ile kullanıcı dropdown'a geçebilir
+                    });
+
+                    // Dropdown menü içinde de hover'ı koru
+                    confDropdownMenu.addEventListener('mouseenter', function() {
+                        clearTimeout(hideTimeout);
+                    });
+
+                    confDropdownMenu.addEventListener('mouseleave', function() {
+                        hideTimeout = setTimeout(function() {
+                            dropdownInstance.hide();
+                        }, 200);
+                    });
+                }
+            }
+            // Mobilde varsayılan Bootstrap davranışı (click) çalışmaya devam eder
+        })();
+    </script>
 }
 

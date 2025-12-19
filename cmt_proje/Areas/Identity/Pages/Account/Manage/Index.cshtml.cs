@@ -13,13 +13,16 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly cmt_proje.Infrastructure.Data.ConferenceDbContext _dbContext;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            cmt_proje.Infrastructure.Data.ConferenceDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         public string Username { get; set; } = string.Empty;
@@ -53,6 +56,27 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
             [StringLength(100, ErrorMessage = "The {0} must be at most {1} characters long.")]
             public string? Faculty { get; set; }
         }
+        
+        // Helper to load conference context for View info
+        private async Task LoadConferenceContext(int? conferenceId)
+        {
+             if (conferenceId.HasValue)
+            {
+                 var confAcronym = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
+                    System.Linq.Queryable.Select(
+                        System.Linq.Queryable.Where(
+                            Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.AsNoTracking(_dbContext.Conferences), 
+                            c => c.Id == conferenceId.Value),
+                        c => c.Acronym)
+                );
+
+                if (confAcronym != null)
+                {
+                    ViewData["ActiveConferenceId"] = conferenceId.Value;
+                    ViewData["ActiveConferenceAcronym"] = confAcronym;
+                }
+            }
+        }
 
         private async Task LoadAsync(ApplicationUser user)
         {
@@ -73,8 +97,10 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
             };
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? conferenceId = null)
         {
+            await LoadConferenceContext(conferenceId);
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -85,8 +111,10 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? conferenceId = null)
         {
+             await LoadConferenceContext(conferenceId); // Maintain context on valid/invalid post
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -106,7 +134,7 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    return RedirectToPage(new { conferenceId });
                 }
             }
 
@@ -136,7 +164,7 @@ namespace cmt_proje.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+            return RedirectToPage(new { conferenceId });
         }
     }
 }

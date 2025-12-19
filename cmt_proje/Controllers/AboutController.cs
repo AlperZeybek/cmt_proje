@@ -18,15 +18,35 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
-        // GET: /About
-        public IActionResult Index()
+        private async Task SetConferenceContext(int? conferenceId)
         {
-            return RedirectToAction("PastEvents");
+            if (conferenceId.HasValue)
+            {
+                var acronym = await _context.Conferences
+                    .AsNoTracking()
+                    .Where(c => c.Id == conferenceId.Value)
+                    .Select(c => c.Acronym)
+                    .FirstOrDefaultAsync();
+
+                if (acronym != null)
+                {
+                    ViewBag.ActiveConferenceId = conferenceId.Value;
+                    ViewBag.ActiveConferenceAcronym = acronym;
+                }
+            }
+        }
+
+        // GET: /About
+        public IActionResult Index(int? conferenceId = null)
+        {
+            return RedirectToAction("PastEvents", new { conferenceId });
         }
 
         // GET: /About/PastEvents
-        public async Task<IActionResult> PastEvents()
+        public async Task<IActionResult> PastEvents(int? conferenceId = null)
         {
+            await SetConferenceContext(conferenceId);
+
             var content = await _context.AboutContents
                 .AsNoTracking()
                 .Where(a => a.PageKey == "PastEvents")
@@ -48,8 +68,10 @@ namespace cmt_proje.Controllers
         }
 
         // GET: /About/AboutOrganizer
-        public async Task<IActionResult> AboutOrganizer()
+        public async Task<IActionResult> AboutOrganizer(int? conferenceId = null)
         {
+            await SetConferenceContext(conferenceId);
+
             // Veritabanından en güncel veriyi oku
             var content = await _context.AboutContents
                 .AsNoTracking()
@@ -73,8 +95,10 @@ namespace cmt_proje.Controllers
         }
 
         // GET: /About/Testimonials
-        public async Task<IActionResult> Testimonials()
+        public async Task<IActionResult> Testimonials(int? conferenceId = null)
         {
+            await SetConferenceContext(conferenceId);
+
             var content = await _context.AboutContents
                 .AsNoTracking()
                 .Where(a => a.PageKey == "Testimonials")

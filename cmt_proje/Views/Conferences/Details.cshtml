@@ -1,132 +1,803 @@
 ﻿@model cmt_proje.Core.Entities.Conference
 
 @{
-    ViewData["Title"] = "Conference Details";
+    ViewData["Title"] = Model.Name;
+    var isActive = Model.IsActive;
+
+    // 1. Tema ve Renk Mantığı
+    string acronym = Model.Acronym?.ToUpper() ?? "";
+    string logoPath = ""; 
+    string themeClass = "theme-default";
+    string accentColor = "#0d6efd"; // Default Blue
+    string accentColor2 = "#0dcaf0";
+    string bgGradientFrom = "#F6FBFF";
+    string bgGradientTo = "#FFFFFF";
+    string bodyClass = ""; // Body class for gradient override
+
+    if (!string.IsNullOrEmpty(acronym))
+    {
+        if (acronym.Contains("ICINSE"))
+        {
+            themeClass = "theme-icinse";
+            bodyClass = "conf-icinse";
+            logoPath = "/images/ICENSE.png"; // Fixed typo in filename (ICENSE instead of ICINSE)
+            accentColor = "#E57A1F"; // Orange
+            accentColor2 = "#FFB26B";
+        }
+        else if (acronym.Contains("ITCHS"))
+        {
+            themeClass = "theme-itchs";
+            bodyClass = "conf-itchs";
+            logoPath = "/images/ITCHS.png.jpg";
+            accentColor = "#1F7A3E"; // Green
+            accentColor2 = "#8FD3A8";
+        }
+        else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+        {
+            themeClass = "theme-itwccst";
+            bodyClass = "conf-itwccst";
+            logoPath = "/images/ITWCCST.png"; 
+            accentColor = "#1F6FB2"; // Blue
+            accentColor2 = "#8DBCEB";
+        }
+        else 
+        {
+             var baseAcronym = acronym.Split('-')[0];
+             logoPath = $"/images/{baseAcronym}.png";
+        }
+    }
+    else
+    {
+         logoPath = "/images/sau-logo-v2.png"; 
+    }
+
+    // Set body class for gradient override
+    if (!string.IsNullOrEmpty(bodyClass))
+    {
+        ViewData["BodyClass"] = bodyClass;
+    }
 }
 
-<div class="page-header">
-    <h1 class="page-title">
-        <i class="bi bi-globe2"></i>
-        @Model.Name
-    </h1>
-    <p class="page-subtitle">
-        <span class="badge-modern badge-modern-info">@Model.Acronym</span>
-        @if (Model.IsActive)
+<style>
+    /* =========================================
+       DYNAMIC THEME VARIABLES
+       ========================================= */
+    @{
+        // Calculate RGB values for each theme
+        string accentRgb = "229, 122, 31"; // Default ICINSE orange
+        string accent2Rgb = "255, 178, 107";
+        
+        if (acronym.Contains("ICINSE"))
         {
-            <span class="badge-modern badge-modern-success ms-2">
-                <i class="bi bi-check-circle"></i>
-                Active
-            </span>
+            accentRgb = "229, 122, 31"; // Orange #E57A1F
+            accent2Rgb = "255, 178, 107"; // #FFB26B
         }
-        else
+        else if (acronym.Contains("ITCHS"))
         {
-            <span class="badge-modern badge-modern-secondary ms-2">
-                <i class="bi bi-x-circle"></i>
-                Inactive
-            </span>
+            accentRgb = "31, 122, 62"; // Green #1F7A3E
+            accent2Rgb = "143, 211, 168"; // #8FD3A8
         }
-    </p>
-</div>
+        else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+        {
+            accentRgb = "31, 111, 178"; // Blue #1F6FB2
+            accent2Rgb = "141, 188, 235"; // #8DBCEB
+        }
+    }
+    
+    :root {
+        --conf-accent: @accentColor;
+        --conf-accent-2: @accentColor2;
+        --conf-bg-from: @bgGradientFrom;
+        --conf-bg-to: @bgGradientTo;
+        --conf-accent-rgb: @accentRgb;
+        --conf-accent-2-rgb: @accent2Rgb;
+        --conf-logo-watermark: url('@logoPath');
+    }
 
-    <div class="card-modern">
-        <div class="card-modern-body">
-            <div class="details-section">
-                <h3 class="details-section-title">
-                    <i class="bi bi-info-circle"></i>
-                    Conference Information
-                </h3>
+    /* Override bootstrap utilities with theme colors where needed */
+    .text-theme { color: var(--conf-accent) !important; }
+    .bg-theme { background-color: var(--conf-accent) !important; color: white; }
+    .border-theme { border-color: var(--conf-accent) !important; }
 
-                <div class="details-item">
-                    <span class="details-label">Description</span>
-                    <div class="details-value">@Model.Description</div>
-                </div>
+    /* =========================================
+       LAYOUT & COMPONENTS - PREMIUM DESIGN
+       ========================================= */
+    .conference-details-wrapper {
+        min-height: 80vh;
+   
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        padding-bottom: 4rem;
+        position: relative;
+    }
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="details-item">
-                            <span class="details-label">
-                                <i class="bi bi-calendar-event"></i>
-                                Start Date
-                            </span>
-                            <div class="details-value">@Model.StartDate.ToString("dd.MM.yyyy")</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="details-item">
-                            <span class="details-label">
-                                <i class="bi bi-calendar-check"></i>
-                                End Date
-                            </span>
-                            <div class="details-value">@Model.EndDate.ToString("dd.MM.yyyy")</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="details-item">
-                            <span class="details-label">
-                                <i class="bi bi-clock"></i>
-                                Submission Deadline
-                            </span>
-                            <div class="details-value">@Model.SubmissionDeadline.ToString("dd.MM.yyyy")</div>
-                        </div>
-                    </div>
-                </div>
+    /* DETAILS PANEL - Watermark Container */
+    .conference-details-panel {
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        min-height: 100vh;
+    }
 
-                <div class="details-item">
-                    <span class="details-label">
-                        <i class="bi bi-person"></i>
-                        Created By
-                    </span>
-                    <div class="details-value">@Model.CreatedByUser?.Email</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    /* Conference Logo Watermark - Full Coverage, No White Space */
+    .conference-details-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-image: var(--conf-logo-watermark);
+        background-position: center center;
+        background-size: 200% auto;
+        background-repeat: no-repeat;
+        opacity: 0.08;
+        filter: blur(1px);
+        z-index: 0;
+        pointer-events: none;
+    }
 
-    <div class="card-modern mt-4">
-        <div class="card-modern-header">
-            <i class="bi bi-gear"></i>
-            Actions
-        </div>
-        <div class="card-modern-body">
-            <div class="action-buttons">
-                <a asp-controller="Tracks"
-                   asp-action="Index"
-                   asp-route-conferenceId="@Model.Id"
-                   class="btn btn-modern btn-modern-outline">
-                    <i class="bi bi-list-task"></i>
-                    Manage Tracks
-                </a>
 
-                @if (User.IsInRole(AppRoles.Chair))
+    /* =========================================
+       CONFERENCE-SPECIFIC BODY GRADIENT OVERRIDE
+       ========================================= */
+    /* ICINSE: Orange to White gradient */
+    body.conf-icinse {
+        background: linear-gradient(180deg, #F28C28 0%, #F5A962 20%, #F8C896 40%, #FBE5CA 60%, #FDF2E5 80%, #FFFFFF 95%, #FFFFFF 100%) !important;
+        background-attachment: fixed !important;
+        background-size: 100% 100% !important;
+        min-height: 100vh;
+    }
+
+    /* ITCHS: Green to White gradient */
+    body.conf-itchs {
+        background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 20%, #66BB6A 40%, #A5D6A7 60%, #C8E6C9 80%, #E8F5E9 95%, #FFFFFF 100%) !important;
+        background-attachment: fixed !important;
+        background-size: 100% 100% !important;
+        min-height: 100vh;
+    }
+
+    /* =========================================
+       CONFERENCE-SPECIFIC NAVBAR BACKGROUND COLORS
+       ========================================= */
+    /* ICINSE: Orange navbar */
+    body.conf-icinse .main-navbar {
+        background: #F5A962 !important;
+        box-shadow: 0 4px 20px rgba(229, 122, 31, 0.2);
+    }
+
+    /* ITCHS: Green navbar */
+    body.conf-itchs .main-navbar {
+        background: #66BB6A !important;
+        box-shadow: 0 4px 20px rgba(31, 122, 62, 0.2);
+    }
+
+    /* ITWCCST: Blue navbar */
+    body.conf-itwccst .main-navbar {
+        background: #60A5FA !important;
+        box-shadow: 0 4px 20px rgba(31, 111, 178, 0.2);
+    }
+
+    /* =========================================
+       NAVBAR LOGO - REMOVE BACKGROUND AND BOX
+       ========================================= */
+    /* Remove background and border from navbar brand container - All states */
+    body.conf-icinse .main-navbar .navbar-brand,
+    body.conf-itchs .main-navbar .navbar-brand,
+    body.conf-itwccst .main-navbar .navbar-brand,
+    body.conf-icinse .main-navbar .navbar-brand:hover,
+    body.conf-itchs .main-navbar .navbar-brand:hover,
+    body.conf-itwccst .main-navbar .navbar-brand:hover,
+    body.conf-icinse .main-navbar .navbar-brand:active,
+    body.conf-itchs .main-navbar .navbar-brand:active,
+    body.conf-itwccst .main-navbar .navbar-brand:active,
+    body.conf-icinse .main-navbar .navbar-brand:focus,
+    body.conf-itchs .main-navbar .navbar-brand:focus,
+    body.conf-itwccst .main-navbar .navbar-brand:focus {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: inherit !important;
+    }
+    
+    /* Remove background from navbar logo using CSS filters */
+    body.conf-icinse .main-navbar .navbar-logo-img,
+    body.conf-itchs .main-navbar .navbar-logo-img,
+    body.conf-itwccst .main-navbar .navbar-logo-img,
+    body.conf-icinse .main-navbar .navbar-brand:hover .navbar-logo-img,
+    body.conf-itchs .main-navbar .navbar-brand:hover .navbar-logo-img,
+    body.conf-itwccst .main-navbar .navbar-brand:hover .navbar-logo-img {
+        mix-blend-mode: multiply;
+        filter: contrast(1.2) brightness(1.1);
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    
+    /* Remove background from brand-logo container if it exists */
+    body.conf-icinse .main-navbar .brand-logo,
+    body.conf-itchs .main-navbar .brand-logo,
+    body.conf-itwccst .main-navbar .brand-logo,
+    body.conf-icinse .main-navbar .brand-logo:hover,
+    body.conf-itchs .main-navbar .brand-logo:hover,
+    body.conf-itwccst .main-navbar .brand-logo:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Prevent color change on click/hover */
+    body.conf-icinse .main-navbar .navbar-brand:hover,
+    body.conf-itchs .main-navbar .navbar-brand:hover,
+    body.conf-itwccst .main-navbar .navbar-brand:hover {
+        transform: none !important;
+    }
+
+    /* =========================================
+       NAVBAR TEXT - BLACK AND BOLD
+       ========================================= */
+    /* Make all navbar text black and bold, except login/logout buttons */
+    body.conf-icinse .main-navbar,
+    body.conf-itchs .main-navbar,
+    body.conf-itwccst .main-navbar {
+        color: #000000 !important;
+    }
+    
+    /* Navbar brand text */
+    body.conf-icinse .main-navbar .navbar-brand,
+    body.conf-itchs .main-navbar .navbar-brand,
+    body.conf-itwccst .main-navbar .navbar-brand {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Navbar links - black and bold */
+    body.conf-icinse .main-navbar .nav-link,
+    body.conf-itchs .main-navbar .nav-link,
+    body.conf-itwccst .main-navbar .nav-link,
+    body.conf-icinse .main-navbar .app-nav-links .nav-link,
+    body.conf-itchs .main-navbar .app-nav-links .nav-link,
+    body.conf-itwccst .main-navbar .app-nav-links .nav-link,
+    body.conf-icinse .main-navbar .dropdown-toggle,
+    body.conf-itchs .main-navbar .dropdown-toggle,
+    body.conf-itwccst .main-navbar .dropdown-toggle {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Navbar links hover - keep black */
+    body.conf-icinse .main-navbar .nav-link:hover,
+    body.conf-itchs .main-navbar .nav-link:hover,
+    body.conf-itwccst .main-navbar .nav-link:hover,
+    body.conf-icinse .main-navbar .app-nav-links .nav-link:hover,
+    body.conf-itchs .main-navbar .app-nav-links .nav-link:hover,
+    body.conf-itwccst .main-navbar .app-nav-links .nav-link:hover,
+    body.conf-icinse .main-navbar .dropdown-toggle:hover,
+    body.conf-itchs .main-navbar .dropdown-toggle:hover,
+    body.conf-itwccst .main-navbar .dropdown-toggle:hover {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Dropdown menu items - black and bold */
+    body.conf-icinse .main-navbar .dropdown-item,
+    body.conf-itchs .main-navbar .dropdown-item,
+    body.conf-itwccst .main-navbar .dropdown-item {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* User name/greeting text - black and bold */
+    body.conf-icinse .main-navbar .navbar-auth,
+    body.conf-itchs .main-navbar .navbar-auth,
+    body.conf-itwccst .main-navbar .navbar-auth {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Exclude login/logout buttons - keep original styles */
+    body.conf-icinse .main-navbar .navbar-login-btn,
+    body.conf-itchs .main-navbar .navbar-login-btn,
+    body.conf-itwccst .main-navbar .navbar-login-btn,
+    body.conf-icinse .main-navbar button[type="submit"],
+    body.conf-itchs .main-navbar button[type="submit"],
+    body.conf-itwccst .main-navbar button[type="submit"],
+    body.conf-icinse .main-navbar form button,
+    body.conf-itchs .main-navbar form button,
+    body.conf-itwccst .main-navbar form button {
+        /* Keep original button styles - don't override */
+        color: inherit !important;
+        font-weight: inherit !important;
+    }
+
+    /* HERO SECTION - NO BOX, JUST CONTENT */
+    .conf-hero {
+        position: relative;
+        padding: 2.5rem 1.5rem 3rem;
+        margin-bottom: 3rem;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    /* WATERMARK LOGO REMOVED */
+    .conference-details-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .conf-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    /* Container z-index for watermark overlay */
+    .conference-details-panel > .conf-hero {
+        position: relative;
+        z-index: 1;
+    }
+
+    .conference-details-panel > .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Ensure panel covers full width without margins */
+    .conference-details-wrapper {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* HERO LOGO - PREMIUM WITH GLOW */
+    .conf-hero-logo {
+        height: 240px;
+        width: auto;
+        object-fit: contain;
+        margin-bottom: 1.5rem;
+        filter: 
+            drop-shadow(0 10px 30px rgba(var(--conf-accent-rgb), 0.2))
+            drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        z-index: 1;
+    }
+    .conf-hero-logo:hover {
+        transform: translateY(-8px) scale(1.02);
+        filter: 
+            drop-shadow(0 15px 40px rgba(var(--conf-accent-rgb), 0.3))
+            drop-shadow(0 6px 16px rgba(0,0,0,0.12));
+    }
+
+    /* BADGES & TYPOGRAPHY - PREMIUM */
+    .conf-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.625rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        color: var(--conf-accent);
+        box-shadow: 
+            0 4px 20px rgba(var(--conf-accent-rgb), 0.15),
+            0 2px 8px rgba(0,0,0,0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(var(--conf-accent-rgb), 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .conf-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 6px 25px rgba(var(--conf-accent-rgb), 0.2),
+            0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .conf-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .conf-acronym {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #000000 !important;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
+        opacity: 1;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        line-height: 1.2;
+        position: relative;
+        z-index: 10;
+        display: block;
+    }
+
+    .conf-description {
+        font-size: 1.125rem;
+        line-height: 1.75;
+        color: #4a5568;
+        max-width: 800px;
+        margin: 0 auto 1.5rem;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+    }
+
+    /* INFO CARDS - PREMIUM GLASSMORPHISM */
+    .conf-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 2rem;
+        padding: 2.5rem;
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.08),
+            0 2px 8px rgba(0, 0, 0, 0.04),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Subtle gradient overlay on cards */
+    .conf-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(var(--conf-accent-rgb), 0.1) 50%, 
+            transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .conf-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 
+            0 20px 60px rgba(var(--conf-accent-rgb), 0.15),
+            0 8px 24px rgba(0, 0, 0, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 1);
+        border-color: rgba(var(--conf-accent-rgb), 0.3);
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .conf-card:hover::after {
+        opacity: 1;
+    }
+
+    .conf-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--conf-accent), var(--conf-accent-2));
+        opacity: 0;
+        transition: all 0.4s ease;
+        border-radius: 2rem 2rem 0 0;
+    }
+    
+    .conf-card:hover::before {
+        opacity: 1;
+        height: 5px;
+        box-shadow: 0 2px 8px rgba(var(--conf-accent-rgb), 0.3);
+    }
+
+    .conf-card-icon {
+        font-size: 2.5rem;
+        color: var(--conf-accent);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, 
+            rgba(var(--conf-accent-rgb), 0.1) 0%, 
+            rgba(var(--conf-accent-2-rgb), 0.1) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 1.25rem;
+        width: 80px;
+        height: 80px;
+        box-shadow: 
+            0 8px 24px rgba(var(--conf-accent-rgb), 0.15),
+            0 2px 8px rgba(0,0,0,0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(var(--conf-accent-rgb), 0.15);
+        transition: all 0.3s ease;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .conf-card:hover .conf-card-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 
+            0 12px 32px rgba(var(--conf-accent-rgb), 0.25),
+            0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .conf-card-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6b7280;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    .conf-card-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1f2937;
+        line-height: 1.5;
+        letter-spacing: -0.01em;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .conf-card-sub {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 500;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* SPECIAL DEADLINE CARD - PREMIUM */
+    .conf-card.deadline {
+        background: linear-gradient(135deg, var(--conf-accent) 0%, var(--conf-accent-2) 100%);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 
+            0 8px 32px rgba(var(--conf-accent-rgb), 0.3),
+            0 2px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    
+    .conf-card.deadline:hover {
+        box-shadow: 
+            0 20px 60px rgba(var(--conf-accent-rgb), 0.4),
+            0 8px 24px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transform: translateY(-12px) scale(1.02);
+    }
+    
+    .conf-card.deadline .conf-card-icon {
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(10px);
+        color: white;
+        box-shadow: 
+            0 8px 24px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .conf-card.deadline:hover .conf-card-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 
+            0 12px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    
+    .conf-card.deadline .conf-card-label {
+        color: rgba(255,255,255,0.9);
+    }
+    
+    .conf-card.deadline .conf-card-value {
+        color: white;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .conf-card.deadline .conf-card-sub {
+        color: rgba(255,255,255,0.9);
+    }
+
+    /* RESPONSIVE - PREMIUM */
+    @@media (max-width: 768px) {
+        .conf-hero {
+            padding: 2rem 1rem 2.5rem;
+            border-radius: 2rem;
+        }
+        
+        .conf-hero-logo { 
+            height: 160px; 
+            filter: 
+                drop-shadow(0 8px 24px rgba(var(--conf-accent-rgb), 0.2))
+                drop-shadow(0 3px 8px rgba(0,0,0,0.1));
+        }
+        
+        .conf-title { 
+            font-size: 2rem; 
+            line-height: 1.2;
+        }
+        
+        .conf-acronym {
+            font-size: 2.25rem;
+        }
+        
+        .conf-description {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .conf-card {
+            padding: 2rem 1.5rem;
+            border-radius: 1.5rem;
+        }
+        
+        .conf-card-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 2rem;
+        }
+        
+        .conf-card-value {
+            font-size: 1.15rem;
+        }
+    }
+    
+    @@media (max-width: 480px) {
+        .conf-hero {
+            padding: 1.5rem 0.75rem 2rem;
+        }
+        
+        .conf-hero-logo { 
+            height: 140px; 
+        }
+        
+        .conf-title { 
+            font-size: 1.75rem; 
+        }
+        
+        .conf-acronym {
+            font-size: 2rem;
+        }
+        
+        .conf-card {
+            padding: 1.75rem 1.25rem;
+        }
+    }
+</style>
+
+<div class="conference-details-wrapper @themeClass">
+    
+    <!-- Details Panel with Watermark -->
+    <div class="conference-details-panel">
+        
+        <!-- Hero Section -->
+        <div class="conf-hero">
+            <div class="container conf-hero-content text-center">
+                
+                <!-- Status Badge - At the Top -->
+                @if (isActive)
                 {
-                    <a asp-controller="Submissions"
-                       asp-action="Index"
-                       asp-route-conferenceId="@Model.Id"
-                       class="btn btn-modern btn-modern-outline">
-                        <i class="bi bi-file-earmark-text"></i>
-                        View Submissions
-                    </a>
-
-                    <a asp-controller="ReviewAssignments"
-                       asp-action="Index"
-                       asp-route-conferenceId="@Model.Id"
-                       class="btn btn-modern btn-modern-outline">
-                        <i class="bi bi-check2-square"></i>
-                        Manage Review Assignments
-                    </a>
-
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-modern btn-modern-outline">
-                        <i class="bi bi-pencil"></i>
-                        Edit Conference
-                    </a>
+                    <div class="conf-badge">
+                        <i class="bi bi-circle-fill me-2" style="font-size: 0.6em;"></i>
+                        Active Conference
+                    </div>
                 }
+                else
+                {
+                    <div class="conf-badge" style="background: #f0f0f0; color: #666; border-color: #ddd;">
+                        <i class="bi bi-archive-fill me-2" style="font-size: 0.6em;"></i>
+                        Archived
+                    </div>
+                }
+
+                <!-- Large Logo - Below Badge with spacing -->
+                <div style="margin-top: 2rem;">
+                    <img src="@logoPath" alt="@Model.Name Logo" class="conf-hero-logo" 
+                         onerror="this.style.display='none'" />
+                </div>
+
+                <!-- Conference Title - Below Logo -->
+                <h1 class="conf-title">@Model.Name</h1>
+
+                <!-- Acronym - Below Title, Black Color -->
+                <div class="conf-acronym">@Model.Acronym</div>
+
+                <!-- Description -->
+                <div class="conf-description">
+                    @Model.Description
+                </div>
+
             </div>
         </div>
+
+        <!-- Details Grid -->
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                
+                <!-- Key Dates -->
+                <div class="col-md-4">
+                    <div class="conf-card">
+                        <div class="conf-card-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div class="conf-card-label">Conference Dates</div>
+                        <div class="conf-card-value">
+                            @Model.StartDate.ToString("dd MMMM yyyy") - @Model.EndDate.ToString("dd MMMM yyyy")
+                        </div>
+                        <div class="conf-card-sub">
+                            <i class="bi bi-geo-alt me-1"></i> Sakarya University
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submission Deadline (Highlighted) -->
+                <div class="col-md-4">
+                    <div class="conf-card deadline">
+                        <div class="conf-card-icon">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <div class="conf-card-label">Submission Deadline</div>
+                        <div class="conf-card-value">
+                            @Model.SubmissionDeadline.ToString("dd MMMM yyyy")
+                        </div>
+                        <div class="conf-card-sub">
+                            Don't miss the opportunity to submit your papers.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conference Chair -->
+                <div class="col-md-4">
+                    <div class="conf-card">
+                        <div class="conf-card-icon">
+                            <i class="bi bi-person-workspace"></i>
+                        </div>
+                        <div class="conf-card-label">Conference Chair</div>
+                        <div class="conf-card-value">
+                            @(Model.CreatedByUser?.FullName ?? "Scientific Committee")
+                        </div>
+                        <div class="conf-card-sub">
+                            Organizer
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Navigation Note -->
+            <div class="text-center mt-5 text-muted small opacity-75">
+                <i class="bi bi-info-circle me-1"></i>
+                Use the navigation menu above to access submission tracks and other details.
+            </div>
+        </div>
+
     </div>
 
-<div class="mt-4">
-    <a asp-action="Index" class="btn btn-modern btn-modern-secondary">
-        <i class="bi bi-arrow-left"></i>
-        Back to List
-    </a>
 </div>
+

@@ -21,7 +21,7 @@
 </head>
 <body>
     <!-- Public Header - Only for non-home and non-login pages -->
-    @if ((ViewContext.RouteData.Values["controller"]?.ToString() != "Home" || ViewContext.RouteData.Values["action"]?.ToString() != "Index") && !Context.Request.Path.Value.Contains("/Account/Login"))
+    @if ((ViewContext.RouteData.Values["controller"]?.ToString() != "Home" || ViewContext.RouteData.Values["action"]?.ToString() != "Index") && !Context.Request.Path.Value.Contains("/Account/Login") && !Context.Request.Path.Value.Contains("/Account/Register"))
     {
         <header class="public-header">
             <nav class="navbar navbar-expand-lg">
@@ -39,9 +39,6 @@
                         <ul class="navbar-nav mx-auto public-nav-links">
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="About" asp-action="AboutOrganizer">About Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Conferences" asp-action="Index">Conferences</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="About" asp-action="PastEvents">Past Events</a>
@@ -75,58 +72,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-columns">
-                <!-- Column 1: Academic Platform -->
-                <div class="footer-column footer-column-main">
-                    <h5 class="footer-column-title">Academic Platform</h5>
-                    <p class="footer-column-description">Streamline your academic conference management with our comprehensive platform.</p>
-                </div>
-
-                <!-- Column 2: Navigation -->
-                <div class="footer-column">
-                    <ul class="footer-links">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Conferences" asp-action="Index">Conferences</a></li>
-                        <li><a asp-controller="About" asp-action="Index">About</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Support -->
-                <div class="footer-column">
-                    <ul class="footer-links">
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Contact Support</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 4: Follow & Newsletter -->
-                <div class="footer-column footer-column-newsletter">
-                    <h6 class="footer-column-heading">Follow Us</h6>
-                    <div class="footer-social-icons">
-                        <a href="#" class="footer-social-icon" aria-label="LinkedIn">
-                            <i class="bi bi-linkedin"></i>
-                        </a>
-                        <a href="#" class="footer-social-icon" aria-label="Twitter">
-                            <i class="bi bi-twitter"></i>
-                        </a>
-                        <a href="#" class="footer-social-icon" aria-label="Facebook">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                    </div>
-                    <h6 class="footer-column-heading footer-newsletter-heading">Subscribe to Newsletter</h6>
-                    <input type="email" class="footer-newsletter-input" placeholder="Email address" />
-                </div>
-            </div>
-
-            <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <p>&copy; 2025 SAU Conferences. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <partial name="_Footer" />
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
@@ -264,143 +210,7 @@
         }
 
         /* Site Footer Styles - Modern Dark Design */
-        .site-footer {
-            background: #1A202C;
-            color: #E5E7EB;
-            padding: 3rem 0;
-          
-            width: 100%;
-        }
 
-        .footer-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        .footer-columns {
-            display: flex;
-            justify-content: space-between;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column {
-            flex: 1;
-        }
-
-        .footer-column-main {
-            max-width: 320px;
-        }
-
-        .footer-column-title {
-            color: #FFFFFF;
-            font-weight: 600;
-            font-size: 1.125rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-column-description {
-            color: #D1D5DB;
-            font-size: 0.9375rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .footer-column-heading {
-            color: #FFFFFF;
-            font-weight: 600;
-            font-size: 0.9375rem;
-            margin-bottom: 1rem;
-            margin-top: 0;
-        }
-
-        .footer-newsletter-heading {
-            margin-top: 1.5rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-links a {
-            color: #D1D5DB;
-            text-decoration: none;
-            font-size: 0.9375rem;
-            transition: color 0.2s ease;
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: #FFFFFF;
-        }
-
-        .footer-social-icons {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-social-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            color: #FFFFFF;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-        }
-
-        .footer-social-icon:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-            color: #FFFFFF;
-        }
-
-        .footer-newsletter-input {
-            width: 100%;
-            max-width: 260px;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #FFFFFF;
-            font-size: 0.9375rem;
-            transition: all 0.2s ease;
-        }
-
-        .footer-newsletter-input::placeholder {
-            color: #9CA3AF;
-        }
-
-        .footer-newsletter-input:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .footer-bottom {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            text-align: center;
-        }
-
-        .footer-bottom p {
-            color: #9CA3AF;
-            font-size: 0.8rem;
-            margin: 0;
-        }
 
         /* Responsive */
         @@media (max-width: 991.98px) {
@@ -459,22 +269,7 @@
                 text-align: center;
             }
 
-            .site-footer {
-                padding: 2rem 0;
-            }
 
-            .footer-columns {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .footer-column-main {
-                max-width: 100%;
-            }
-
-            .footer-newsletter-input {
-                max-width: 100%;
-            }
         }
     </style>
 </body>

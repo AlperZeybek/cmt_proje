@@ -118,29 +118,73 @@ namespace cmt_proje.Controllers
             if (isChair)
                 return RedirectToAction(nameof(Index), new { conferenceId = submission.ConferenceId });
 
-            return RedirectToAction(nameof(My));
+            return RedirectToAction(nameof(Index), new { conferenceId = submission.ConferenceId });
         }
 
         // =====================================================================
         //  TÜM SUBMISSION'LAR (CHAIR İÇİN)  /Submissions?conferenceId=1
         // Yetki: Chair
         // =====================================================================
-        [Authorize(Roles = AppRoles.Chair)]
-        public async Task<IActionResult> Index(int conferenceId)
+        // =====================================================================
+        //  SUBMISSIONS LIST
+        //  Chair: Sees all submissions for the conference (or specific track)
+        //  Author: Sees ONLY their own submissions IF they have any for this conference/track
+        // =====================================================================
+        public async Task<IActionResult> Index(int conferenceId, int? trackId = null)
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isChair = User.IsInRole(AppRoles.Chair);
+
+            // If not chair, check if user is Author and has submissions for this conference/track
+            if (!isChair)
+            {
+                bool hasSubmissions;
+                if (trackId.HasValue)
+                {
+                   hasSubmissions = await _context.Submissions
+                        .AnyAsync(s => s.ConferenceId == conferenceId && s.TrackId == trackId.Value && s.SubmittedByUserId == userId);
+                }
+                else
+                {
+                   hasSubmissions = await _context.Submissions
+                        .AnyAsync(s => s.ConferenceId == conferenceId && s.SubmittedByUserId == userId);
+                }
+
+                // If Author has NO submissions for this scope, deny access
+                if (!hasSubmissions)
+                {
+                    return Forbid();
+                }
+            }
+
             var conference = await _context.Conferences.FindAsync(conferenceId);
             if (conference == null)
                 return NotFound();
 
             ViewBag.Conference = conference;
+            ViewBag.ActiveConferenceId = conferenceId;
+            ViewBag.ActiveConferenceAcronym = conference.Acronym;
 
-            var submissions = await _context.Submissions
+            var query = _context.Submissions
                 .Where(s => s.ConferenceId == conferenceId)
                 .Include(s => s.Track)
                 .Include(s => s.SubmittedByUser)
-                .Include(s => s.Decision) // >>> Decision da yüklensin
+                .Include(s => s.Decision)
                 .OrderByDescending(s => s.SubmittedAt)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (trackId.HasValue)
+            {
+                query = query.Where(s => s.TrackId == trackId.Value);
+            }
+
+            // If not Chair (meaning they are Author with submissions), filter to only their submissions
+            if (!isChair)
+            {
+                query = query.Where(s => s.SubmittedByUserId == userId);
+            }
+
+            var submissions = await query.ToListAsync();
 
             return View(submissions);
         }
@@ -194,11 +238,27 @@ namespace cmt_proje.Controllers
 
             var vm = new SubmissionCreateViewModel
             {
-                ConferenceId = conferenceId
+                ConferenceId = conferenceId,
+                Authors = new List<AuthorInput>()
             };
 
             ViewBag.Conference = conference;
             ViewBag.TrackList = new SelectList(conference.Tracks.Where(t => t.IsActive), "Id", "Name");
+
+            // Set body class for conference-specific background gradient
+            string acronym = conference.Acronym?.ToUpper() ?? "";
+            if (acronym.Contains("ICINSE"))
+            {
+                ViewData["BodyClass"] = "conf-icinse";
+            }
+            else if (acronym.Contains("ITCHS"))
+            {
+                ViewData["BodyClass"] = "conf-itchs";
+            }
+            else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+            {
+                ViewData["BodyClass"] = "conf-itwccst";
+            }
 
             return View(vm);
         }
@@ -310,6 +370,33 @@ namespace cmt_proje.Controllers
             _context.Submissions.Add(submission);
             await _context.SaveChangesAsync();
 
+            // Save authors
+            if (model.Authors != null && model.Authors.Count > 0)
+            {
+                bool isFirstAuthor = true;
+                foreach (var authorInput in model.Authors)
+                {
+                    if (authorInput != null && !string.IsNullOrWhiteSpace(authorInput.FullName))
+                    {
+                        var author = new SubmissionAuthor
+                        {
+                            SubmissionId = submission.Id,
+                            FullName = authorInput.FullName.Trim(),
+                            Email = string.Empty, // Email not required anymore
+                            Affiliation = string.Empty, // Affiliation not required anymore
+                            IsCorresponding = isFirstAuthor, // First author is corresponding by default
+                            CreatedAt = DateTime.Now
+                        };
+                        _context.SubmissionAuthors.Add(author);
+                        isFirstAuthor = false;
+                    }
+                }
+                if (_context.ChangeTracker.HasChanges())
+                {
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             // Bilgilendirme maili
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser != null && !string.IsNullOrEmpty(currentUser.Email))
@@ -337,7 +424,7 @@ Merhaba Sayın {fullName},
             }
             else
             {
-                return RedirectToAction(nameof(My));
+                return RedirectToAction(nameof(Index), new { conferenceId = model.ConferenceId });
             }
         }
 
@@ -486,7 +573,7 @@ Merhaba Sayın {fullName},
             }
             else
             {
-                return RedirectToAction(nameof(My));
+                return RedirectToAction(nameof(Index), new { conferenceId });
             }
         }
     }

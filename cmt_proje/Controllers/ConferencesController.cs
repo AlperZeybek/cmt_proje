@@ -42,6 +42,10 @@ namespace cmt_proje.Controllers
             if (conf == null)
                 return NotFound();
 
+            // Set Active Conference ID for Layout Navbar Switching
+            ViewBag.ActiveConferenceId = id;
+            ViewBag.ActiveConferenceAcronym = conf.Acronym;
+
             return View(conf);
         }
 
@@ -222,7 +226,7 @@ namespace cmt_proje.Controllers
         }
 
         // GET: /Conferences/DeleteSuccess
-        // Silme başarı sayfası - 5 saniye sonra Dashboard'a yönlendirir
+        // Silme başarı sayfası - 5 saniye sonra Home'a yönlendirir
         [Authorize(Roles = AppRoles.Chair)]
         [HttpGet]
         public IActionResult DeleteSuccess()

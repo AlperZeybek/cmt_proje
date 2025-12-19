@@ -29,13 +29,13 @@
         </div>
         
         <p class="text-muted">
-            Dashboard sayfasına yönlendiriliyorsunuz...
+            Home sayfasına yönlendiriliyorsunuz...
         </p>
         
         <div class="mt-4">
-            <a asp-controller="Home" asp-action="Index" class="btn btn-modern btn-modern-primary">
+            <a asp-controller="Home" asp-action="Home" class="btn btn-modern btn-modern-primary">
                 <i class="bi bi-speedometer2"></i>
-                Dashboard'a Git
+                Home'a Git
             </a>
         </div>
     </div>
@@ -43,9 +43,9 @@
 
 @section Scripts {
     <script>
-        // 5 saniye sonra Dashboard'a yönlendir
+        // 5 saniye sonra Home'a yönlendir
         setTimeout(function() {
-            window.location.href = '@Url.Action("Index", "Home")';
+            window.location.href = '@Url.Action("Home", "Home")';
         }, 5000);
         
         // Geri sayım gösterimi (opsiyonel)

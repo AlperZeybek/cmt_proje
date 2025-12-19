@@ -19,24 +19,31 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
-        // GET: /ScientificCommittee/Index (Public)
+        // GET: /ScientificCommittee/Index (Public/Portal)
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? conferenceId)
         {
+            if (conferenceId == null)
+            {
+                return NotFound();
+            }
+
+            // Set Active Conference ID for Layout
+            ViewBag.ActiveConferenceId = conferenceId;
+
+            var conference = await _context.Conferences.FindAsync(conferenceId);
+            ViewBag.ActiveConferenceAcronym = conference?.Acronym;
+            ViewBag.Conference = conference; // Add Conference object to ViewBag
+
             var members = await _context.ScientificCommitteeMembers
-                .Where(m => m.IsActive)
+                .Where(m => m.IsActive && m.ConferenceId == conferenceId)
                 .OrderBy(m => m.DisplayOrder)
                 .ThenBy(m => m.FullName)
                 .ToListAsync();
 
-            // Aktif konferans bilgisini al (başlık için)
-            var activeConference = await _context.Conferences
-                .Where(c => c.IsActive)
-                .OrderByDescending(c => c.CreatedAt)
-                .FirstOrDefaultAsync();
 
-            ViewBag.ConferenceName = activeConference?.Name ?? "Conference";
-            ViewBag.ConferenceYear = activeConference?.StartDate.Year ?? DateTime.Now.Year;
+            ViewBag.ConferenceName = conference?.Name ?? "Conference";
+            ViewBag.ConferenceYear = conference?.StartDate.Year ?? DateTime.Now.Year;
 
             return View(members);
         }
@@ -77,8 +84,11 @@ namespace cmt_proje.Controllers
 
         // GET: /ScientificCommittee/Create
         [Authorize(Roles = AppRoles.Chair)]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Conferences = await _context.Conferences
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
             return View();
         }
 
@@ -86,7 +96,7 @@ namespace cmt_proje.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AppRoles.Chair)]
-        public async Task<IActionResult> Create([Bind("FullName,Affiliation,Country,PhotoUrl,ShortBio,WebSiteUrl,IsActive,DisplayOrder")] ScientificCommitteeMember member)
+        public async Task<IActionResult> Create([Bind("FullName,Affiliation,Country,PhotoUrl,ShortBio,WebSiteUrl,IsActive,DisplayOrder,ConferenceId")] ScientificCommitteeMember member)
         {
             if (ModelState.IsValid)
             {
@@ -96,6 +106,8 @@ namespace cmt_proje.Controllers
                 TempData["SuccessMessage"] = "Scientific Committee member has been added successfully.";
                 return RedirectToAction(nameof(Admin));
             }
+            
+            ViewBag.Conferences = await _context.Conferences.OrderByDescending(c => c.CreatedAt).ToListAsync();
             return View(member);
         }
 
@@ -114,6 +126,7 @@ namespace cmt_proje.Controllers
                 return NotFound();
             }
 
+            ViewBag.Conferences = await _context.Conferences.OrderByDescending(c => c.CreatedAt).ToListAsync();
             return View(member);
         }
 
@@ -121,7 +134,7 @@ namespace cmt_proje.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = AppRoles.Chair)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Affiliation,Country,PhotoUrl,ShortBio,WebSiteUrl,IsActive,DisplayOrder,CreatedAt")] ScientificCommitteeMember member)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Affiliation,Country,PhotoUrl,ShortBio,WebSiteUrl,IsActive,DisplayOrder,CreatedAt,ConferenceId")] ScientificCommitteeMember member)
         {
             if (id != member.Id)
             {
@@ -149,6 +162,7 @@ namespace cmt_proje.Controllers
                 }
                 return RedirectToAction(nameof(Admin));
             }
+            ViewBag.Conferences = await _context.Conferences.OrderByDescending(c => c.CreatedAt).ToListAsync();
             return View(member);
         }
 

@@ -29,5 +29,24 @@ namespace cmt_proje.Models
         [Required(ErrorMessage = "Please select a presentation type.")]
         [Display(Name = "Presentation Type")]
         public PresentationType? PresentationType { get; set; }
+
+        [Display(Name = "Authors")]
+        public List<AuthorInput>? Authors { get; set; }
+    }
+
+    public class AuthorInput
+    {
+        [StringLength(200)]
+        [Display(Name = "Full Name")]
+        public string FullName { get; set; } = string.Empty;
+
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        [StringLength(200)]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = string.Empty;
+
+        [StringLength(300)]
+        [Display(Name = "Affiliation")]
+        public string Affiliation { get; set; } = string.Empty;
     }
 }

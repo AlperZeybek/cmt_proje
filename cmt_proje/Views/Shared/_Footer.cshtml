@@ -1,0 +1,118 @@
+<footer class="app-footer mt-auto">
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <!-- Brand Column -->
+            <div class="col-lg-4 col-md-6">
+                <div class="footer-logo mb-3">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <h5 class="footer-brand-title">Conference Manager</h5>
+                <p class="footer-brand-subtitle">Academic Platform</p>
+                <p class="footer-description">
+                    Streamline your academic conference management with our comprehensive platform.
+                </p>
+            </div>
+
+            <!-- Quick Links Column -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="footer-section-title">Quick Links</h6>
+                <ul class="footer-links">
+                    <li>
+                        <a asp-controller="Home" asp-action="Home">
+                            <i class="bi bi-speedometer2"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Conferences" asp-action="Index">
+                            <i class="bi bi-globe2"></i>
+                            Conferences
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Submissions" asp-action="My">
+                            <i class="bi bi-file-earmark-text"></i>
+                            My Submissions
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Reviews" asp-action="MyAssignments">
+                            <i class="bi bi-check2-square"></i>
+                            My Reviews
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Resources Column -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="footer-section-title">Resources</h6>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-book"></i>
+                            Documentation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-question-circle"></i>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-envelope"></i>
+                            Contact Support
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <i class="bi bi-person-circle"></i>
+                            Account Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Legal Column -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="footer-section-title">Legal</h6>
+                <ul class="footer-links">
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-shield-check"></i>
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-file-text"></i>
+                            Terms of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-info-circle"></i>
+                            About Us
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="footer-copyright mb-0">
+                        &copy; @DateTime.Now.Year <strong>Conference Manager</strong>. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="footer-version">v1.0.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -11,7 +11,23 @@
     <p><strong>Conference:</strong> @Model.ConferenceName</p>
     <p><strong>Track:</strong> @Model.TrackName</p>
     <p><strong>Author:</strong> @Model.AuthorEmail</p>
-    <p><strong>Presentation Type:</strong> @(Model.PresentationType == PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")</p>
+        <p><strong>Presentation Type:</strong> 
+            @switch (Model.PresentationType)
+            {
+                case PresentationType.Oral:
+                    @:Oral Presentation
+                    break;
+                case PresentationType.Poster:
+                    @:Poster Presentation
+                    break;
+                case PresentationType.InvitedSpeaker:
+                    @:Invited Speaker
+                    break;
+                default:
+                    @:Unknown
+                    break;
+            }
+        </p>
     <p><strong>Submission status:</strong> @Model.SubmissionStatus</p>
 </div>
 

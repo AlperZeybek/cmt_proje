@@ -20,6 +20,14 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="mb-3">
+                        <label asp-for="ConferenceId" class="form-label">Conference <span class="text-danger">*</span></label>
+                        <select asp-for="ConferenceId" class="form-select" asp-items="@(new SelectList(ViewBag.Conferences, "Id", "Name"))">
+                            <option value="">-- Select Conference --</option>
+                        </select>
+                        <span asp-validation-for="ConferenceId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
                         <label asp-for="FullName" class="form-label">Full Name <span class="text-danger">*</span></label>
                         <input asp-for="FullName" class="form-control" placeholder="John Doe" />
                         <span asp-validation-for="FullName" class="text-danger"></span>

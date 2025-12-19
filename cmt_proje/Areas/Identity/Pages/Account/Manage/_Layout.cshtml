@@ -1,0 +1,47 @@
+@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+    
+    // Force dashboard styling
+    ViewData["BodyClass"] = "dashboard-page";
+}
+
+<div class="container py-5 dashboard-wrapper">
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-title-section text-center">
+            <h1 class="dashboard-main-title">Account Management</h1>
+            <p class="dashboard-subtitle">Manage your profile information and security settings.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 h-100 sidebar-card" style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-radius: 24px;">
+                <div class="card-body p-4">
+                    <partial name="_ManageNav" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+             <div class="card border-0 h-100 content-card" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-radius: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.05);">
+                <div class="card-body p-5">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
+
+@section Styles {
+    @RenderSection("Styles", required: false)
+}

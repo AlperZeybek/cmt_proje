@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace cmt_proje.Core.Entities
 {
@@ -30,6 +31,13 @@ namespace cmt_proje.Core.Entities
         public bool IsActive { get; set; } = true;
 
         public int DisplayOrder { get; set; } = 0; // Sıralama için
+
+        // Foreign Key for Conference
+        [Required]
+        public int ConferenceId { get; set; }
+        
+        [ForeignKey("ConferenceId")]
+        public virtual Conference? Conference { get; set; }
     }
 }
 

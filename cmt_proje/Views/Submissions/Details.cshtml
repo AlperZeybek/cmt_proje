@@ -76,7 +76,21 @@
                                 Presentation Type
                             </span>
                             <div class="details-value">
-                                @(Model.PresentationType == cmt_proje.Core.Enums.PresentationType.Oral ? "Oral Presentation" : "Poster Presentation")
+                                @switch (Model.PresentationType)
+                                {
+                                    case cmt_proje.Core.Enums.PresentationType.Oral:
+                                        @:Oral Presentation
+                                        break;
+                                    case cmt_proje.Core.Enums.PresentationType.Poster:
+                                        @:Poster Presentation
+                                        break;
+                                    case cmt_proje.Core.Enums.PresentationType.InvitedSpeaker:
+                                        @:Invited Speaker
+                                        break;
+                                    default:
+                                        @:Unknown
+                                        break;
+                                }
                             </div>
                         </div>
                     </div>

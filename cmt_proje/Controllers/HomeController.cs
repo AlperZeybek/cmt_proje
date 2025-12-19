@@ -21,10 +21,10 @@ namespace cmt_proje.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Eğer kullanıcı giriş yapmışsa Dashboard'a yönlendir
+            // Eğer kullanıcı giriş yapmışsa Home'a yönlendir
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("Home");
             }
 
             // Public landing page için aktif konferansları getir
@@ -38,7 +38,7 @@ namespace cmt_proje.Controllers
         }
 
         [Authorize]
-        public IActionResult Dashboard()
+        public IActionResult Home()
         {
             return View();
         }
@@ -57,23 +57,26 @@ namespace cmt_proje.Controllers
         }
 
         /// <summary>
-        /// Decisions sayfasına yönlendir - İlk aktif konferansın submissions sayfasına git (Chair için)
+        /// Decisions sayfasına yönlendir - Konferans seçim sayfasına git (Chair için)
         /// </summary>
         [Microsoft.AspNetCore.Authorization.Authorize(Roles = AppRoles.Chair)]
-        public async Task<IActionResult> GoToDecisions()
+        public IActionResult GoToDecisions()
         {
-            var firstActiveConference = await _context.Conferences
-                .Where(c => c.IsActive)
+            return RedirectToAction("SelectConferenceForDecisions");
+        }
+
+        /// <summary>
+        /// Decisions için Konferans Seçim Sayfası
+        /// </summary>
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = AppRoles.Chair)]
+        public async Task<IActionResult> SelectConferenceForDecisions()
+        {
+            var conferences = await _context.Conferences
+                .Include(c => c.CreatedByUser)
                 .OrderByDescending(c => c.CreatedAt)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
 
-            if (firstActiveConference != null)
-            {
-                return RedirectToAction("Index", "Submissions", new { conferenceId = firstActiveConference.Id });
-            }
-
-            // Aktif konferans yoksa, tüm konferansları göster
-            return RedirectToAction("Index", "Conferences");
+            return View(conferences);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

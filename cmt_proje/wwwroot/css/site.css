@@ -7,28 +7,38 @@ body {
 }
 
 body {
-    background: #f4f5f8;
+    background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%) !important;
+    background-attachment: fixed !important;
+    background-size: 100% 100% !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: #1e293b;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
 /* HEADER & NAVBAR */
 .main-header {
-    position: sticky;
+    position: relative;
     top: 0;
     z-index: 1030;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: transparent;
+    box-shadow: none;
 }
 
 .main-navbar {
-    background: #023E7D;
-    padding: 0.75rem 0;
-    backdrop-filter: blur(10px);
+    background: #B9C7DB !important;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 1);
+    margin: 40px auto 0;
+    max-width: calc(100% - 80px);
+    padding: 0.75rem 1.5rem;
 }
 
 .main-navbar .navbar-brand {
-    color: #ffffff;
+    color: #1E40AF;
     font-size: 1.1rem;
     transition: transform 0.2s ease;
 }
@@ -48,6 +58,18 @@ body {
     justify-content: center;
     font-size: 1.25rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navbar Logo Image */
+.navbar-logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover .navbar-logo-img {
+    transform: translateY(-1px);
 }
 
 .brand-title {
@@ -71,7 +93,7 @@ body {
 
 .app-nav-links .nav-link {
     position: relative;
-    color: rgba(255, 255, 255, 0.9);
+    color: #4B5563;
     font-weight: 500;
     font-size: 0.95rem;
     padding: 0.5rem 1rem;
@@ -85,15 +107,31 @@ body {
     margin-right: 0.4rem;
 }
 
+.app-nav-links .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: #1E40AF;
+    transition: width 0.3s ease;
+}
+
 .app-nav-links .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+    color: #1E40AF;
     transform: translateY(-1px);
+}
+
+.app-nav-links .nav-link:hover::after {
+    width: 80%;
 }
 
 .app-nav-links .nav-link.active {
     background-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+    color: #1E40AF;
     font-weight: 600;
 }
 
@@ -105,12 +143,12 @@ body {
     transform: translateX(-50%);
     width: 60%;
     height: 2px;
-    background: #ffffff;
+    background: #1E40AF;
     border-radius: 2px;
 }
 
 .navbar-auth {
-    color: #ffffff;
+    color: #1F2937;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -125,20 +163,36 @@ body {
 
 .user-avatar {
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #4B5563;
+}
+
+.user-greeting-text {
+    color: #1F2937;
+    font-size: 0.875rem;
+}
+
+.user-name-text {
+    color: #111827;
+    font-weight: 600;
 }
 
 .logout-btn {
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    transition: all 0.2s ease;
+    background: #1E40AF;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9375rem;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
 }
 
 .logout-btn:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: #ffffff;
-    transform: translateY(-1px);
+    background: #1E3A8A;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
+    color: #FFFFFF;
 }
 
 /* Ana içerik - Tüm sayfalar için */
@@ -161,19 +215,19 @@ body {
 main .container,
 body>.container:not(.app-footer .container),
 .container:not(.dashboard-wrapper):not(.manage-container):not(.app-footer .container) {
-    background: #ffffff;
+   
     border-radius: 12px;
     padding: 2rem;
     margin: 2rem auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
     max-width: 90%;
-    display: flex;
+    
     flex-direction: column;
     min-height: 0;
     flex: 0 0 auto;
 }
 
-/* Dashboard sayfasında layout container'ı şeffaf olmalı */
+/* Home sayfasında layout container'ı şeffaf olmalı */
 body:has(.dashboard-page)>.container,
 body:has(.dashboard-page) main .container {
     background: transparent !important;
@@ -182,57 +236,53 @@ body:has(.dashboard-page) main .container {
     padding: 0 !important;
 }
 
-/* FOOTER - Modern Design */
+/* FOOTER - Modern Dark Design (Global) */
 .app-footer {
-    background: #f4f5f8;
-    border-top: 1px solid #E5E7EB;
-    padding: 0;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    flex-shrink: 0;
+    background: #1A202C !important;
+    border-top: none;
+    box-shadow: none;
+    padding: 3rem 0;
     margin-top: auto;
+    color: #D1D5DB;
+    width: 100%;
 }
 
 .app-footer .container {
-    background: #ffffff;
-    border-radius: 16px 16px 0 0;
-    padding: 3.5rem 2.5rem 1.5rem;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+    background: transparent !important;
+    border-radius: 0;
+    padding: 0 2.5rem;
+    box-shadow: none;
+    max-width: 1280px;
+    border: none;
     margin: 0 auto;
-    max-width: 90%;
-    border: 1px solid #E5E7EB;
-    border-bottom: none;
 }
 
 /* Footer Brand */
-
 .footer-logo {
     width: 56px;
     height: 56px;
-    background: rgba(2, 62, 125, 0.15);
+    background: rgba(59, 130, 246, 0.15);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.75rem;
-    color: #023E7D;
+    color: #3B82F6;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 12px rgba(2, 62, 125, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .footer-brand-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #023E7D;
+    color: #FFFFFF;
     margin-bottom: 0.25rem;
     letter-spacing: -0.5px;
 }
 
 .footer-brand-subtitle {
     font-size: 0.875rem;
-    color: rgba(26, 26, 26, 0.7);
+    color: #D1D5DB;
     font-weight: 500;
     margin-bottom: 1rem;
     text-transform: uppercase;
@@ -241,20 +291,19 @@ body:has(.dashboard-page) main .container {
 
 .footer-description {
     font-size: 0.9375rem;
-    color: rgba(26, 26, 26, 0.8);
+    color: #D1D5DB;
     line-height: 1.6;
     margin-bottom: 0;
 }
 
 /* Footer Sections */
 .footer-section-title {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    color: #023E7D;
+    color: #FFFFFF;
     margin-bottom: 1.25rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-size: 0.875rem;
     position: relative;
     padding-bottom: 0.75rem;
 }
@@ -266,7 +315,7 @@ body:has(.dashboard-page) main .container {
     left: 0;
     width: 40px;
     height: 2px;
-    background: #023E7D;
+    background: #3B82F6;
     border-radius: 2px;
 }
 
@@ -286,7 +335,7 @@ body:has(.dashboard-page) main .container {
 }
 
 .footer-links a {
-    color: rgba(26, 26, 26, 0.85);
+    color: #D1D5DB;
     text-decoration: none;
     font-size: 0.9375rem;
     font-weight: 500;
@@ -299,43 +348,43 @@ body:has(.dashboard-page) main .container {
 
 .footer-links a i {
     font-size: 0.875rem;
-    color: #023E7D;
+    color: #3B82F6;
     transition: all 0.2s ease;
 }
 
 .footer-links a:hover {
-    color: #023E7D;
+    color: #FFFFFF;
     transform: translateX(4px);
 }
 
 .footer-links a:hover i {
     transform: scale(1.2);
+    color: #3B82F6;
 }
 
 /* Footer Bottom */
 .footer-bottom {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(2, 62, 125, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer-copyright {
     font-size: 0.875rem;
-    color: rgba(26, 26, 26, 0.8);
+    color: #9CA3AF;
     margin: 0;
 }
 
 .footer-copyright strong {
-    color: #023E7D;
+    color: #3B82F6;
     font-weight: 700;
 }
 
-
 .footer-version {
     font-size: 0.8125rem;
-    color: rgba(26, 26, 26, 0.7);
+    color: #9CA3AF;
     font-weight: 500;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
     padding: 0.375rem 0.75rem;
     border-radius: 12px;
     backdrop-filter: blur(10px);
@@ -343,21 +392,12 @@ body:has(.dashboard-page) main .container {
 
 /* Footer Responsive */
 @media (max-width: 991.98px) {
-    .app-main {
-        margin-bottom: 5rem;
-    }
-
     .app-footer {
-        padding: 0;
-        background: #f4f5f8;
+        padding: 2rem 0;
     }
 
     .app-footer .container {
-        padding: 2.5rem 1.5rem 1.25rem;
-        border-radius: 16px 16px 0 0;
-        background: #ffffff;
-        border: 1px solid #E5E7EB;
-        border-bottom: none;
+        padding: 0 1.5rem;
     }
 
     .footer-brand-title {
@@ -381,12 +421,8 @@ body:has(.dashboard-page) main .container {
 }
 
 @media (max-width: 767.98px) {
-    .app-main {
-        margin-bottom: 4rem;
-    }
-
     .app-footer .container {
-        padding: 2rem 1.25rem 1rem;
+        padding: 0 1.25rem;
     }
 
     .footer-logo {
@@ -397,14 +433,6 @@ body:has(.dashboard-page) main .container {
 
     .footer-brand-title {
         font-size: 1.125rem;
-    }
-
-    .footer-description {
-        font-size: 0.875rem;
-    }
-
-    .footer-links a {
-        font-size: 0.875rem;
     }
 }
 
@@ -442,7 +470,7 @@ body:has(.dashboard-page) main .container {
     font-size: 0.9rem;
 }
 
-/* Dashboard kartları */
+/* Home kartları */
 .dashboard-card {
     text-decoration: none;
     color: inherit;
@@ -516,6 +544,12 @@ body:has(.dashboard-page) main .container {
 
 /* Responsive Design */
 @media (max-width: 991.98px) {
+    .main-navbar {
+        max-width: calc(100% - 40px);
+        margin: 30px auto 0;
+        padding: 0.625rem 1rem;
+    }
+
     .app-nav-links .nav-link {
         padding: 0.5rem 0.75rem;
         margin: 0.25rem 0;
@@ -533,6 +567,13 @@ body:has(.dashboard-page) main .container {
 }
 
 @media (max-width: 767.98px) {
+    .main-navbar {
+        max-width: calc(100% - 20px);
+        margin: 20px auto 0;
+        padding: 0.5rem 0.75rem;
+        border-radius: 32px;
+    }
+
     .dashboard-hero {
         border-radius: 20px;
     }
@@ -553,6 +594,10 @@ body:has(.dashboard-page) main .container {
         width: 36px;
         height: 36px;
         font-size: 1.1rem;
+    }
+
+    .navbar-logo-img {
+        height: 50px;
     }
 
     .app-nav-links .nav-link {
@@ -732,10 +777,13 @@ body:has(.dashboard-page) main .container {
 
 /* Identity Pages Override - Profesyonel Tasarım */
 /* Identity sayfaları için body arka planı */
+/* Identity sayfaları için body arka planı - Global gradient kullanılacak */
+/*
 body:has(#account),
 body:has([class*="Identity"]) {
     background: #f4f5f8 !important;
 }
+*/
 
 /* Identity sayfaları için ana container */
 #account,
@@ -761,7 +809,7 @@ body:has(#account) main .container,
 #account>div:first-child {
 
     border: none;
-    
+
     overflow: hidden;
     background: #ffffff;
 
@@ -1305,4 +1353,245 @@ body:has(#account) main .container,
     .action-buttons .btn {
         width: 100%;
     }
+}
+
+/* Navbar Login Button - Pill Style */
+.navbar-login-btn {
+    background: #1E40AF;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 8px 24px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-login-btn:hover {
+    background: #1E3A8A;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    color: #FFFFFF;
+}
+
+/* Ensure navbar items don't overlap on smaller desktop screens */
+@media (min-width: 992px) and (max-width: 1200px) {
+    .app-nav-links {
+        width: 60% !important;
+        /* Prevent overlapping with brand/login */
+        justify-content: center;
+    }
+}
+
+/* =========================================
+   CONFERENCE-SPECIFIC BODY GRADIENT OVERRIDE
+   ========================================= */
+/* ICINSE: Orange to White gradient */
+body.conf-icinse {
+    background: linear-gradient(180deg, 
+        #F28C28 0%, 
+        #F5A962 15%, 
+        #F8C896 35%, 
+        #FBE5CA 55%, 
+        #FDF2E5 72%, 
+        #FFF8F0 85%, 
+        #FFFBF5 92%, 
+        #FFFDF9 96%, 
+        #FFFEFB 98%, 
+        #FFFEFC 100%) !important;
+    background-attachment: scroll !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    min-height: 100vh;
+}
+
+/* ITCHS: Green to White gradient */
+body.conf-itchs {
+    background: linear-gradient(180deg, 
+        #2E7D32 0%, 
+        #4CAF50 15%, 
+        #66BB6A 35%, 
+        #A5D6A7 55%, 
+        #C8E6C9 72%, 
+        #E8F5E9 85%, 
+        #F1F9F2 92%, 
+        #F7FCF8 96%, 
+        #FAFDFA 98%, 
+        #FBFDFB 100%) !important;
+    background-attachment: scroll !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    min-height: 100vh;
+}
+
+/* ITWCCST: Blue to White gradient */
+body.conf-itwccst {
+    background: linear-gradient(180deg, 
+        #1F6FB2 0%, 
+        #3B82F6 15%, 
+        #60A5FA 35%, 
+        #93C5FD 55%, 
+        #BFDBFE 72%, 
+        #DBEAFE 85%, 
+        #EDF5FE 92%, 
+        #F5F9FE 96%, 
+        #F9FBFF 98%, 
+        #FAFCFF 100%) !important;
+    background-attachment: scroll !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    min-height: 100vh;
+}
+
+/* =========================================
+   CONFERENCE-SPECIFIC NAVBAR COLORS
+   ========================================= */
+
+/* ICINSE: Orange navbar */
+body.conf-icinse .main-navbar {
+    background: #F5A962 !important;
+    box-shadow: 0 4px 20px rgba(229, 122, 31, 0.2);
+}
+
+/* ITCHS: Green navbar */
+body.conf-itchs .main-navbar {
+    background: #66BB6A !important;
+    box-shadow: 0 4px 20px rgba(31, 122, 62, 0.2);
+}
+
+/* ITWCCST: Blue navbar */
+body.conf-itwccst .main-navbar {
+    background: #60A5FA !important;
+    box-shadow: 0 4px 20px rgba(31, 111, 178, 0.2);
+}
+
+/* =========================================
+   NAVBAR LOGO - TRANSPARENT BACKGROUND
+   ========================================= */
+body.conf-icinse .main-navbar .navbar-brand,
+body.conf-itchs .main-navbar .navbar-brand,
+body.conf-itwccst .main-navbar .navbar-brand,
+body.conf-icinse .main-navbar .navbar-brand:hover,
+body.conf-itchs .main-navbar .navbar-brand:hover,
+body.conf-itwccst .main-navbar .navbar-brand:hover,
+body.conf-icinse .main-navbar .navbar-brand:active,
+body.conf-itchs .main-navbar .navbar-brand:active,
+body.conf-itwccst .main-navbar .navbar-brand:active,
+body.conf-icinse .main-navbar .navbar-brand:focus,
+body.conf-itchs .main-navbar .navbar-brand:focus,
+body.conf-itwccst .main-navbar .navbar-brand:focus {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+body.conf-icinse .main-navbar .navbar-logo-img,
+body.conf-itchs .main-navbar .navbar-logo-img,
+body.conf-itwccst .main-navbar .navbar-logo-img,
+body.conf-icinse .main-navbar .navbar-brand:hover .navbar-logo-img,
+body.conf-itchs .main-navbar .navbar-brand:hover .navbar-logo-img,
+body.conf-itwccst .main-navbar .navbar-brand:hover .navbar-logo-img {
+    mix-blend-mode: multiply;
+    filter: contrast(1.2) brightness(1.1);
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+body.conf-icinse .main-navbar .brand-logo,
+body.conf-itchs .main-navbar .brand-logo,
+body.conf-itwccst .main-navbar .brand-logo,
+body.conf-icinse .main-navbar .brand-logo:hover,
+body.conf-itchs .main-navbar .brand-logo:hover,
+body.conf-itwccst .main-navbar .brand-logo:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+body.conf-icinse .main-navbar .navbar-brand:hover,
+body.conf-itchs .main-navbar .navbar-brand:hover,
+body.conf-itwccst .main-navbar .navbar-brand:hover {
+    transform: none !important;
+}
+
+/* =========================================
+   NAVBAR TEXT - BLACK AND BOLD
+   ========================================= */
+body.conf-icinse .main-navbar,
+body.conf-itchs .main-navbar,
+body.conf-itwccst .main-navbar {
+    color: #000000 !important;
+}
+
+/* Navbar brand text */
+body.conf-icinse .main-navbar .navbar-brand,
+body.conf-itchs .main-navbar .navbar-brand,
+body.conf-itwccst .main-navbar .navbar-brand {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Navbar links - black and bold */
+body.conf-icinse .main-navbar .nav-link,
+body.conf-itchs .main-navbar .nav-link,
+body.conf-itwccst .main-navbar .nav-link,
+body.conf-icinse .main-navbar .app-nav-links .nav-link,
+body.conf-itchs .main-navbar .app-nav-links .nav-link,
+body.conf-itwccst .main-navbar .app-nav-links .nav-link,
+body.conf-icinse .main-navbar .dropdown-toggle,
+body.conf-itchs .main-navbar .dropdown-toggle,
+body.conf-itwccst .main-navbar .dropdown-toggle {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Navbar links hover - keep black */
+body.conf-icinse .main-navbar .nav-link:hover,
+body.conf-itchs .main-navbar .nav-link:hover,
+body.conf-itwccst .main-navbar .nav-link:hover,
+body.conf-icinse .main-navbar .app-nav-links .nav-link:hover,
+body.conf-itchs .main-navbar .app-nav-links .nav-link:hover,
+body.conf-itwccst .main-navbar .app-nav-links .nav-link:hover,
+body.conf-icinse .main-navbar .dropdown-toggle:hover,
+body.conf-itchs .main-navbar .dropdown-toggle:hover,
+body.conf-itwccst .main-navbar .dropdown-toggle:hover {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Dropdown menu items - black and bold */
+body.conf-icinse .main-navbar .dropdown-item,
+body.conf-itchs .main-navbar .dropdown-item,
+body.conf-itwccst .main-navbar .dropdown-item {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* User name/greeting text - black and bold */
+body.conf-icinse .main-navbar .navbar-auth,
+body.conf-itchs .main-navbar .navbar-auth,
+body.conf-itwccst .main-navbar .navbar-auth {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Exclude login/logout buttons - keep original styles */
+body.conf-icinse .main-navbar .navbar-login-btn,
+body.conf-itchs .main-navbar .navbar-login-btn,
+body.conf-itwccst .main-navbar .navbar-login-btn,
+body.conf-icinse .main-navbar button[type="submit"],
+body.conf-itchs .main-navbar button[type="submit"],
+body.conf-itwccst .main-navbar button[type="submit"],
+body.conf-icinse .main-navbar form button,
+body.conf-itchs .main-navbar form button,
+body.conf-itwccst .main-navbar form button {
+    /* Keep original button styles - don't override */
+    color: inherit !important;
+    font-weight: inherit !important;
 }

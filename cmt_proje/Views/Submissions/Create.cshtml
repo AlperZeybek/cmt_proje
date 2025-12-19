@@ -1,8 +1,30 @@
-﻿@model cmt_proje.Models.SubmissionCreateViewModel
+@model cmt_proje.Models.SubmissionCreateViewModel
 
 @{
     var conference = (cmt_proje.Core.Entities.Conference)ViewBag.Conference;
     ViewData["Title"] = "Submit Paper";
+    
+    // Set body class for conference-specific background gradient
+    string acronym = conference.Acronym?.ToUpper() ?? "";
+    string bodyClass = "";
+    
+    if (acronym.Contains("ICINSE"))
+    {
+        bodyClass = "conf-icinse";
+    }
+    else if (acronym.Contains("ITCHS"))
+    {
+        bodyClass = "conf-itchs";
+    }
+    else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
+    {
+        bodyClass = "conf-itwccst";
+    }
+    
+    if (!string.IsNullOrEmpty(bodyClass))
+    {
+        ViewData["BodyClass"] = bodyClass;
+    }
 }
 
 <div class="page-header">
@@ -10,10 +32,13 @@
         <i class="bi bi-upload"></i>
         Submit Paper
     </h1>
-    <p class="page-subtitle">
-        Submit your paper to <strong>@conference.Name</strong> 
-        <span class="badge-modern badge-modern-info">@conference.Acronym</span>
-    </p>
+    <div class="conference-info-header">
+        <p class="conference-subtitle">
+            Submit your paper to
+        </p>
+        <h2 class="conference-name">@conference.Name</h2>
+        <span class="conference-badge submission-badge">@conference.Acronym</span>
+    </div>
 </div>
 
 <div class="modern-form">
@@ -83,6 +108,44 @@
                 <span asp-validation-for="PresentationType" class="text-danger"></span>
             </div>
 
+            <!-- Authors Section -->
+            <div class="form-group-modern authors-section">
+                <label class="form-label-modern">
+                    <i class="bi bi-people"></i>
+                    Authors
+                </label>
+                <div id="authors-container" class="authors-container">
+                    <!-- Author 1 -->
+                    <div class="author-input-group" data-author-index="0">
+                        <button type="button" class="btn btn-sm btn-danger delete-author-btn" onclick="removeAuthorField(this)" title="Remove author">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <label class="author-label">1. Author Name</label>
+                        <input type="text" name="Authors[0].FullName" class="form-control form-control-modern author-name-input" placeholder="Enter author's full name" />
+                    </div>
+                    <!-- Author 2 -->
+                    <div class="author-input-group" data-author-index="1">
+                        <button type="button" class="btn btn-sm btn-danger delete-author-btn" onclick="removeAuthorField(this)" title="Remove author">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <label class="author-label">2. Author Name</label>
+                        <input type="text" name="Authors[1].FullName" class="form-control form-control-modern author-name-input" placeholder="Enter author's full name" />
+                    </div>
+                    <!-- Author 3 -->
+                    <div class="author-input-group" data-author-index="2">
+                        <button type="button" class="btn btn-sm btn-danger delete-author-btn" onclick="removeAuthorField(this)" title="Remove author">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <label class="author-label">3. Author Name</label>
+                        <input type="text" name="Authors[2].FullName" class="form-control form-control-modern author-name-input" placeholder="Enter author's full name" />
+                        <button type="button" class="btn btn-sm btn-outline-primary add-author-btn mt-2" onclick="addAuthorField()">
+                            <i class="bi bi-plus-circle"></i> Add Author
+                        </button>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-2">Note: The person submitting the paper must also be included as an author.</small>
+            </div>
+
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-modern btn-modern-primary">
                     <i class="bi bi-send"></i>
@@ -98,4 +161,263 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function addAuthorField() {
+            const container = document.getElementById('authors-container');
+            const existingGroups = container.querySelectorAll('.author-input-group');
+            const authorNumber = existingGroups.length + 1;
+            const newIndex = existingGroups.length;
+            
+            // Remove add button from previous author group (the last one)
+            if (existingGroups.length > 0) {
+                const lastGroup = existingGroups[existingGroups.length - 1];
+                const lastAddBtn = lastGroup.querySelector('.add-author-btn');
+                if (lastAddBtn) {
+                    lastAddBtn.remove();
+                }
+            }
+            
+            const authorGroup = document.createElement('div');
+            authorGroup.className = 'author-input-group';
+            authorGroup.setAttribute('data-author-index', newIndex);
+            
+            authorGroup.innerHTML = `
+                <button type="button" class="btn btn-sm btn-danger delete-author-btn" onclick="removeAuthorField(this)" title="Remove author">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <label class="author-label">${authorNumber}. Author Name</label>
+                <input type="text" name="Authors[${newIndex}].FullName" class="form-control form-control-modern author-name-input" placeholder="Enter author's full name" />
+                <button type="button" class="btn btn-sm btn-outline-primary add-author-btn mt-2" onclick="addAuthorField()">
+                    <i class="bi bi-plus-circle"></i> Add Author
+                </button>
+            `;
+            
+            container.appendChild(authorGroup);
+        }
+
+        function removeAuthorField(deleteBtn) {
+            const container = document.getElementById('authors-container');
+            const authorGroups = container.querySelectorAll('.author-input-group');
+            
+            // Minimum 1 yazar kalmalı
+            if (authorGroups.length <= 1) {
+                alert('At least one author is required.');
+                return;
+            }
+            
+            // Silinecek yazar grubunu bul
+            const authorGroup = deleteBtn.closest('.author-input-group');
+            if (!authorGroup) return;
+            
+            // Yazar grubunu kaldır
+            authorGroup.remove();
+            
+            // Kalan yazarların numaralarını ve name attribute'larını güncelle
+            renumberAuthors();
+        }
+
+        function renumberAuthors() {
+            const container = document.getElementById('authors-container');
+            const authorGroups = container.querySelectorAll('.author-input-group');
+            
+            authorGroups.forEach((group, index) => {
+                const authorNumber = index + 1;
+                
+                // Label'ı güncelle
+                const label = group.querySelector('.author-label');
+                if (label) {
+                    label.textContent = `${authorNumber}. Author Name`;
+                }
+                
+                // Input name attribute'unu güncelle
+                const input = group.querySelector('.author-name-input');
+                if (input) {
+                    input.name = `Authors[${index}].FullName`;
+                }
+                
+                // data-author-index'i güncelle
+                group.setAttribute('data-author-index', index);
+                
+                // En alttaki yazarın altına "+ Add Author" butonunu ekle
+                const addBtn = group.querySelector('.add-author-btn');
+                if (addBtn) {
+                    addBtn.remove();
+                }
+                
+                // Son yazarın altına "+ Add Author" butonunu ekle
+                if (index === authorGroups.length - 1) {
+                    const addAuthorBtn = document.createElement('button');
+                    addAuthorBtn.type = 'button';
+                    addAuthorBtn.className = 'btn btn-sm btn-outline-primary add-author-btn mt-2';
+                    addAuthorBtn.onclick = addAuthorField;
+                    addAuthorBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Add Author';
+                    group.appendChild(addAuthorBtn);
+                }
+            });
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Conference Info Header - More Readable */
+        .conference-info-header {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1.5rem;
+            
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .conference-subtitle {
+            font-size: 1.1rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .conference-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .conference-badge.submission-badge {
+            display: inline-block;
+            padding: 0.625rem 1.5rem;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #FFFFFF;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Conference-specific badge colors */
+        body.conf-icinse .conference-badge.submission-badge {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+        }
+
+        body.conf-itchs .conference-badge.submission-badge {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        body.conf-itwccst .conference-badge.submission-badge {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .modern-form {
+            background: #e3f2fd !important;
+        }
+
+        .authors-section {
+            margin-top: 2rem;
+        }
+
+        .authors-container {
+            margin-top: 1rem;
+        }
+
+        .author-input-group {
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .author-input-group:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .delete-author-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .delete-author-btn:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            transform: scale(1.1);
+        }
+
+        .author-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-size: 0.9375rem;
+        }
+
+        .author-name-input {
+            border-radius: 8px;
+            border: 1px solid #D1D5DB;
+            transition: all 0.2s ease;
+        }
+
+        .author-name-input:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .add-author-btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .add-author-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Conference-specific background gradients for submission page - matching Details page */
+        body.conf-icinse {
+            background: linear-gradient(180deg, #F28C28 0%, #F5A962 20%, #F8C896 40%, #FBE5CA 60%, #FDF2E5 80%, #FFFFFF 95%, #FFFFFF 100%) !important;
+            background-attachment: fixed !important;
+            background-size: 100% 100% !important;
+            min-height: 100vh;
+        }
+
+        body.conf-itchs {
+            background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 20%, #66BB6A 40%, #A5D6A7 60%, #C8E6C9 80%, #E8F5E9 95%, #FFFFFF 100%) !important;
+            background-attachment: fixed !important;
+            background-size: 100% 100% !important;
+            min-height: 100vh;
+        }
+
+        body.conf-itwccst {
+            background: linear-gradient(180deg, #1F6FB2 0%, #3B82F6 20%, #60A5FA 40%, #93C5FD 60%, #BFDBFE 80%, #DBEAFE 95%, #FFFFFF 100%) !important;
+            background-attachment: fixed !important;
+            background-size: 100% 100% !important;
+            min-height: 100vh;
+        }
+        
+    </style>
 }
