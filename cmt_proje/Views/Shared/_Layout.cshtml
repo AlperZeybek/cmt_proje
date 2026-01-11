@@ -5,7 +5,7 @@
 @inject cmt_proje.Infrastructure.Data.ConferenceDbContext _dbContext
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="@ViewData["BodyClass"]">
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - Conference Manager</title>
@@ -25,6 +25,16 @@
 
     <!-- Top Nav -->
     <header class="main-header">
+        <!-- Edit Navbar Button (Chair Only) -->
+        @if (User.IsInRole(AppRoles.Chair))
+        {
+            <div class="text-end mb-2" style="position: relative; z-index: 1000;">
+                <a asp-controller="ContentManagement" asp-action="NavbarManagement" 
+                   class="btn btn-sm btn-outline-light" style="margin-right: 1rem;">
+                    <i class="bi bi-pencil-square"></i> Edit Navbar
+                </a>
+            </div>
+        }
         <nav class="navbar navbar-expand-lg navbar-dark main-navbar">
             <div class="container-fluid position-relative">
                 <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
@@ -53,8 +63,16 @@
                             // Fetch active conferences for dropdown
                             var allActiveConferences = _dbContext.Conferences
                                 .Where(c => c.IsActive)
-                                .Select(c => new { c.Id, c.Acronym })
+                                .Select(c => new { c.Id, c.Acronym, c.Slug })
                                 .ToList();
+                            
+                            // Get active conference slug
+                            string? activeConfSlug = ViewBag.ActiveConferenceSlug ?? ViewData["ActiveConferenceSlug"] as string;
+                            if (activeConfId != null && string.IsNullOrEmpty(activeConfSlug))
+                            {
+                                var conf = allActiveConferences.FirstOrDefault(c => c.Id == (int)activeConfId);
+                                activeConfSlug = conf?.Slug;
+                            }
                         }
                         @if (activeConfId != null || isSelectConferencePage)
                         {
@@ -75,9 +93,10 @@
                                     @foreach (var conf in allActiveConferences)
                                     {
                                         string itemAcronym = conf.Acronym.Contains('-') ? conf.Acronym.Split('-')[0] : conf.Acronym;
+                                        string slug = conf.Slug ?? conf.Id.ToString();
                                         <li>
                                             <a class="dropdown-item @(activeConfId != null && (int)activeConfId == conf.Id ? "active" : "")" 
-                                               asp-controller="Conferences" asp-action="Details" asp-route-id="@conf.Id">
+                                               href="/@slug">
                                                 @itemAcronym
                                             </a>
                                         </li>
@@ -103,10 +122,10 @@
                             @if ((User.IsInRole(AppRoles.Author) && !User.IsInRole(AppRoles.Chair)) || isSelectConferencePage)
                             {
                                 <li class="nav-item">
-                                    @if (portalConfId != null)
+                                    @if (portalConfId != null && !string.IsNullOrEmpty(activeConfSlug))
                                     {
                                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Submissions" && (ViewContext.RouteData.Values["action"]?.ToString() == "Index" || ViewContext.RouteData.Values["action"]?.ToString() == null) ? "active" : "")"
-                                           asp-controller="Submissions" asp-action="Index" asp-route-conferenceId="@portalConfId">
+                                           href="/@activeConfSlug/submissions">
                                             My Submissions
                                         </a>
                                     }
@@ -120,17 +139,17 @@
                                 </li>
                             }
 
-                            @if (portalConfId != null)
+                            @if (portalConfId != null && !string.IsNullOrEmpty(activeConfSlug))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ScientificCommittee" ? "active" : "")"
-                                       asp-controller="ScientificCommittee" asp-action="Index" asp-route-conferenceId="@portalConfId">
+                                       href="/@activeConfSlug/committees">
                                         Scientific Committee
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tracks" ? "active" : "")"
-                                       asp-controller="Tracks" asp-action="Index" asp-route-conferenceId="@portalConfId">
+                                       href="/@activeConfSlug/tracks">
                                         Tracks
                                     </a>
                                 </li>
@@ -139,11 +158,21 @@
 
                          <!-- 3. Global About & Profile -->
                          <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")"
-                               asp-controller="About" asp-action="Index" 
-                               asp-route-conferenceId="@ViewBag.ActiveConferenceId">
-                                About
-                            </a>
+                            @if (!string.IsNullOrEmpty(activeConfSlug))
+                            {
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")"
+                                   href="/@activeConfSlug/about">
+                                    About
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")"
+                                   asp-controller="About" asp-action="Index" 
+                                   asp-route-conferenceId="@ViewBag.ActiveConferenceId">
+                                    About
+                                </a>
+                            }
                         </li>
                         
                         <li class="nav-item">
@@ -225,6 +254,46 @@
     <!-- Main content -->
     <main class="app-main">
         <div class="container py-4 app-main-content">
+            <!-- Edit Page Button (Chair Only) -->
+            @if (User.IsInRole(AppRoles.Chair))
+            {
+                // Auto-generate PageKey if not set manually
+                string pageKey = ViewBag.PageKey as string;
+                if (string.IsNullOrEmpty(pageKey))
+                {
+                    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+                    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+                    var area = ViewContext.RouteData.Values["area"]?.ToString();
+                    var id = ViewContext.RouteData.Values["id"]?.ToString();
+                    
+                    // Generate PageKey from route
+                    if (!string.IsNullOrEmpty(area))
+                    {
+                        pageKey = $"{area}_{controller}_{action}";
+                    }
+                    else if (!string.IsNullOrEmpty(controller) && !string.IsNullOrEmpty(action))
+                    {
+                        pageKey = $"{controller}_{action}";
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            pageKey += $"_{id}";
+                        }
+                    }
+                    else
+                    {
+                        pageKey = "Default";
+                    }
+                }
+                @if (!string.IsNullOrEmpty(pageKey))
+                {
+                    <div class="text-end mb-3">
+                        <a asp-controller="ContentManagement" asp-action="PageBuilder" asp-route-pageKey="@pageKey" 
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil-square"></i> Edit Page
+                        </a>
+                    </div>
+                }
+            }
             <div class="app-main-inner">
                 @RenderBody()
             </div>

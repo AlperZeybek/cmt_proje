@@ -1,0 +1,126 @@
+@using cmt_proje.Core.Constants
+@{
+    ViewData["Title"] = "Content Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="page-header mb-5">
+        <h1 class="page-title">
+            <i class="bi bi-pencil-square"></i>
+            Content Management
+        </h1>
+        <p class="page-subtitle">
+            Manage your site content, pages, and navigation without coding.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Page Builder -->
+        <div class="col-xl-6 col-lg-6 col-md-6">
+            <div class="card border-0 h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3">
+                            <div class="bg-primary bg-opacity-10 rounded p-3">
+                                <i class="bi bi-file-earmark-text text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-2">Page Builder</h5>
+                            <p class="text-muted mb-3">
+                                Create and edit page content with drag & drop blocks. Add headings, text, images, and more.
+                            </p>
+                            <a asp-action="PageBuilder" asp-route-pageKey="Home" class="btn btn-primary">
+                                <i class="bi bi-pencil me-2"></i>
+                                Manage Pages
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navbar Management -->
+        <div class="col-xl-6 col-lg-6 col-md-6">
+            <div class="card border-0 h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3">
+                            <div class="bg-success bg-opacity-10 rounded p-3">
+                                <i class="bi bi-list-ul text-success" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="card-title mb-2">Navbar Management</h5>
+                            <p class="text-muted mb-3">
+                                Manage navigation menu items. Add, edit, reorder, and remove menu links.
+                            </p>
+                            <a asp-action="NavbarManagement" class="btn btn-success">
+                                <i class="bi bi-list-ul me-2"></i>
+                                Manage Navbar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Page Links -->
+    <div class="mt-5">
+        <h4 class="mb-3">Quick Page Access</h4>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a asp-action="PageBuilder" asp-route-pageKey="Home" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-house me-2"></i>Home
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-action="PageBuilder" asp-route-pageKey="About" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-info-circle me-2"></i>About
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-action="PageBuilder" asp-route-pageKey="Contact" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-envelope me-2"></i>Contact
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-action="NavbarManagement" class="btn btn-outline-success w-100">
+                    <i class="bi bi-list-ul me-2"></i>Navbar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .page-header {
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.125rem;
+            color: #6B7280;
+        }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+        }
+    </style>
+}
+

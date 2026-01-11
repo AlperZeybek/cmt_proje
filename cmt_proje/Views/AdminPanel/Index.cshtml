@@ -143,6 +143,52 @@
             </a>
         </div>
 
+        <!-- Home Hero Content (sadece Chair için) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="HomeAdmin" asp-action="Edit" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #ffffff;">
+                                <i class="bi bi-house-heart"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Home Hero Content</h5>
+                        <p class="dashboard-card-description">
+                            Edit the hero section title and subtitle on the home page.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Edit hero content</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Content Management (sadece Chair için) -->
+        <div class="col-xl-4 col-lg-6 col-md-6">
+            <a asp-controller="ContentManagement" asp-action="Index" class="text-decoration-none dashboard-card-link">
+                <div class="card border-0 h-100 dashboard-card-modern">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="dashboard-icon-wrapper dashboard-icon-secondary">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                        </div>
+                        <h5 class="dashboard-card-title-modern mb-2">Content Management</h5>
+                        <p class="dashboard-card-description">
+                            Manage page content, navbar items, and customize your site without coding.
+                        </p>
+                        <div class="dashboard-card-action">
+                            <span class="dashboard-card-link-text">Manage content</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <!-- User Management (sadece Chair için) -->
         <div class="col-xl-4 col-lg-6 col-md-6">
             <a asp-controller="Admin" asp-action="Users" class="text-decoration-none dashboard-card-link">
@@ -436,7 +482,7 @@
         }
 
         .dashboard-icon-warning {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%);
             color: #ffffff;
         }
 

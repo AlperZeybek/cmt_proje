@@ -11,6 +11,7 @@ namespace cmt_proje.Core.Entities
         public string? ShortName { get; set; }
 
         public string? Acronym { get; set; }
+        public string? Slug { get; set; }
         public string? Description { get; set; }
         public string? LogoUrl { get; set; }
 

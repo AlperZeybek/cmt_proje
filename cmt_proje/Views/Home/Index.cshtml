@@ -66,10 +66,9 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    The Meeting Point<br />
-                    of Scientific Advancements
+                    @Html.Raw(ViewBag.HeroTitle)
                 </h1>
-                <p class="hero-subtitle">Explore world-class academic conferences hosted by Sakarya University.</p>
+                <div class="hero-subtitle">@Html.Raw(ViewBag.HeroSubtitle)</div>
             </div>
         </div>
     </div>
@@ -117,7 +116,10 @@
                                         Sakarya University
                                     </p>
                                 </div>
-                                <a href="@Url.Action("Details", "Conferences", new { id = conference.Id })" class="conference-btn">
+                                @{
+                                    string confSlug = string.IsNullOrWhiteSpace(conference.Slug) ? conference.Id.ToString() : conference.Slug;
+                                }
+                                <a href="/@confSlug" class="conference-btn">
                                     Siteye Git →
                                 </a>
                             </div>
@@ -224,10 +226,10 @@
             max-width: 100% !important;
         }
 
-        /* Landing Page Base - Docshield Style Gradient */
+        /* Landing Page Base - Solid Blue */
         .landing-page {
             min-height: 100vh;
-            background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%);
+            background: #4A90E2 !important;
             position: relative;
         }
 
@@ -523,15 +525,38 @@
         }
 
         .hero-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.1875rem;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.95);
-            line-height: 1.6;
-            margin-bottom: 0;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            color: #FFFFFF;
+            line-height: 1.85;
+            margin: 0 auto;
+            max-width: 1300px;
+            text-align: left;
+            padding: 0 20px;
             letter-spacing: -0.01em;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-subtitle p {
+            margin-bottom: 1.25rem;
+            color: #FFFFFF;
+            text-align: left;
+            line-height: 1.85;
+        }
+        
+        .hero-subtitle p:first-child {
+            margin-top: 0;
+        }
+        
+        .hero-subtitle p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .hero-subtitle strong,
+        .hero-subtitle b {
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 0.01em;
         }
 
         .hero-buttons {
@@ -619,15 +644,15 @@
         
         /* Conference card backgrounds - Light tones matching logos */
         .conference-card.orange {
-            background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 50%, #FFFFFF 100%) !important;
+            background: linear-gradient(135deg, #FFFEF0 0%, #FFFCE6 50%, #FFFFFF 100%) !important;
         }
         
         .conference-card.green {
-            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #FFFFFF 100%) !important;
+            background: linear-gradient(135deg, #D4F2D8 0%, #B8E4C0 50%, #FFFFFF 100%) !important;
         }
         
         .conference-card.blue {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
+            background: linear-gradient(135deg, #E0F5F5 0%, #C0EBEB 50%, #FFFFFF 100%) !important;
         }
 
         .conference-card::before {
@@ -641,11 +666,11 @@
         }
 
         .conference-card.blue::before {
-            background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%);
+            background: linear-gradient(90deg, #008080 0%, #006666 100%);
         }
 
         .conference-card.orange::before {
-            background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%);
+            background: linear-gradient(90deg, #d0ad00 0%, #B89900 100%);
         }
 
         .conference-card.purple::before {
@@ -653,7 +678,7 @@
         }
 
         .conference-card.green::before {
-            background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+            background: linear-gradient(90deg, #28713e 0%, #1F5A2F 100%);
         }
 
         .conference-card:hover {
@@ -701,12 +726,12 @@
         }
 
         .conference-card.blue .conference-logo-placeholder {
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            background: linear-gradient(135deg, #008080 0%, #006666 100%);
             color: #FFFFFF;
         }
 
         .conference-card.orange .conference-logo-placeholder {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%);
             color: #FFFFFF;
         }
 
@@ -777,13 +802,13 @@
         }
 
         .conference-card.blue .conference-btn {
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            background: linear-gradient(135deg, #008080 0%, #006666 100%);
             color: #FFFFFF;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3);
         }
 
         .conference-card.orange .conference-btn {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%);
             color: #FFFFFF;
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
@@ -795,7 +820,7 @@
         }
 
         .conference-card.green .conference-btn {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            background: linear-gradient(135deg, #28713e 0%, #1F5A2F 100%);
             color: #FFFFFF;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
@@ -807,7 +832,7 @@
         }
 
         .conference-card.blue .conference-btn:hover {
-            box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 28px rgba(0, 128, 128, 0.4);
         }
 
         .conference-card.orange .conference-btn:hover {
@@ -840,7 +865,13 @@
             }
 
             .hero-subtitle {
-                font-size: 1.375rem;
+                font-size: 1.0625rem;
+                max-width: 1000px;
+                padding: 0 20px;
+            }
+            
+            .hero-subtitle p {
+                margin-bottom: 1rem;
             }
 
             .conference-cards {
@@ -890,8 +921,14 @@
             }
 
             .hero-subtitle {
-                font-size: 1.25rem;
+                font-size: 1rem;
+                max-width: 100%;
+                padding: 0 15px;
                 margin-bottom: 3rem;
+            }
+            
+            .hero-subtitle p {
+                margin-bottom: 0.875rem;
             }
 
             .conferences-section {
@@ -952,8 +989,14 @@
             }
 
             .hero-subtitle {
-                font-size: 1.125rem;
+                font-size: 0.9375rem;
+                max-width: 100%;
+                padding: 0 15px;
                 margin-bottom: 2.5rem;
+            }
+            
+            .hero-subtitle p {
+                margin-bottom: 0.75rem;
             }
 
             .hero-buttons {
@@ -998,7 +1041,13 @@
             }
 
             .hero-subtitle {
-                font-size: 1rem;
+                font-size: 0.875rem;
+                max-width: 100%;
+                padding: 0 10px;
+            }
+            
+            .hero-subtitle p {
+                margin-bottom: 0.75rem;
             }
 
             .conference-card {

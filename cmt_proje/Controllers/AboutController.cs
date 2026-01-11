@@ -64,6 +64,7 @@ namespace cmt_proje.Controllers
                 };
             }
 
+            ViewBag.PageKey = "PastEvents";
             return View(content);
         }
 
@@ -91,6 +92,7 @@ namespace cmt_proje.Controllers
                 };
             }
 
+            ViewBag.PageKey = "AboutOrganizer";
             return View(content);
         }
 
@@ -116,6 +118,7 @@ namespace cmt_proje.Controllers
                 };
             }
 
+            ViewBag.PageKey = "Testimonials";
             return View(content);
         }
     }

@@ -1,0 +1,131 @@
+@model cmt_proje.Core.Entities.HomeHeroContent
+
+@{
+    ViewData["Title"] = "Edit Home Hero Content";
+}
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-pencil-square"></i>
+        Edit Home Hero Content
+    </h1>
+    <p class="page-subtitle">Update the hero section content on the home page</p>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Edit" asp-controller="HomeAdmin" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CreatedAt" />
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="HeroTitle" class="form-label">Hero Title <span class="text-danger">*</span></label>
+                        <textarea asp-for="HeroTitle" id="HeroTitle" class="form-control" rows="3" placeholder="Enter hero title (HTML allowed, e.g., use &lt;br /&gt; for line breaks)"></textarea>
+                        <span asp-validation-for="HeroTitle" class="text-danger"></span>
+                        <small class="form-text text-muted">Use the editor toolbar to format your text. You can use HTML tags like &lt;br /&gt; for line breaks.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="HeroSubtitle" class="form-label">Hero Subtitle <span class="text-danger">*</span></label>
+                        <textarea asp-for="HeroSubtitle" id="HeroSubtitle" class="form-control" rows="3" placeholder="Enter hero subtitle"></textarea>
+                        <span asp-validation-for="HeroSubtitle" class="text-danger"></span>
+                        <small class="form-text text-muted">Use the editor toolbar to format your text.</small>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            Save Changes
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary" target="_blank">
+                            <i class="bi bi-eye"></i>
+                            Preview
+                        </a>
+                        <a asp-controller="AdminPanel" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Admin Panel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+    <script>
+        // Initialize CKEditor for HeroTitle
+        ClassicEditor
+            .create(document.querySelector('#HeroTitle'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'blockQuote', '|',
+                        'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error('HeroTitle editor error:', error);
+            });
+
+        // Initialize CKEditor for HeroSubtitle
+        ClassicEditor
+            .create(document.querySelector('#HeroSubtitle'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'blockQuote', '|',
+                        'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error('HeroSubtitle editor error:', error);
+            });
+    </script>
+}
+

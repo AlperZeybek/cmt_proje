@@ -6,14 +6,56 @@ body {
     padding: 0;
 }
 
+html {
+    background: #4A90E2 !important;
+}
+
 body {
-    background: linear-gradient(180deg, #4A90E2 0%, #5BA3F5 20%, #7BB8FF 40%, #A8D5FF 60%, #C8E6FF 80%, #E8F4FF 95%, #F5FAFF 100%) !important;
+    background: #4A90E2 !important;
     background-attachment: fixed !important;
     background-size: 100% 100% !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: #1e293b;
     line-height: 1.6;
     min-height: 100vh;
+}
+
+/* Override Bootstrap bg-light class */
+body.bg-light,
+.bg-light {
+    background: #4A90E2 !important;
+}
+
+/* Main content area - same background as body */
+main,
+.app-main,
+.app-main-content,
+.app-main-inner,
+section:not(.sponsors-section):not(.app-footer),
+.conference-details-wrapper,
+.conference-details-panel,
+.conf-hero,
+.conf-hero-content,
+.hero-section,
+.page-wrapper,
+.content-wrapper {
+    background: transparent !important;
+}
+
+/* Container - transparent background to show body color */
+main .container,
+body > .container:not(.app-footer .container):not(.sponsors-section .container),
+.container:not(.dashboard-wrapper):not(.manage-container):not(.app-footer .container):not(.sponsors-section .container),
+.wrapper:not(.dashboard-wrapper):not(.manage-container),
+.content-area,
+.row,
+.col,
+[class*="col-"],
+.card-body:not(.app-footer .card-body),
+.panel,
+.section,
+.content-section {
+    background: transparent !important;
 }
 
 /* HEADER & NAVBAR */
@@ -213,15 +255,13 @@ body {
 
 /* Container override - sadece içerik için */
 main .container,
-body>.container:not(.app-footer .container),
-.container:not(.dashboard-wrapper):not(.manage-container):not(.app-footer .container) {
-   
+body>.container:not(.app-footer .container):not(.sponsors-section .container),
+.container:not(.dashboard-wrapper):not(.manage-container):not(.app-footer .container):not(.sponsors-section .container) {
+    background: transparent !important;
     border-radius: 12px;
     padding: 2rem;
     margin: 2rem auto;
-    
     max-width: 90%;
-    
     flex-direction: column;
     min-height: 0;
     flex: 0 0 auto;
@@ -234,6 +274,14 @@ body:has(.dashboard-page) main .container {
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
+}
+
+/* Global override - Tüm sayfalarda body rengi görünsün */
+/* Sadece layout wrapper'ları şeffaf yap, içerik kartları değil */
+body > div:not(.app-footer):not(.sponsors-section):not(.main-header):not(.main-navbar),
+main > div:not(.app-footer):not(.sponsors-section),
+section:not(.app-footer):not(.sponsors-section):not(.card):not([class*="card-"]) {
+    background-color: transparent !important;
 }
 
 /* FOOTER - Modern Dark Design (Global) */
@@ -420,6 +468,137 @@ body:has(.dashboard-page) main .container {
     }
 }
 
+/* SPONSORS SECTION - Above Footer */
+.sponsors-section {
+    background: linear-gradient(180deg, #1F2937 0%, #1A202C 100%);
+    padding: 3rem 0;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.sponsors-section .container {
+    background: transparent !important;
+    border-radius: 0;
+    padding: 0 2.5rem;
+    box-shadow: none;
+    max-width: 1280px;
+    border: none;
+    margin: 0 auto;
+}
+
+.sponsors-title {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.5px;
+}
+
+.sponsors-wrapper {
+    overflow: hidden !important;
+    position: relative;
+    width: 100%;
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.sponsors-track {
+    display: flex !important;
+    align-items: center;
+    gap: 3rem;
+    width: fit-content;
+    animation: sponsor-scroll 30s linear infinite !important;
+    will-change: transform;
+    -webkit-animation: sponsor-scroll 30s linear infinite !important;
+}
+
+.sponsors-wrapper:hover .sponsors-track {
+    animation-play-state: paused !important;
+    -webkit-animation-play-state: paused !important;
+}
+
+.sponsor-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.sponsor-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    text-decoration: none;
+}
+
+.sponsor-link:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+.sponsor-logo {
+    height: 60px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    filter: grayscale(100%) brightness(0.8);
+    transition: filter 0.3s ease;
+}
+
+.sponsor-link:hover .sponsor-logo {
+    filter: grayscale(0%) brightness(1);
+}
+
+@keyframes sponsor-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@-webkit-keyframes sponsor-scroll {
+    0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    100% {
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+    }
+}
+
+/* Sponsors Responsive */
+@media (max-width: 991.98px) {
+    .sponsors-section {
+        padding: 2.5rem 0;
+    }
+
+    .sponsors-section .container {
+        padding: 0 1.5rem;
+    }
+
+    .sponsors-title {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .sponsors-track {
+        gap: 2.5rem;
+        animation-duration: 25s;
+    }
+
+    .sponsor-logo {
+        height: 50px;
+        max-width: 150px;
+    }
+}
+
 @media (max-width: 767.98px) {
     .app-footer .container {
         padding: 0 1.25rem;
@@ -434,11 +613,38 @@ body:has(.dashboard-page) main .container {
     .footer-brand-title {
         font-size: 1.125rem;
     }
+
+    .sponsors-section {
+        padding: 2rem 0;
+    }
+
+    .sponsors-section .container {
+        padding: 0 1rem;
+    }
+
+    .sponsors-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .sponsors-track {
+        gap: 2rem;
+        animation-duration: 20s;
+    }
+
+    .sponsor-item {
+        padding: 0 0.75rem;
+    }
+
+    .sponsor-logo {
+        height: 40px;
+        max-width: 120px;
+    }
 }
 
 /* DASHBOARD */
 .dashboard-hero {
-    background: radial-gradient(circle at top left, #e0e7ff 0, #eef2ff 34%, #ffffff 100%);
+    background: #4A90E2 !important;
     border-radius: 24px;
     border: 1px solid rgba(148, 163, 184, 0.2);
 }
@@ -1388,83 +1594,110 @@ body:has(#account) main .container,
 /* =========================================
    CONFERENCE-SPECIFIC BODY GRADIENT OVERRIDE
    ========================================= */
-/* ICINSE: Orange to White gradient */
+/* ICINSE: Gold solid */
+html.conf-icinse,
 body.conf-icinse {
-    background: linear-gradient(180deg, 
-        #F28C28 0%, 
-        #F5A962 15%, 
-        #F8C896 35%, 
-        #FBE5CA 55%, 
-        #FDF2E5 72%, 
-        #FFF8F0 85%, 
-        #FFFBF5 92%, 
-        #FFFDF9 96%, 
-        #FFFEFB 98%, 
-        #FFFEFC 100%) !important;
+    background: #d0ad00 !important;
     background-attachment: scroll !important;
     background-size: 100% 100% !important;
     background-repeat: no-repeat !important;
     min-height: 100vh;
 }
 
-/* ITCHS: Green to White gradient */
+body.conf-icinse.bg-light,
+body.conf-icinse .bg-light {
+    background: #d0ad00 !important;
+}
+
+body.conf-icinse main,
+body.conf-icinse .app-main,
+body.conf-icinse .app-main-content,
+body.conf-icinse .app-main-inner,
+body.conf-icinse main .container,
+body.conf-icinse .container:not(.app-footer .container):not(.sponsors-section .container),
+body.conf-icinse .conference-details-wrapper,
+body.conf-icinse .conference-details-panel,
+body.conf-icinse .conf-hero,
+body.conf-icinse .conf-hero-content {
+    background: transparent !important;
+}
+
+/* ITCHS: Green solid */
+html.conf-itchs,
 body.conf-itchs {
-    background: linear-gradient(180deg, 
-        #2E7D32 0%, 
-        #4CAF50 15%, 
-        #66BB6A 35%, 
-        #A5D6A7 55%, 
-        #C8E6C9 72%, 
-        #E8F5E9 85%, 
-        #F1F9F2 92%, 
-        #F7FCF8 96%, 
-        #FAFDFA 98%, 
-        #FBFDFB 100%) !important;
+    background: #28713e !important;
     background-attachment: scroll !important;
     background-size: 100% 100% !important;
     background-repeat: no-repeat !important;
     min-height: 100vh;
 }
 
-/* ITWCCST: Blue to White gradient */
+body.conf-itchs.bg-light,
+body.conf-itchs .bg-light {
+    background: #28713e !important;
+}
+
+body.conf-itchs main,
+body.conf-itchs .app-main,
+body.conf-itchs .app-main-content,
+body.conf-itchs .app-main-inner,
+body.conf-itchs main .container,
+body.conf-itchs .container:not(.app-footer .container):not(.sponsors-section .container),
+body.conf-itchs .conference-details-wrapper,
+body.conf-itchs .conference-details-panel,
+body.conf-itchs .conf-hero,
+body.conf-itchs .conf-hero-content {
+    background: transparent !important;
+}
+
+/* ITWCCST: Teal solid */
+html.conf-itwccst,
 body.conf-itwccst {
-    background: linear-gradient(180deg, 
-        #1F6FB2 0%, 
-        #3B82F6 15%, 
-        #60A5FA 35%, 
-        #93C5FD 55%, 
-        #BFDBFE 72%, 
-        #DBEAFE 85%, 
-        #EDF5FE 92%, 
-        #F5F9FE 96%, 
-        #F9FBFF 98%, 
-        #FAFCFF 100%) !important;
+    background: #008080 !important;
     background-attachment: scroll !important;
     background-size: 100% 100% !important;
     background-repeat: no-repeat !important;
     min-height: 100vh;
+}
+
+body.conf-itwccst.bg-light,
+body.conf-itwccst .bg-light {
+    background: #008080 !important;
+}
+
+body.conf-itwccst main,
+body.conf-itwccst .app-main,
+body.conf-itwccst .app-main-content,
+body.conf-itwccst .app-main-inner,
+body.conf-itwccst main .container,
+body.conf-itwccst .container:not(.app-footer .container):not(.sponsors-section .container),
+body.conf-itwccst .conference-details-wrapper,
+body.conf-itwccst .conference-details-panel,
+body.conf-itwccst .conf-hero,
+body.conf-itwccst .conf-hero-content {
+    background: transparent !important;
 }
 
 /* =========================================
    CONFERENCE-SPECIFIC NAVBAR COLORS
    ========================================= */
 
-/* ICINSE: Orange navbar */
+/* ICINSE: Gold navbar */
 body.conf-icinse .main-navbar {
-    background: #F5A962 !important;
-    box-shadow: 0 4px 20px rgba(229, 122, 31, 0.2);
+    background: #D9C133 !important;
+    box-shadow: 0 4px 20px rgba(208, 173, 0, 0.2);
 }
 
 /* ITCHS: Green navbar */
 body.conf-itchs .main-navbar {
-    background: #66BB6A !important;
-    box-shadow: 0 4px 20px rgba(31, 122, 62, 0.2);
+    background: #4CA362 !important;
+    box-shadow: 0 4px 20px rgba(40, 113, 62, 0.2);
 }
 
-/* ITWCCST: Blue navbar */
+/* ITWCCST: Teal navbar */
 body.conf-itwccst .main-navbar {
-    background: #60A5FA !important;
-    box-shadow: 0 4px 20px rgba(31, 111, 178, 0.2);
+    background: #20A0A0 !important;
+    box-shadow: 0 4px 20px rgba(0, 128, 128, 0.2);
 }
 
 /* =========================================

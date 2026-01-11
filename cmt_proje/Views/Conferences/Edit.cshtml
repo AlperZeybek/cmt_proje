@@ -43,8 +43,9 @@
                     <i class="bi bi-file-text"></i>
                     Description
                 </label>
-                <textarea asp-for="Description" class="form-control form-control-modern" rows="4" placeholder="Enter conference description"></textarea>
+                <textarea asp-for="Description" id="Description" class="form-control form-control-modern" rows="4" placeholder="Enter conference description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
+                <small class="text-muted">Use the editor toolbar to format your text with bold, paragraphs, etc.</small>
             </div>
 
             <div class="form-group-modern">
@@ -124,6 +125,33 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+    <script>
+        // Initialize CKEditor
+        ClassicEditor
+            .create(document.querySelector('#Description'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'blockQuote', '|',
+                        'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var startDateInput = document.getElementById('startDate');

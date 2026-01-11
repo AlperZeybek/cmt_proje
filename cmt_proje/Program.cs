@@ -85,6 +85,19 @@ app.UseRouting();
 app.UseAuthentication();   // �nemli
 app.UseAuthorization();
 
+// Conference slug-based routes (must be before default route)
+app.MapControllerRoute(
+    name: "conferenceSection",
+    pattern: "{conferenceSlug}/{sectionSlug}",
+    defaults: new { controller = "Conferences", action = "ConferenceSection" },
+    constraints: new { conferenceSlug = @"^(?!home|about|tracks|submissions|reviews|decisions|scientificcommittee|adminpanel|contentmanagement|aboutadmin|homeadmin|reviewassignments|admin|account|identity|api|conferences)[a-z0-9]+$" });
+
+app.MapControllerRoute(
+    name: "conferenceHome",
+    pattern: "{conferenceSlug}",
+    defaults: new { controller = "Conferences", action = "ConferenceHome" },
+    constraints: new { conferenceSlug = @"^(?!home|about|tracks|submissions|reviews|decisions|scientificcommittee|adminpanel|contentmanagement|aboutadmin|homeadmin|reviewassignments|admin|account|identity|api|conferences)[a-z0-9]+$" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

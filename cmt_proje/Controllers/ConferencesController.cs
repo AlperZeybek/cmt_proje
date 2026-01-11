@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,24 @@ namespace cmt_proje.Controllers
             _context = context;
         }
 
+        // Helper method to generate slug from acronym
+        private string GenerateSlug(string? acronym)
+        {
+            if (string.IsNullOrWhiteSpace(acronym))
+                return string.Empty;
+            
+            // Convert to lowercase and replace spaces/dashes with nothing
+            var slug = acronym.ToLowerInvariant()
+                .Replace(" ", "")
+                .Replace("-", "")
+                .Replace("_", "");
+            
+            // Remove any non-alphanumeric characters
+            slug = Regex.Replace(slug, @"[^a-z0-9]", "");
+            
+            return slug;
+        }
+
         // GET: /Conferences
         public async Task<IActionResult> Index()
         {
@@ -30,23 +49,113 @@ namespace cmt_proje.Controllers
             return View(conferences);
         }
 
-        // GET: /Conferences/Details/5
+        // GET: /Conferences/Details/5 (Legacy - redirects to slug-based route)
         public async Task<IActionResult> Details(int id)
         {
             var conf = await _context.Conferences
-                .Include(c => c.Tracks)
-                .Include(c => c.Submissions)
-                .Include(c => c.CreatedByUser)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (conf == null)
                 return NotFound();
 
-            // Set Active Conference ID for Layout Navbar Switching
-            ViewBag.ActiveConferenceId = id;
-            ViewBag.ActiveConferenceAcronym = conf.Acronym;
+            // Generate slug if not exists
+            if (string.IsNullOrWhiteSpace(conf.Slug))
+            {
+                conf.Slug = GenerateSlug(conf.Acronym);
+                conf.Slug = await EnsureUniqueSlug(conf.Slug, conf.Id);
+                
+                // Update slug in database
+                var confToUpdate = await _context.Conferences.FindAsync(id);
+                if (confToUpdate != null)
+                {
+                    confToUpdate.Slug = conf.Slug;
+                    await _context.SaveChangesAsync();
+                }
+            }
 
-            return View(conf);
+            return RedirectToAction("ConferenceHome", new { conferenceSlug = conf.Slug });
+        }
+
+        // GET: /{conferenceSlug}
+        public async Task<IActionResult> ConferenceHome(string conferenceSlug)
+        {
+            var conf = await _context.Conferences
+                .Include(c => c.Tracks)
+                .Include(c => c.Submissions)
+                .Include(c => c.CreatedByUser)
+                .FirstOrDefaultAsync(c => c.Slug == conferenceSlug);
+
+            if (conf == null)
+                return NotFound();
+
+            // Set Active Conference ID for Layout Navbar Switching
+            ViewBag.ActiveConferenceId = conf.Id;
+            ViewBag.ActiveConferenceAcronym = conf.Acronym;
+            ViewBag.ActiveConferenceSlug = conf.Slug ?? GenerateSlug(conf.Acronym);
+
+            return View("Details", conf);
+        }
+
+        // GET: /{conferenceSlug}/{sectionSlug}
+        public async Task<IActionResult> ConferenceSection(string conferenceSlug, string sectionSlug)
+        {
+            var conf = await _context.Conferences
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Slug == conferenceSlug);
+
+            if (conf == null)
+                return NotFound();
+
+            // Set Active Conference ID for Layout Navbar Switching
+            ViewBag.ActiveConferenceId = conf.Id;
+            ViewBag.ActiveConferenceAcronym = conf.Acronym;
+            ViewBag.ActiveConferenceSlug = conf.Slug;
+
+            // Map section slugs to controller actions
+            switch (sectionSlug.ToLowerInvariant())
+            {
+                case "about":
+                    return RedirectToAction("Index", "About", new { conferenceId = conf.Id });
+                
+                case "committees":
+                case "scientific-committee":
+                case "committee":
+                    return RedirectToAction("Index", "ScientificCommittee", new { conferenceId = conf.Id });
+                
+                case "tracks":
+                case "track":
+                    return RedirectToAction("Index", "Tracks", new { conferenceId = conf.Id });
+                
+                case "submissions":
+                case "my-submissions":
+                    return RedirectToAction("Index", "Submissions", new { conferenceId = conf.Id });
+                
+                case "registration":
+                case "call-for-papers":
+                case "callforpapers":
+                    // These sections don't have dedicated controllers yet, redirect to conference home
+                    return RedirectToAction("ConferenceHome", new { conferenceSlug = conferenceSlug });
+                
+                default:
+                    // Unknown section, redirect to conference home
+                    return RedirectToAction("ConferenceHome", new { conferenceSlug = conferenceSlug });
+            }
+        }
+
+        // Helper method to ensure unique slug
+        private async Task<string> EnsureUniqueSlug(string baseSlug, int excludeId)
+        {
+            var slug = baseSlug;
+            var counter = 1;
+            
+            while (await _context.Conferences.AnyAsync(c => c.Slug == slug && c.Id != excludeId))
+            {
+                slug = $"{baseSlug}{counter}";
+                counter++;
+            }
+            
+            return slug;
         }
 
         // GET: /Conferences/Create
@@ -109,6 +218,12 @@ namespace cmt_proje.Controllers
             conference.CreatedAt = DateTime.Now;
             conference.CreatedByUserId = userId;
             conference.IsActive = true;
+            
+            // Generate slug from acronym if not provided
+            if (string.IsNullOrWhiteSpace(conference.Slug))
+            {
+                conference.Slug = GenerateSlug(conference.Acronym);
+            }
 
             _context.Conferences.Add(conference);
             await _context.SaveChangesAsync();
@@ -175,6 +290,12 @@ namespace cmt_proje.Controllers
 
             if (!ModelState.IsValid)
                 return View(conference);
+
+            // Generate slug from acronym if not provided
+            if (string.IsNullOrWhiteSpace(conference.Slug))
+            {
+                conference.Slug = GenerateSlug(conference.Acronym);
+            }
 
             try
             {

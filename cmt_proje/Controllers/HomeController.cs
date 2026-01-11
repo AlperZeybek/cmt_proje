@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using cmt_proje.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cmt_proje.Infrastructure.Data;
 using cmt_proje.Core.Constants;
+using cmt_proje.Core.Entities;
 
 namespace cmt_proje.Controllers
 {
@@ -17,6 +19,37 @@ namespace cmt_proje.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        // Helper method to generate slug from acronym
+        private string GenerateSlug(string? acronym)
+        {
+            if (string.IsNullOrWhiteSpace(acronym))
+                return string.Empty;
+            
+            var slug = acronym.ToLowerInvariant()
+                .Replace(" ", "")
+                .Replace("-", "")
+                .Replace("_", "");
+            
+            slug = Regex.Replace(slug, @"[^a-z0-9]", "");
+            
+            return slug;
+        }
+
+        // Helper method to ensure unique slug
+        private async Task<string> EnsureUniqueSlug(string baseSlug, int excludeId)
+        {
+            var slug = baseSlug;
+            var counter = 1;
+            
+            while (await _context.Conferences.AnyAsync(c => c.Slug == slug && c.Id != excludeId))
+            {
+                slug = $"{baseSlug}{counter}";
+                counter++;
+            }
+            
+            return slug;
         }
 
         public async Task<IActionResult> Index()
@@ -33,13 +66,49 @@ namespace cmt_proje.Controllers
                 .OrderByDescending(c => c.CreatedAt)
                 .Take(3)
                 .ToListAsync();
+            
+            // Ensure all conferences have slugs
+            foreach (var conf in activeConferences)
+            {
+                if (string.IsNullOrWhiteSpace(conf.Slug))
+                {
+                    var slug = GenerateSlug(conf.Acronym);
+                    conf.Slug = await EnsureUniqueSlug(slug, conf.Id);
+                    var confToUpdate = await _context.Conferences.FindAsync(conf.Id);
+                    if (confToUpdate != null)
+                    {
+                        confToUpdate.Slug = conf.Slug;
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            // Hero content'i veritabanından getir
+            var heroContent = await _context.HomeHeroContents
+                .AsNoTracking()
+                .OrderByDescending(h => h.LastUpdated)
+                .FirstOrDefaultAsync();
+
+            // ViewBag'e hero content'i ekle
+            ViewBag.HeroTitle = heroContent?.HeroTitle ?? "The Meeting Point<br />of Scientific Advancements";
+            ViewBag.HeroSubtitle = heroContent?.HeroSubtitle ?? "Explore world-class academic conferences hosted by Sakarya University.";
 
             return View(activeConferences);
         }
 
         [Authorize]
-        public IActionResult Home()
+        public async Task<IActionResult> Home()
         {
+            // Hero content'i veritabanından getir
+            var heroContent = await _context.HomeHeroContents
+                .AsNoTracking()
+                .OrderByDescending(h => h.LastUpdated)
+                .FirstOrDefaultAsync();
+
+            // ViewBag'e hero content'i ekle
+            ViewBag.HeroTitle = heroContent?.HeroTitle ?? "The Meeting Point<br />of Scientific Advancements";
+            ViewBag.HeroSubtitle = heroContent?.HeroSubtitle ?? "Explore world-class academic conferences hosted by Sakarya University.";
+
             return View();
         }
 

@@ -21,24 +21,24 @@
             themeClass = "theme-icinse";
             bodyClass = "conf-icinse";
             logoPath = "/images/ICENSE.png"; // Fixed typo in filename (ICENSE instead of ICINSE)
-            accentColor = "#E57A1F"; // Orange
-            accentColor2 = "#FFB26B";
+            accentColor = "#d0ad00"; // Gold
+            accentColor2 = "#D9C133";
         }
         else if (acronym.Contains("ITCHS"))
         {
             themeClass = "theme-itchs";
             bodyClass = "conf-itchs";
             logoPath = "/images/ITCHS.png.jpg";
-            accentColor = "#1F7A3E"; // Green
-            accentColor2 = "#8FD3A8";
+            accentColor = "#28713e"; // Green
+            accentColor2 = "#78B48C";
         }
         else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
         {
             themeClass = "theme-itwccst";
             bodyClass = "conf-itwccst";
             logoPath = "/images/ITWCCST.png"; 
-            accentColor = "#1F6FB2"; // Blue
-            accentColor2 = "#8DBCEB";
+            accentColor = "#008080"; // Teal
+            accentColor2 = "#40B8B8";
         }
         else 
         {
@@ -64,23 +64,23 @@
        ========================================= */
     @{
         // Calculate RGB values for each theme
-        string accentRgb = "229, 122, 31"; // Default ICINSE orange
-        string accent2Rgb = "255, 178, 107";
+        string accentRgb = "208, 173, 0"; // Default ICINSE gold
+        string accent2Rgb = "217, 193, 51";
         
         if (acronym.Contains("ICINSE"))
         {
-            accentRgb = "229, 122, 31"; // Orange #E57A1F
-            accent2Rgb = "255, 178, 107"; // #FFB26B
+            accentRgb = "208, 173, 0"; // Gold #d0ad00
+            accent2Rgb = "217, 193, 51"; // #D9C133
         }
         else if (acronym.Contains("ITCHS"))
         {
-            accentRgb = "31, 122, 62"; // Green #1F7A3E
-            accent2Rgb = "143, 211, 168"; // #8FD3A8
+            accentRgb = "40, 113, 62"; // Green #28713e
+            accent2Rgb = "120, 180, 140"; // #78B48C
         }
         else if (acronym.Contains("ITWCCST") || acronym.Contains("ITW"))
         {
-            accentRgb = "31, 111, 178"; // Blue #1F6FB2
-            accent2Rgb = "141, 188, 235"; // #8DBCEB
+            accentRgb = "0, 128, 128"; // Teal #008080
+            accent2Rgb = "64, 184, 184"; // #40B8B8
         }
     }
     
@@ -104,10 +104,10 @@
        ========================================= */
     .conference-details-wrapper {
         min-height: 80vh;
-   
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         padding-bottom: 4rem;
         position: relative;
+        background: transparent !important;
     }
 
     /* DETAILS PANEL - Watermark Container */
@@ -118,6 +118,7 @@
         margin: 0;
         width: 100%;
         min-height: 100vh;
+        background: transparent !important;
     }
 
     /* Conference Logo Watermark - Full Coverage, No White Space */
@@ -142,43 +143,87 @@
 
 
     /* =========================================
-       CONFERENCE-SPECIFIC BODY GRADIENT OVERRIDE
+       CONFERENCE-SPECIFIC BODY SOLID OVERRIDE
        ========================================= */
-    /* ICINSE: Orange to White gradient */
-    body.conf-icinse {
-        background: linear-gradient(180deg, #F28C28 0%, #F5A962 20%, #F8C896 40%, #FBE5CA 60%, #FDF2E5 80%, #FFFFFF 95%, #FFFFFF 100%) !important;
+    /* ICINSE: Gold solid */
+    body.conf-icinse,
+    html.conf-icinse {
+        background: #d0ad00 !important;
         background-attachment: fixed !important;
         background-size: 100% 100% !important;
         min-height: 100vh;
     }
 
-    /* ITCHS: Green to White gradient */
-    body.conf-itchs {
-        background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 20%, #66BB6A 40%, #A5D6A7 60%, #C8E6C9 80%, #E8F5E9 95%, #FFFFFF 100%) !important;
+    /* ICINSE: Tüm wrapper'ları şeffaf yap */
+    body.conf-icinse .conf-hero,
+    body.conf-icinse .conf-hero-content,
+    body.conf-icinse .conference-details-wrapper,
+    body.conf-icinse .conference-details-panel,
+    body.conf-icinse .container,
+    body.conf-icinse main,
+    body.conf-icinse section {
+        background: transparent !important;
+    }
+
+    /* ITCHS: Green solid */
+    body.conf-itchs,
+    html.conf-itchs {
+        background: #28713e !important;
         background-attachment: fixed !important;
         background-size: 100% 100% !important;
         min-height: 100vh;
+    }
+
+    /* ITCHS: Tüm wrapper'ları şeffaf yap */
+    body.conf-itchs .conf-hero,
+    body.conf-itchs .conf-hero-content,
+    body.conf-itchs .conference-details-wrapper,
+    body.conf-itchs .conference-details-panel,
+    body.conf-itchs .container,
+    body.conf-itchs main,
+    body.conf-itchs section {
+        background: transparent !important;
+    }
+
+    /* ITWCCST: Teal solid */
+    body.conf-itwccst,
+    html.conf-itwccst {
+        background: #008080 !important;
+        background-attachment: fixed !important;
+        background-size: 100% 100% !important;
+        min-height: 100vh;
+    }
+
+    /* ITWCCST: Tüm wrapper'ları şeffaf yap */
+    body.conf-itwccst .conf-hero,
+    body.conf-itwccst .conf-hero-content,
+    body.conf-itwccst .conference-details-wrapper,
+    body.conf-itwccst .conference-details-panel,
+    body.conf-itwccst .container,
+    body.conf-itwccst main,
+    body.conf-itwccst section {
+        background: transparent !important;
     }
 
     /* =========================================
        CONFERENCE-SPECIFIC NAVBAR BACKGROUND COLORS
        ========================================= */
-    /* ICINSE: Orange navbar */
+    /* ICINSE: Gold navbar */
     body.conf-icinse .main-navbar {
-        background: #F5A962 !important;
-        box-shadow: 0 4px 20px rgba(229, 122, 31, 0.2);
+        background: #D9C133 !important;
+        box-shadow: 0 4px 20px rgba(208, 173, 0, 0.2);
     }
 
     /* ITCHS: Green navbar */
     body.conf-itchs .main-navbar {
-        background: #66BB6A !important;
-        box-shadow: 0 4px 20px rgba(31, 122, 62, 0.2);
+        background: #4CA362 !important;
+        box-shadow: 0 4px 20px rgba(40, 113, 62, 0.2);
     }
 
-    /* ITWCCST: Blue navbar */
+    /* ITWCCST: Teal navbar */
     body.conf-itwccst .main-navbar {
-        background: #60A5FA !important;
-        box-shadow: 0 4px 20px rgba(31, 111, 178, 0.2);
+        background: #20A0A0 !important;
+        box-shadow: 0 4px 20px rgba(0, 128, 128, 0.2);
     }
 
     /* =========================================
@@ -322,7 +367,7 @@
         position: relative;
         padding: 2.5rem 1.5rem 3rem;
         margin-bottom: 3rem;
-        background: transparent;
+        background: transparent !important;
         border: none;
         box-shadow: none;
         overflow: visible;
@@ -337,8 +382,9 @@
     .conf-hero-content {
         position: relative;
         z-index: 2;
-        max-width: 1000px;
+        max-width: 1400px;
         margin: 0 auto;
+        background: transparent !important;
     }
     
     /* Container z-index for watermark overlay */
@@ -410,17 +456,17 @@
     .conf-title {
         font-size: 3rem;
         font-weight: 800;
-        color: #1a1a1a;
+        color: #FFFFFF !important;
         margin-bottom: 1rem;
         line-height: 1.15;
         letter-spacing: -0.03em;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .conf-acronym {
         font-size: 3rem;
         font-weight: 800;
-        color: #000000 !important;
+        color: #FFFFFF !important;
         margin-bottom: 0.5rem;
         margin-top: 0.5rem;
         opacity: 1;
@@ -430,16 +476,39 @@
         position: relative;
         z-index: 10;
         display: block;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .conf-description {
         font-size: 1.125rem;
         line-height: 1.75;
-        color: #4a5568;
-        max-width: 800px;
+        color: #FFFFFF !important;
+        max-width: 1300px;
         margin: 0 auto 1.5rem;
         font-weight: 400;
         letter-spacing: -0.01em;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        text-align: left;
+        padding: 0 20px;
+    }
+    
+    .conf-description p {
+        margin-bottom: 1rem;
+        color: #FFFFFF !important;
+    }
+    
+    .conf-description p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .conf-description strong,
+    .conf-description b {
+        font-weight: 700;
+        color: #FFFFFF !important;
+    }
+    
+    .conf-description br {
+        line-height: 1.75;
     }
 
     /* INFO CARDS - PREMIUM GLASSMORPHISM */
@@ -625,6 +694,17 @@
     }
 
     /* RESPONSIVE - PREMIUM */
+    @@media (max-width: 1200px) and (min-width: 769px) {
+        .conf-hero-content {
+            max-width: 1000px;
+        }
+        
+        .conf-description {
+            max-width: 900px;
+            padding: 0 20px;
+        }
+    }
+    
     @@media (max-width: 768px) {
         .conf-hero {
             padding: 2rem 1rem 2.5rem;
@@ -650,6 +730,8 @@
         .conf-description {
             font-size: 1rem;
             line-height: 1.6;
+            max-width: 100%;
+            padding: 0 15px;
         }
         
         .conf-card {
@@ -671,6 +753,10 @@
     @@media (max-width: 480px) {
         .conf-hero {
             padding: 1.5rem 0.75rem 2rem;
+        }
+        
+        .conf-description {
+            padding: 0 10px;
         }
         
         .conf-hero-logo { 
@@ -730,7 +816,7 @@
 
                 <!-- Description -->
                 <div class="conf-description">
-                    @Model.Description
+                    @Html.Raw(Model.Description)
                 </div>
 
             </div>

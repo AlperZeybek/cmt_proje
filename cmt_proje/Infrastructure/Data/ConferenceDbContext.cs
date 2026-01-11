@@ -20,6 +20,9 @@ namespace cmt_proje.Infrastructure.Data
         public DbSet<Decision> Decisions { get; set; }
         public DbSet<ScientificCommitteeMember> ScientificCommitteeMembers { get; set; }
         public DbSet<AboutContent> AboutContents { get; set; }
+        public DbSet<PageContentBlock> PageContentBlocks { get; set; }
+        public DbSet<NavigationItem> NavigationItems { get; set; }
+        public DbSet<HomeHeroContent> HomeHeroContents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -87,6 +90,13 @@ namespace cmt_proje.Infrastructure.Data
                 .WithOne(r => r.ReviewAssignment)
                 .HasForeignKey<Review>(r => r.ReviewAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // NavigationItem - Parent (Self-referencing)
+            builder.Entity<NavigationItem>()
+                .HasOne(n => n.Parent)
+                .WithMany()
+                .HasForeignKey(n => n.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

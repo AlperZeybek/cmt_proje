@@ -71,7 +71,10 @@
                                         Sakarya University
                                     </p>
                                 </div>
-                                <a href="@Url.Action("Details", "Conferences", new { id = conference.Id })" class="conference-btn">
+                                @{
+                                    string confSlug = string.IsNullOrWhiteSpace(conference.Slug) ? conference.Id.ToString() : conference.Slug;
+                                }
+                                <a href="/@confSlug" class="conference-btn">
                                     Siteye Git →
                                 </a>
                             </div>
@@ -137,15 +140,15 @@
             
             /* Conference card backgrounds - Light tones matching logos */
             .conference-card.orange {
-                background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #FFFEF0 0%, #FFFCE6 50%, #FFFFFF 100%) !important;
             }
             
             .conference-card.green {
-                background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #D4F2D8 0%, #B8E4C0 50%, #FFFFFF 100%) !important;
             }
             
             .conference-card.blue {
-                background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #E0F5F5 0%, #C0EBEB 50%, #FFFFFF 100%) !important;
             }
                 padding: 52px 44px;
                 box-shadow: 0 10px 45px rgba(0, 0, 0, 0.12);
@@ -166,10 +169,10 @@
                 transition: height 0.4s ease;
             }
 
-            .conference-card.blue::before { background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%); }
-            .conference-card.orange::before { background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%); }
+            .conference-card.blue::before { background: linear-gradient(90deg, #008080 0%, #006666 100%); }
+            .conference-card.orange::before { background: linear-gradient(90deg, #d0ad00 0%, #B89900 100%); }
             .conference-card.purple::before { background: linear-gradient(90deg, #8B5CF6 0%, #7C3AED 100%); }
-            .conference-card.green::before { background: linear-gradient(90deg, #10B981 0%, #059669 100%); }
+            .conference-card.green::before { background: linear-gradient(90deg, #28713e 0%, #1F5A2F 100%); }
 
             .conference-card:hover {
                 transform: translateY(-14px) scale(1.015);
@@ -213,8 +216,8 @@
                 transition: all 0.4s ease;
             }
 
-            .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; }
-            .conference-card.orange .conference-logo-placeholder { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; }
+            .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; }
+            .conference-card.orange .conference-logo-placeholder { background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%); color: #FFFFFF; }
             .conference-card.purple .conference-logo-placeholder { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; }
 
             .conference-card:hover .conference-logo { transform: scale(1.1) rotate(2deg); }
@@ -271,13 +274,13 @@
                 flex-shrink: 0;
             }
 
-            .conference-card.blue .conference-btn { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-            .conference-card.orange .conference-btn { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+            .conference-card.blue .conference-btn { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3); }
+            .conference-card.orange .conference-btn { background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(208, 173, 0, 0.3); }
             .conference-card.purple .conference-btn { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-            .conference-card.green .conference-btn { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+            .conference-card.green .conference-btn { background: linear-gradient(135deg, #28713e 0%, #1F5A2F 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(40, 113, 62, 0.3); }
 
             .conference-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); color: #FFFFFF; }
-            .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4); }
+            .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(0, 128, 128, 0.4); }
             .conference-card.orange .conference-btn:hover { box-shadow: 0 10px 28px rgba(245, 158, 11, 0.4); }
         </style>
 }
@@ -342,7 +345,10 @@ else if (User.IsInRole(AppRoles.Author))
                                         Sakarya University
                                     </p>
                                 </div>
-                                <a href="@Url.Action("Details", "Conferences", new { id = conference.Id })" class="conference-btn">
+                                @{
+                                    string confSlug = string.IsNullOrWhiteSpace(conference.Slug) ? conference.Id.ToString() : conference.Slug;
+                                }
+                                <a href="/@confSlug" class="conference-btn">
                                     Siteye Git →
                                 </a>
                             </div>
@@ -408,15 +414,15 @@ else if (User.IsInRole(AppRoles.Author))
             
             /* Conference card backgrounds - Light tones matching logos */
             .conference-card.orange {
-                background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #FFFEF0 0%, #FFFCE6 50%, #FFFFFF 100%) !important;
             }
             
             .conference-card.green {
-                background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #D4F2D8 0%, #B8E4C0 50%, #FFFFFF 100%) !important;
             }
             
             .conference-card.blue {
-                background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
+                background: linear-gradient(135deg, #E0F5F5 0%, #C0EBEB 50%, #FFFFFF 100%) !important;
             }
                 padding: 52px 44px;
                 box-shadow: 0 10px 45px rgba(0, 0, 0, 0.12);
@@ -437,10 +443,10 @@ else if (User.IsInRole(AppRoles.Author))
                 transition: height 0.4s ease;
             }
 
-            .conference-card.blue::before { background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%); }
-            .conference-card.orange::before { background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%); }
+            .conference-card.blue::before { background: linear-gradient(90deg, #008080 0%, #006666 100%); }
+            .conference-card.orange::before { background: linear-gradient(90deg, #d0ad00 0%, #B89900 100%); }
             .conference-card.purple::before { background: linear-gradient(90deg, #8B5CF6 0%, #7C3AED 100%); }
-            .conference-card.green::before { background: linear-gradient(90deg, #10B981 0%, #059669 100%); }
+            .conference-card.green::before { background: linear-gradient(90deg, #28713e 0%, #1F5A2F 100%); }
 
             .conference-card:hover {
                 transform: translateY(-14px) scale(1.015);
@@ -484,8 +490,8 @@ else if (User.IsInRole(AppRoles.Author))
                 transition: all 0.4s ease;
             }
 
-            .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; }
-            .conference-card.orange .conference-logo-placeholder { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; }
+            .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; }
+            .conference-card.orange .conference-logo-placeholder { background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%); color: #FFFFFF; }
             .conference-card.purple .conference-logo-placeholder { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; }
 
             .conference-card:hover .conference-logo { transform: scale(1.1) rotate(2deg); }
@@ -542,13 +548,13 @@ else if (User.IsInRole(AppRoles.Author))
                 flex-shrink: 0;
             }
 
-            .conference-card.blue .conference-btn { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-            .conference-card.orange .conference-btn { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+            .conference-card.blue .conference-btn { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3); }
+            .conference-card.orange .conference-btn { background: linear-gradient(135deg, #d0ad00 0%, #B89900 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(208, 173, 0, 0.3); }
             .conference-card.purple .conference-btn { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-            .conference-card.green .conference-btn { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+            .conference-card.green .conference-btn { background: linear-gradient(135deg, #28713e 0%, #1F5A2F 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(40, 113, 62, 0.3); }
 
             .conference-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); color: #FFFFFF; }
-            .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4); }
+            .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(0, 128, 128, 0.4); }
             .conference-card.orange .conference-btn:hover { box-shadow: 0 10px 28px rgba(245, 158, 11, 0.4); }
         </style>
 
@@ -942,7 +948,7 @@ else if (User.IsInRole(AppRoles.Author))
         }
         
         .conference-card.blue {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #FFFFFF 100%) !important;
+            background: linear-gradient(135deg, #E0F5F5 0%, #C0EBEB 50%, #FFFFFF 100%) !important;
         }
         
         .conference-card {
@@ -961,7 +967,7 @@ else if (User.IsInRole(AppRoles.Author))
             transition: height 0.4s ease;
         }
 
-        .conference-card.blue::before { background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%); }
+        .conference-card.blue::before { background: linear-gradient(90deg, #008080 0%, #006666 100%); }
         .conference-card.orange::before { background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%); }
         .conference-card.purple::before { background: linear-gradient(90deg, #8B5CF6 0%, #7C3AED 100%); }
         .conference-card.green::before { background: linear-gradient(90deg, #10B981 0%, #059669 100%); }
@@ -1008,7 +1014,7 @@ else if (User.IsInRole(AppRoles.Author))
             transition: all 0.4s ease;
         }
 
-        .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; }
+        .conference-card.blue .conference-logo-placeholder { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; }
         .conference-card.orange .conference-logo-placeholder { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; }
         .conference-card.purple .conference-logo-placeholder { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; }
 
@@ -1066,13 +1072,13 @@ else if (User.IsInRole(AppRoles.Author))
             flex-shrink: 0;
         }
 
-        .conference-card.blue .conference-btn { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        .conference-card.blue .conference-btn { background: linear-gradient(135deg, #008080 0%, #006666 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3); }
         .conference-card.orange .conference-btn { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
         .conference-card.purple .conference-btn { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
         .conference-card.green .conference-btn { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
 
         .conference-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); color: #FFFFFF; }
-        .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4); }
+        .conference-card.blue .conference-btn:hover { box-shadow: 0 10px 28px rgba(0, 128, 128, 0.4); }
         .conference-card.orange .conference-btn:hover { box-shadow: 0 10px 28px rgba(245, 158, 11, 0.4); }
     </style>
 }

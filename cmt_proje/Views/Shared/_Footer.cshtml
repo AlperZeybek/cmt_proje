@@ -1,4 +1,17 @@
+<!-- Sponsors Section -->
+<partial name="_Sponsors" />
+
 <footer class="app-footer mt-auto">
+    <!-- Edit Footer Button (Chair Only) -->
+    @if (User.IsInRole(cmt_proje.Core.Constants.AppRoles.Chair))
+    {
+        <div class="text-end mb-2" style="position: relative; z-index: 1000; padding: 0 1rem;">
+            <a asp-controller="ContentManagement" asp-action="PageBuilder" asp-route-pageKey="Footer" 
+               class="btn btn-sm btn-outline-light">
+                <i class="bi bi-pencil-square"></i> Edit Footer
+            </a>
+        </div>
+    }
     <div class="container">
         <div class="row g-4 mb-4">
             <!-- Brand Column -->
